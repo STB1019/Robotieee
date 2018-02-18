@@ -61,7 +61,7 @@
  * read_bit(pippo, 1) //value equal to 0
  * @endcode
  *
- * @param[in] bit_to_read the name of the variable to read. It's a lvalue
+ * @param[in] variable the name of the variable to read. It's a lvalue
  * @param[in] bit_to_read the index (from the right) of the bit to read
  * @return 0 if the bit is set to 0, a different value otherwise;
  */

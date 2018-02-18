@@ -1,0 +1,10 @@
+#eclipse files
+/.metadata/
+/RemoteSystemsTempFiles/
+.settings/
+.cproject
+.project
+
+#automatically generated files
+buiild/
+

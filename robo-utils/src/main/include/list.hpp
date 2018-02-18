@@ -1,7 +1,14 @@
-#ifndef CPP_LIST__
-#define CPP_LIST__
+/**
+ * @file
+ *
+ * Provide a small forward list implementation
+ *
+ * @author koldar
+ * @date 18 Feb 2018
+ */
 
-#include <iostream>
+#ifndef LIST_HPP_
+#define LIST_HPP_
 
 namespace robo_utils {
 
@@ -17,36 +24,173 @@ template <typename T>
 class list_iter;
 
 
-
 template<typename T>
 class list {
 	friend class list_cell<T>;
 	friend class const_list_iter<T>;
 	friend class list_iter<T>;
 private:
+	/**
+	 * the first element of the list
+	 */
 	list_cell<T>* head;
+	/**
+	 * The last element of the list
+	 */
 	list_cell<T>* tail;
+	/**
+	 * the number of elements within the list
+	 */
 	int size;
+	/**
+	 * true if the destructor method should remove from memory the items \c T within the list.
+	 *
+	 * If they are not pointers it should be \c false
+	 */
 	bool destroy_payload;
+	/**
+	 * A value to return if an operation of the list fails
+	 */
 	T defaultValue;
 public:
+	/**
+	 * Adds an element at the end of the list
+	 *
+	 * @param[in] el the element to add to the tail of the list
+	 */
 	void add_to_tail(const T el);
+	/**
+	 * Adds an element at the beginning of the list
+	 *
+	 * @param[in] el the element to add to the ehad of the list
+	 */
 	void add_to_head(const T el);
+	/**
+	 * Get the i-th element of the list
+	 *
+	 * @param[in] index the index of the element to fetch
+	 * @return
+	 * 	\li the element in the list;
+	 * 	\li the default value if \c index leads to no item
+	 */
 	T get(int index);
+	/**
+	 * Get the first element of the list
+	 *
+	 * @return
+	 * 	\li the head of the list;
+	 * 	\li the default value if the list is empty
+	 */
 	T get_head();
+	/**
+	 * Get the last element of the lsit
+	 *
+	 * @return
+	 * 	\li the last element of the list;
+	 * 	\li the default value if the list is empty
+	 */
 	T get_tail();
+	/**
+	 * Check if the list is empty
+	 *
+	 * @return \c true if the list is empty; \c false otherwise
+	 */
 	bool is_empty();
+	/**
+	 * The number of elements
+	 *
+	 * @return the number of elements within the list
+	 */
 	int get_size();
+	/**
+	 * method to implement a constant iteration on the list
+	 *
+	 * @includedoc list_iterator_example.doxy
+	 *
+	 * @return a constant iterator pointing to the first item of the list
+	 */
 	const_list_iter<T> cbegin();
+	/**
+	 * method to implement a constant iteration on the list
+	 *
+	 * @includedoc list_iterator_example.doxy
+	 *
+	 * @return a constant iterator pointing to the last item of the list
+	 */
 	const_list_iter<T> cend();
+	/**
+	 * method to implement an iteration on the list
+	 *
+	 * @includedoc list_iterator_example.doxy
+	 *
+	 * @return an iterator pointing to the first item of the list
+	 */
 	list_iter<T> begin();
+	/**
+	 * method to implement an iteration on the list
+	 *
+	 * @includedoc list_iterator_example.doxy
+	 *
+	 * @return an iterator pointing to the last item of the list
+	 */
 	list_iter<T> end();
+	/**
+	 * Remove an item of the list during iteration of the list
+	 *
+	 * @includedoc list_iterator_example.doxy
+	 *
+	 * \post
+	 * 	\li this will remove the element from the list
+	 *
+	 * @param[in] it the point where the iterator is currently
+	 */
 	void remove_element(list_iter<T>& it);
+	/**
+	 * Remove the head of the list
+	 *
+	 * \post
+	 * 	\li the first item of the list will be updated
+	 *
+	 * @return
+	 * 	\li the head of the list;
+	 * 	\li the default value if the list is empty
+	 */
 	T pop_head();
+	/**
+	 * A lvaue pointing to the i-th element of the list
+	 *
+	 * You can use this function to alter the i-th value of the list
+	 *
+	 * @code
+	 * 	list<int> l{0, false};
+	 * 	l.add_tail(1);
+	 * 	l.add_tail(2);
+	 * 	l.add_tail(3);
+	 * 	l[1] = 5 //2 becomes 5
+	 * @endcode
+	 *
+	 * @param[in] i the index of the cell to update
+	 * @return the lvalue representing the cell to (possibly) change
+	 */
 	T& operator[](unsigned int i);
+	/**
+	 * A constant lvalue to the i-th element of the list
+	 *
+	 * @param[in] i the index of the cell to update
+	 * @return the lvalue representing the cell to (possibly) change
+	 */
 	const T& operator[](unsigned int i) const;
 public:
+	/**
+	 * Initialize the list
+	 *
+	 * @param[in] defaultValue the value to return in case some operation couldn't be performed for some reasons
+	 * @param[in] destroy_payload if true, \c delete will delete the items within the list as well. Useful only if the payloads are actually pointers.
+	 */
 	list(T defaultValue, bool destroy_payload);
+	/**
+	 * Dealloc the list
+	 */
 	~list();
 };
 

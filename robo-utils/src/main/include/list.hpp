@@ -1,8 +1,6 @@
 #ifndef CPP_LIST__
 #define CPP_LIST__
 
-#include "optional.hpp"
-
 #include <iostream>
 
 namespace robo_utils {

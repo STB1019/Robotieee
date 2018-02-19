@@ -1,8 +1,10 @@
-/*
- * fixed_list.hpp
+/**
+ * @file
  *
- *  Created on: Feb 19, 2018
- *      Author: koldar
+ * Allows to use an array of elements like a list
+ *
+ * @date Feb 19, 2018
+ * @author koldar
  */
 
 #ifndef FIXED_LIST_HPP_
@@ -15,6 +17,13 @@ namespace robo_utils {
 template <typename T>
 class fixed_list_iter;
 
+/**
+ * Represents an array of element \c T.
+ *
+ * However, you can use it like a normal list to add, remove or get elements.
+ * The class is *fixed* because you initially set the size of the array: you don't have to malloc/free heap memory
+ * during the runtime but you the space reservation is done only once. However, you cannot change the size of the array.
+ */
 template<typename T>
 class fixed_list : abstract_list<T>{
 	friend class fixed_list_iter<T>;

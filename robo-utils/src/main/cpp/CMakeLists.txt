@@ -43,10 +43,24 @@ set_target_properties(${THEPROJECT_NAME}
 )
 
 #copy the contents of src/main/resources inside build/XXX
-add_custom_command(
-    TARGET ${THEPROJECT_NAME} 
-    POST_BUILD COMMAND 
-    ${CMAKE_COMMAND} -E copy_directory ${CMAKE_BINARY_DIR}/../../src/main/resources $<TARGET_FILE_DIR:${THEPROJECT_NAME}>
+#add_custom_command(
+#    TARGET ${THEPROJECT_NAME} 
+#    POST_BUILD COMMAND 
+#    ${CMAKE_COMMAND} -E copy_directory ${CMAKE_BINARY_DIR}/../../src/main/resources $<TARGET_FILE_DIR:${THEPROJECT_NAME}>
+#)
+
+add_custom_target(
+	sketch
+	COMMENT load the code of the library into zumo sketch project
+	WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+	COMMAND ./sketch.bash ../../src/main/ ../../../Zumo32U4/libraries/ ${THEPROJECT_NAME}
+)
+
+add_custom_target(
+	copy_resources ALL
+	COMMENT copy all the resources within main/resources into the build directory chosen
+	WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+	COMMAND cp -rv ../../src/main/resources/* .
 )
 
 #************** SUDO MAKE INSTALL ****************

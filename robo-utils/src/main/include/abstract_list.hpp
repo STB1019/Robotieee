@@ -12,6 +12,7 @@ namespace robo_utils {
 
 template<typename T>
 class abstract_list {
+public:
 	/**
 	 * Adds an element at the end of the list
 	 *

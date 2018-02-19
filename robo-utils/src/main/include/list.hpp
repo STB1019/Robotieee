@@ -27,7 +27,7 @@ class list_iter;
 
 
 template<typename T>
-class list : abstract_list<T> {
+class list : public abstract_list<T> {
 	friend class list_cell<T>;
 	friend class const_list_iter<T>;
 	friend class list_iter<T>;

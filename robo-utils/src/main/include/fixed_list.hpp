@@ -25,7 +25,7 @@ class fixed_list_iter;
  * during the runtime but you the space reservation is done only once. However, you cannot change the size of the array.
  */
 template<typename T>
-class fixed_list : abstract_list<T>{
+class fixed_list : public abstract_list<T>{
 	friend class fixed_list_iter<T>;
 private:
 	const unsigned int capacity;

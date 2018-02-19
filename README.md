@@ -21,6 +21,8 @@ cmake ../.. //usually you need to do that
 cmake -D U_BUILD_TYPE=DESKTOP_BUILD -D U_ARDUINO_LIBRARY_FOLDER="~/Arduino/libraries" ../..
 
 make
+//install the library into the default Arduino library path folder
+make sketch
 ```
 
 there's should be a static library (*.a) in build/Debug you can use in the Arduino code. 
@@ -32,11 +34,8 @@ The building process has some flags you have to be aware:
 |Flag				|Possible value		|Description						|Example					|
 |-------------------------------|-----------------------|-------------------------------------------------------|-----------------------------------------------|
 |`U_BUILD_TYPE`			|`DESKTOP_BUILD`	|Incorporate in the build the std library		|`cmake -D U_BUILD_TYPE=DESKTOP_BUILD  ../..`	|
-|-------------------------------|-----------------------|-------------------------------------------------------|-----------------------------------------------|
 |`U_BUILD_TYPE`			|`AVR_BUILD`		|(default) don't build with std library			|`cmake -D U_BUILD_TYPE=AVR_BUILD  ../..`	|
-|-------------------------------|-----------------------|-------------------------------------------------------|-----------------------------------------------|
 |`U_ARDUINO_LIBRARY_FOLDER`	|a path			|the place where arduino puts the custom libraries	|`cmake -D U_ARDUINO_LIBRARY_FOLDER="a/p" ../..`|
-|-------------------------------|-----------------------|-------------------------------------------------------|-----------------------------------------------|
 
 ## Documentation
 

@@ -29,7 +29,7 @@ public:
 	 *
 	 * @param[in] p the point to copy
 	 */
-	point(point& p);
+	point(const point& p);
 	/**
 	 * Deallocate the point
 	 */

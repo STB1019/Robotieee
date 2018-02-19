@@ -13,7 +13,7 @@ point::point(int y, int x) : y{y}, x{x} {
 
 }
 
-point::point(point& p) : y{p.y}, x{p.x} {
+point::point(const point& p) : y{p.y}, x{p.x} {
 
 }
 

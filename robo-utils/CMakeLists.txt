@@ -31,6 +31,7 @@ set(CMAKE_FILE_ALTERED_COMMAND "
 - use U_BUILD_TYPE set to AVR_BUILD to build for the sumo robot; use DESKTOP_BUILD to build for a common computer
 - c++ compiler set to g++
 - template source implementation is in the tpp folder
+- use U_ARDUINO_LIBRARY_FOLDER to point to the location where Arduino checks libraries. For example U_ARDUINO_LIBRARY_FOLDER=~/Arduino/libraries/
 ")
 #Represents the version of the building process version. You can use this value to understand what this cmake building process can and can't do
 #For example in building processes before the "1.0" "sudo make install" of exectuables wasn't supported.
@@ -71,6 +72,7 @@ SET(U_FPIC "" CACHE STRING "true to enable PIC. False to enable Relocation")
 SET(U_LIBRARY_TYPE "" CACHE STRING "SO for shared library, AO for static library")
 SET(U_INSTALL_DIRECTORY "" CACHE STRING "The place where everything 'sudo make install' is positioned")
 SET(U_BUILD_TYPE "" CACHE STRING "AVR_BUILD to build for the sumo robot; DESKTOP_BUILD for standard build on linux")
+set(U_ARDUINO_LIBRARY_FOLDER "" CACHE STRING "the location where Arduino checks libraries. For example U_ARDUINO_LIBRARY_FOLDER=~/Arduino/libraries/")
 
 if (NOT ${U_FPIC} STREQUAL "")
     set(THEPROJECT_POSITION_INDEPENDENT_CODE ${U_FPIC})
@@ -91,6 +93,11 @@ set(THEPROJECT_BUILD_TYPE "AVR_BUILD")
 if (NOT ${U_BUILD_TYPE} STREQUAL "")
     set(THEPROJECT_BUILD_TYPE ${U_BUILD_TYPE})
     message(STATUS "${BoldYellow}chaing build type to ${THEPROJECY_BUILD_TYPE}${ColorReset}")
+endif()
+
+set(THEPROJECT_ARDUINO_LIBRARY_FOLDER "~/Arduino/libraries")
+if(NOT ${U_ARDUINO_LIBRARY_FOLDER} STREQUAL "")
+	set(THEPROJECT_ARDUINO_LIBRARY_FOLDER ${U_ARDUINO_LIBRARY_FOLDER})
 endif()
 
 # ************************ SET DEFINITIVE VARIABLES ***************************
@@ -132,6 +139,7 @@ elseif(${THEPROJECT_OUTPUT} STREQUAL "EXE")
     message(STATUS "${BoldCyan}We will build an executable${ColorReset}")
 endif()
 message(STATUS "${BoldCyan}build type set to ${THEPROJECT_BUILD_TYPE}${ColorReset}")
+message(STATUS "${BoldCyan}place where to install arduino libraries: ${THEPROJECT_ARDUINO_LIBRARY_FOLDER}${ColorReset}")
 
 # ******************** BUILDING OPTIONS ***************************
 

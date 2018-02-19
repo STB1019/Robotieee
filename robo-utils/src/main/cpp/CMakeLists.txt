@@ -52,8 +52,9 @@ set_target_properties(${THEPROJECT_NAME}
 add_custom_target(
 	sketch
 	COMMENT load the code of the library into zumo sketch project
+	DEPENDS copy_resources
 	WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-	COMMAND ./sketch.bash ../../src/main/ ../../../Zumo32U4/libraries/ ${THEPROJECT_NAME}
+	COMMAND ./sketch.bash ../../src/main/ ${THEPROJECT_ARDUINO_LIBRARY_FOLDER} ${THEPROJECT_NAME}
 )
 
 add_custom_target(

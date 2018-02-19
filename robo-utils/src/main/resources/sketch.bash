@@ -4,7 +4,7 @@ source_folder=$1
 sketch_folder=$2
 library_name=$3
 
-output_folder=$2
+output_folder=${sketch_folder}
 
 echo "source folder is `realpath ${source_folder}`"
 echo "sketch folder is `realpath ${sketch_folder}`"
@@ -30,5 +30,6 @@ do
 done
 
 zip -r "${building_zip}.zip" "${building_zip}"
-cp -v "${building_zip}.zip" "${output_folder}"
+#cp -v "${building_zip}.zip" "${output_folder}"
+cp -rv "${building_zip}" "${output_folder}"
 echo "library files have been copied into ${output_folder}. DONE"

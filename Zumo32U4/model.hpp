@@ -1,3 +1,12 @@
+/**
+ * @file
+ * 
+ * Specify the model used by the robot to represent the physical world and its relations
+ * 
+ * @author koldar
+ * @date 19 Feb 2018
+ */
+
 #ifndef MODEL_HPP_
 #define MODEL_HPP_
 
@@ -68,11 +77,30 @@ typedef unsigned int cell_content;
 	class model {
 		friend class const_base_cell_content_iter;
 	  private:
+    /**
+     * represent the grid where the sumo robot is performing its sokoban work
+     */
 		matrix<cell_content> workplace;
+    /**
+     * the position, within robotieee::model::workspace , where the docking station of the robot is located
+     */
 		point docking_station;
-		point_list blocks;
+    /**
+     * The list of all blocks in robotieee::model::workspace discovered so far
+     */
+		list<block> blocks;
+    /**
+     * The list of places where the goals are
+     * 
+     * Goals are position where each block should (at the end of the plan computed by the planning system) be positioned
+     * 
+     * There are as many goals as there are blocks
+     */
 		point_list goals;
 	  public:
+    /**
+     * A variable representing the robot itself
+     */
 		robot zumo_robot;
 	  private:
 		bool has_cell_property(unsigned int y, unsigned int x, enum base_cell_content object) const;

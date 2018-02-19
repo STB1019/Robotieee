@@ -1,0 +1,16 @@
+Using const iterator: you can't remove items here
+@code
+for(auto it=l->cbegin(); it != l->cend(); ++it) {
+	sum += *it;
+}
+@endcode
+
+Using non const iterator: here you can remove items as well (insertion not supported)
+@code
+for (auto it=l->begin(); it!=l->end(); ++it) {
+	if (*it == 2) {
+		l->remove_element(it);
+		break;
+	}
+}
+@endcode

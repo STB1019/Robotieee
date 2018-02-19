@@ -1,5 +1,7 @@
 /**
  * @file
+ * 
+ * Represents something that can move throughout robotieee::model::workplace
  *
  * @date Feb 19, 2018
  * @author koldar

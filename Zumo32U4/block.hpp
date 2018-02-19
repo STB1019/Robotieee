@@ -1,4 +1,4 @@
-/*
+/**
  * @file
  * 
  * A moveable block in the sokoban domain

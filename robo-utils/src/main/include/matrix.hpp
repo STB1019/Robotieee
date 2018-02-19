@@ -101,14 +101,15 @@ public:
 
 #ifdef DESKTOP_BUILD
 #include <stdlib.h>
-#elif AVR_BUILD
+#elif defined (AVR_BUILD)
 #else
 #error "Either DEKSTOP_BUILD or AVR_BUILD must be set"
 #endif
 
 template <typename T>
 matrix<T>::matrix(unsigned int rows, unsigned int columns, const T& initialValue) : _rows(rows), _columns(columns), _m(nullptr){
-	this->_m = (T*) calloc(rows * columns, sizeof(T));
+	this->_m = new T[rows * columns];//(T*) malloc((rows * columns) * sizeof(T));
+	//TODO how can I check if the memory is filled?
 	for (int y=0; y<this->_rows; y++) {
 		for (int x=0; x<this->_columns; x++) {
 			this->_m[y*this->_columns + x] = initialValue;
@@ -118,7 +119,8 @@ matrix<T>::matrix(unsigned int rows, unsigned int columns, const T& initialValue
 
 template <typename T>
 matrix<T>::~matrix() {
-	free(this->_m);
+	delete [] this->_m;
+	//free(this->_m);
 }
 
 template <typename T>

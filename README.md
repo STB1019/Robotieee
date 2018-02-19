@@ -15,14 +15,32 @@ If you want the debugging create the directory `build/Debug` otherwise `build/Re
 cd robo-utils
 mkdir -p build/Debug
 cd build/Debug
+cmake ../.. //usually you need to do that
+//other cmake options:
 //if you want to create a library which may use std lib use this option:
-cmake -D U_BUILD_TYPE=DESKTOP_BUILD ../..
-//if you want to create a library which can't use std lib use this option:
-cmake -D U_BUILD_TYPE=AVR_BUILD ../..
+cmake -D U_BUILD_TYPE=DESKTOP_BUILD -D U_ARDUINO_LIBRARY_FOLDER="~/Arduino/libraries" ../..
+
 make
 ```
 
-there's should be a static library (*.a) in build/Debug you can use in the Arduino code. You can also buld the documentation. You need some software to do so:
+there's should be a static library (*.a) in build/Debug you can use in the Arduino code. 
+
+## cmake options
+
+The building process has some flags you have to be aware:
+
+|Flag				|Possible value		|Description						|Example					|
+|-------------------------------|-----------------------|-------------------------------------------------------|-----------------------------------------------|
+|`U_BUILD_TYPE`			|`DESKTOP_BUILD`	|Incorporate in the build the std library		|`cmake -D U_BUILD_TYPE=DESKTOP_BUILD  ../..`	|
+|-------------------------------|-----------------------|-------------------------------------------------------|-----------------------------------------------|
+|`U_BUILD_TYPE`			|`AVR_BUILD`		|(default) don't build with std library			|`cmake -D U_BUILD_TYPE=AVR_BUILD  ../..`	|
+|-------------------------------|-----------------------|-------------------------------------------------------|-----------------------------------------------|
+|`U_ARDUINO_LIBRARY_FOLDER`	|a path			|the place where arduino puts the custom libraries	|`cmake -D U_ARDUINO_LIBRARY_FOLDER="a/p" ../..`|
+|-------------------------------|-----------------------|-------------------------------------------------------|-----------------------------------------------|
+
+## Documentation
+
+You can also buld the documentation. You need some software to do so:
 
 ```
 //dot installation
@@ -45,6 +63,8 @@ doxygen robo-utils.doxygen
 
 The output is in `build/doc`, accessible via HTML on the file `index.html`
 
+
 # References
 
- - [Sumo Robot manual](https://www.pololu.com/docs/0J63)
+ - [Sumo Robot manual](https://www.pololu.com/docs/0J63);
+ - [Create a custom Arduino library tutorial](https://www.arduino.cc/en/Hacking/LibraryTutorial);

@@ -10,6 +10,8 @@
 #ifndef LIST_HPP_
 #define LIST_HPP_
 
+#include "abstract_list.hpp"
+
 namespace robo_utils {
 
 //for iterator definition see https://www.cs.northwestern.edu/~riesbeck/programming/c++/stl-iterator-define.html#TOC4
@@ -25,7 +27,7 @@ class list_iter;
 
 
 template<typename T>
-class list {
+class list : abstract_list<T> {
 	friend class list_cell<T>;
 	friend class const_list_iter<T>;
 	friend class list_iter<T>;
@@ -53,55 +55,17 @@ private:
 	 */
 	T defaultValue;
 public:
-	/**
-	 * Adds an element at the end of the list
-	 *
-	 * @param[in] el the element to add to the tail of the list
-	 */
 	void add_to_tail(const T el);
-	/**
-	 * Adds an element at the beginning of the list
-	 *
-	 * @param[in] el the element to add to the ehad of the list
-	 */
 	void add_to_head(const T el);
-	/**
-	 * Get the i-th element of the list
-	 *
-	 * @param[in] index the index of the element to fetch
-	 * @return
-	 * 	\li the element in the list;
-	 * 	\li the default value if \c index leads to no item
-	 */
 	T get(int index);
-	/**
-	 * Get the first element of the list
-	 *
-	 * @return
-	 * 	\li the head of the list;
-	 * 	\li the default value if the list is empty
-	 */
 	T get_head();
-	/**
-	 * Get the last element of the lsit
-	 *
-	 * @return
-	 * 	\li the last element of the list;
-	 * 	\li the default value if the list is empty
-	 */
 	T get_tail();
-	/**
-	 * Check if the list is empty
-	 *
-	 * @return \c true if the list is empty; \c false otherwise
-	 */
 	bool is_empty();
-	/**
-	 * The number of elements
-	 *
-	 * @return the number of elements within the list
-	 */
 	int get_size();
+	T pop_head();
+	T& operator[](unsigned int i);
+	T operator[](unsigned int i) const;
+public:
 	/**
 	 * method to implement a constant iteration on the list
 	 *
@@ -145,41 +109,6 @@ public:
 	 * @param[in] it the point where the iterator is currently
 	 */
 	void remove_element(list_iter<T>& it);
-	/**
-	 * Remove the head of the list
-	 *
-	 * \post
-	 * 	\li the first item of the list will be updated
-	 *
-	 * @return
-	 * 	\li the head of the list;
-	 * 	\li the default value if the list is empty
-	 */
-	T pop_head();
-	/**
-	 * A lvaue pointing to the i-th element of the list
-	 *
-	 * You can use this function to alter the i-th value of the list
-	 *
-	 * @code
-	 * 	list<int> l{0, false};
-	 * 	l.add_tail(1);
-	 * 	l.add_tail(2);
-	 * 	l.add_tail(3);
-	 * 	l[1] = 5 //2 becomes 5
-	 * @endcode
-	 *
-	 * @param[in] i the index of the cell to update
-	 * @return the lvalue representing the cell to (possibly) change
-	 */
-	T& operator[](unsigned int i);
-	/**
-	 * A constant lvalue to the i-th element of the list
-	 *
-	 * @param[in] i the index of the cell to update
-	 * @return the lvalue representing the cell to (possibly) change
-	 */
-	const T& operator[](unsigned int i) const;
 public:
 	/**
 	 * Initialize the list
@@ -317,6 +246,7 @@ list<T>::~list() {
 		}
 	}
 }
+
 template <typename T>
 void list<T>::add_to_tail(const T el) {
 	if (this->head == nullptr) {
@@ -413,11 +343,11 @@ void list<T>::remove_element(list_iter<T>& it) {
 template <typename T>
 T list<T>::pop_head() {
 	if (this->head == nullptr) {
-		return nullptr;
+		return this->defaultValue;
 	}
 
 	list_cell<T>* old_head = this->head;
-	T* retVal = this->head->payload;
+	T retVal = this->head->payload;
 	if (this->size == 1) {
 		this->head = nullptr;
 		this->tail = nullptr;
@@ -429,7 +359,7 @@ T list<T>::pop_head() {
 		this->size--;
 	}
 
-	return &(retVal);
+	return (retVal);
 }
 
 template <typename T>
@@ -442,7 +372,7 @@ T&  list<T>::operator[](unsigned int index) {
 }
 
 template <typename T>
-const T&  list<T>::operator[](unsigned int index) const {
+T list<T>::operator[](unsigned int index) const {
 	list_cell<T>* retVal = this->head;
 	for (int i=0; i<index; i++) {
 		retVal = retVal->next;

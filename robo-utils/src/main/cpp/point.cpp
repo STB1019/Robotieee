@@ -21,15 +21,16 @@ point::~point() {
 
 }
 
-bool point::operator ==(const point& other) const {
-	if (this == &other) {
+bool operator ==(const point& p, const point& other) {
+	if (&p == &other) {
 		return true;
 	}
-	return (this->x == other.x) && (this->y == other.y);
+	return (p.x == other.x) && (p.y == other.y);
 }
 
-bool point::operator !=(const point& other) const {
-	return !(*this == other);
+
+bool operator !=(const point& p, const point& other) {
+	return !(p == other);
 }
 
 point& point::operator +=(const point& q) {
@@ -57,7 +58,7 @@ point& point::operator -=(int v) {
 }
 
 point point::operator +() const {
-	point p{+this->x, +this->y};
+	point p{this->x, this->y};
 	return p;
 }
 

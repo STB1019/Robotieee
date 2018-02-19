@@ -12,8 +12,6 @@ namespace robo_utils {
 		point(point& p);
 		~point();
 	  public:
-		bool operator ==(const point& other) const;
-		bool operator !=(const point& other) const;
 		point& operator +=(const point& q);
 		point& operator -=(const point& q);
 		point& operator +=(int v);
@@ -32,6 +30,8 @@ namespace robo_utils {
 	point operator -(point p, const point& q);
 	point operator +(point p, int v);
 	point operator -(point p, int v);
+	bool operator ==(const point& p, const point& other);
+	bool operator !=(const point& p, const point& other);
 
 }
 

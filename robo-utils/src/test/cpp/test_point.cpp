@@ -54,10 +54,11 @@ SCENARIO("test point") {
 		WHEN("checking negative") {
 
 			THEN("everything is correct") {
-				REQUIRE(+p == point{5,3});
-				REQUIRE(-p == point{-5, -3});
-				REQUIRE(&(+p) != &p );
-				REQUIRE(&(-p) != &p );
+				REQUIRE((+p).x == 5);
+				REQUIRE((+p).y == 3);
+				REQUIRE((-p).x == -5);
+				REQUIRE((-p).y == -3);
+
 			}
 		}
 

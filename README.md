@@ -66,4 +66,5 @@ The output is in `build/doc`, accessible via HTML on the file `index.html`
 # References
 
  - [Sumo Robot manual](https://www.pololu.com/docs/0J63);
+ - [Zumo 32U4 API library](http://pololu.github.io/zumo-32u4-arduino-library/)
  - [Create a custom Arduino library tutorial](https://www.arduino.cc/en/Hacking/LibraryTutorial);

@@ -1,0 +1,13 @@
+(define 	(problem simple)
+	(:domain sokoban)
+	(:objects dir-down - direction
+dir-left - direction
+ndir-right - direction
+dir-up - direction
+player-01 - player
+pos-00-00 - location
+pos-01-00 - location
+pos-01-01 - locationblock-00)
+	(:init (has_player cell_0_0) (adjacent cell_0_0 cell_1_0) (has_box cell_1_0) (adjacent cell_1_0 cell_1_1) (adjacent cell_1_0 cell_0_0) (IS-GOAL pos-01-01) (adjacent cell_1_1 cell_1_0) )
+	(:goal (has_box cell_1_1) )
+)

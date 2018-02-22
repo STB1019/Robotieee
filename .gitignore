@@ -4,6 +4,12 @@
 .settings/
 .cproject
 .project
+#python Pycharm
+Server/planner_wrapper/.idea/workspace.xml
+#virtual env
+Server/planner_wrapper/venv
+#pychaches
+*.pyc
 
 #automatically generated files
 build/

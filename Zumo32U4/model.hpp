@@ -12,6 +12,7 @@
 
 #define AVR_BUILD
 
+#include <Zumo32U4.h>
 #include <list.hpp>
 #include <matrix.hpp>
 #include <point.hpp>

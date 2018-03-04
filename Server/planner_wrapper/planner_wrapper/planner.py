@@ -1,8 +1,10 @@
+import enum
 from abc import ABCMeta, abstractmethod
 import typing
 import os
 import re
 from planner_wrapper import planner_invoker
+from planner_wrapper.point import Point
 
 
 class ActionParseException(Exception):
@@ -17,6 +19,15 @@ class IAction:
     @staticmethod
     def _remove_double_spaces(string):
         return re.sub("\s+", " ", string)
+
+    @staticmethod
+    def convert_pos_into_cell(pos_value: str) -> Point:
+        """
+        Concvert stringa s like "POS-05-08" into points like <5,8>
+        :param pos_value: the string to convert
+        :return: the point converted
+        """
+        return Point(*list(map(lambda x: int(x), pos_value.split('-')[1:2])))
 
     @classmethod
     def parse(cls, string: str):
@@ -37,9 +48,31 @@ class IAction:
             raise ValueError(f"Can't convert action!")
 
 
-class SokobanMove(IAction):
+class Direction(enum.Enum):
+    LEFT = 0
+    RIGHT = 1
+    UP = 2
+    DOWN = 3
 
-    def __init__(self, name, player, start_pos, end_pos, direction):
+    @classmethod
+    def parse(string: str):
+        m = {
+            "DIR-LEFT": Direction.LEFT,
+            "DIR-RIGHT": Direction.RIGHT,
+            "DIR-UP": Direction.UP,
+            "DIR-DOWN": Direction.DOWN
+        }
+        if string not in m:
+            raise ValueError(f"Can't convert {string} in Direction enum!")
+        return m[string]
+
+
+class SokobanMove(IAction):
+    """
+    0:   (MOVE PLAYER-01 POS-05-08 POS-04-08 DIR-LEFT) [1]
+    """
+
+    def __init__(self, name: str, player: str, start_pos: Point, end_pos: Point, direction: Direction):
         super().__init__(name)
         self.player = player
         self.start_pos = start_pos
@@ -47,23 +80,24 @@ class SokobanMove(IAction):
         self.direction = direction
 
     @classmethod
-    def parse(cls, action_name, action_parameters):
+    def parse(cls, action_name: str, action_parameters: str):
         if action_name != 'MOVE':
             raise ActionParseException()
         action_parameters = action_parameters.split(' ')
         return SokobanMove('MOVE',
             player=action_parameters[0],
-            start_pos=action_parameters[1],
-            end_pos=action_parameters[2],
-            direction=action_parameters[3]
+            start_pos=IAction.convert_pos_into_cell(action_parameters[1]),
+            end_pos=IAction.convert_pos_into_cell(action_parameters[2]),
+            direction=Direction.parse(action_parameters[3])
         )
+
 
 class SokobanPushToNonGoal(IAction):
     #(PUSH-TO-NONGOAL PLAYER-01 STONE-02 POS-08-05 POS-08-06 POS-08-07 DIR-DOWN) [1]
     #  (:action push-to-nongoal 
     #:parameters (?p - player ?s - stone ?ppos ?from ?to - location ?dir - direction)
 
-    def __init__(self, name, player, stone, player_pos, start_pos, end_pos, direction):
+    def __init__(self, name: str, player: str, stone: Point, player_pos: Point, start_pos: Point, end_pos: Point, direction: Direction):
         super().__init__(name)
         self.player = player
         self.stone = stone
@@ -79,19 +113,20 @@ class SokobanPushToNonGoal(IAction):
         action_parameters = action_parameters.split(' ')
         return SokobanPushToNonGoal('PUSH-TO-NONGOAL',
             player=action_parameters[0],
-            stone=action_parameters[1],
-            player_pos=action_parameters[2],
-            start_pos=action_parameters[3]
-            end_pos=action_parameters[4],
-            direction=action_parameters[5]
+            stone=IAction.convert_pos_into_cell(action_parameters[1]),
+            player_pos=IAction.convert_pos_into_cell(action_parameters[2]),
+            start_pos=IAction.convert_pos_into_cell(action_parameters[3]),
+            end_pos=IAction.convert_pos_into_cell(action_parameters[4]),
+            direction=Direction.parse(action_parameters[5]),
         )
-        
+
+
 class SokobanPushToGoal(IAction):
     #(PUSH-TO-GOAL PLAYER-01 STONE-02 POS-08-03 POS-08-04 POS-08-05 DIR-DOWN) [1]
     # (:action push-to-goal
    #:parameters (?p - player ?s - stone ?ppos ?from ?to - location ?dir - direction)
 
-    def __init__(self, name, player, stone, player_pos, start_pos, end_pos, direction):
+    def __init__(self, name: str, player: str, stone: Point, player_pos: Point, start_pos: Point, end_pos: Point, direction: Direction):
         super().__init__(name)
         self.player = player
         self.stone = stone
@@ -101,33 +136,48 @@ class SokobanPushToGoal(IAction):
         self.direction = direction
 
     @classmethod
-    def parse(cls, action_name, action_parameters):
+    def parse(cls, action_name: str, action_parameters: str):
         if action_name != 'PUSH-TO-GOAL':
             raise ActionParseException()
         action_parameters = action_parameters.split(' ')
         return SokobanPushToNonGoal('PUSH-TO-GOAL',
             player=action_parameters[0],
-            stone=action_parameters[1],
-            player_pos=action_parameters[2],
-            start_pos=action_parameters[3]
-            end_pos=action_parameters[4],
-            direction=action_parameters[5]
+            stone=IAction.convert_pos_into_cell(action_parameters[1]),
+            player_pos=IAction.convert_pos_into_cell(action_parameters[2]),
+            start_pos=IAction.convert_pos_into_cell(action_parameters[3]),
+            end_pos=IAction.convert_pos_into_cell(action_parameters[4]),
+            direction=Direction.parse(action_parameters[5])
         )
 
-#TODO need to explain this section below
+
 class IPlanner(metaclass=ABCMeta):
 
     @property
     @abstractmethod
     def name(self):
+        """
+
+        :return: the unique name fo the planner
+        """
         raise NotImplementedError()
 
     @abstractmethod
     def call_string(self, domain_filename: str, problem_filename: str) -> typing.List[str]:
+        """
+        Execute the planner
+        :param domain_filename: the domain file to execute
+        :param problem_filename: the problem file to execute
+        :return:
+        """
         raise NotImplementedError()
 
     @abstractmethod
     def check_planner_solution(self, call_result: planner_invoker.CallProgram) -> bool:
+        """
+
+        :param call_result: the return value of the function call_string
+        :return: true if the plaanner has return a solution, fale otherwise
+        """
         raise NotImplementedError()
 
     def invoke(self, domain_filename: str, problem_filename: str, working_directory: str=".") -> bool:
@@ -260,5 +310,6 @@ class LPGPlanner(IPlanner):
 
         ret_val = {}
         ret_val['version'] = "1.0"
-        ret_val['plan'] = []
+        ret_val['plan'] = actions
 
+        return ret_val

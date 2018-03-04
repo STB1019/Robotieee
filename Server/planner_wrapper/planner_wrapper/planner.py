@@ -3,6 +3,9 @@ from abc import ABCMeta, abstractmethod
 import typing
 import os
 import re
+import json
+from functools import singledispatch
+
 from planner_wrapper import planner_invoker
 from planner_wrapper.point import Point
 
@@ -88,7 +91,7 @@ class SokobanMove(IAction):
             player=action_parameters[0],
             start_pos=IAction.convert_pos_into_cell(action_parameters[1]),
             end_pos=IAction.convert_pos_into_cell(action_parameters[2]),
-            direction=Direction.parse(action_parameters[3])
+            direction=Direction.parse(action_parameters[3]),
         )
 
 
@@ -150,6 +153,60 @@ class SokobanPushToGoal(IAction):
         )
 
 
+@singledispatch
+def to_serializable(val):
+    """Used by default."""
+    return str(val)
+
+
+@to_serializable.register(Point)
+def ts_point(val: Point):
+    return {"x": val.x, "y": val.y}
+
+
+@to_serializable.register(Direction)
+def ts_direction(val: Direction):
+    return str(val.name)
+
+
+@to_serializable.register(SokobanMove)
+def ts_sokoban_move(val: SokobanMove):
+    """Used if *val* is an instance of SokobanMove."""
+    return {"move": {
+        "player": val.player,
+        "from": val.start_pos,
+        "to": val.end_pos,
+        "direction": val.direction
+        }
+    }
+
+
+@to_serializable.register(SokobanPushToGoal)
+def ts_sokoban_push_to_goal(val: SokobanPushToGoal):
+    """Used if val is an instance of SokobanPushToGoal class"""
+    return {"push_goal": {
+        "player": val.player,
+        "stone_position": val.stone,
+        "player_position": val.player_pos,
+        "start": val.start_pos,
+        "end": val.end_pos,
+        "direction": val.direction,
+    }}
+
+
+@to_serializable.register(SokobanPushToNonGoal)
+def ts_sokoban_push_to_non_goal(val: SokobanPushToNonGoal):
+    """Used if val is an instance of SokobanPushToNonGoal class"""
+    return {"push_non_goal": {
+        "player": val.player,
+        "stone_position": val.stone,
+        "player_position": val.player_pos,
+        "start": val.start_pos,
+        "end": val.end_pos,
+        "direction": val.direction,
+    }}
+
+
 class IPlanner(metaclass=ABCMeta):
 
     @property
@@ -182,8 +239,7 @@ class IPlanner(metaclass=ABCMeta):
 
     def invoke(self, domain_filename: str, problem_filename: str, working_directory: str=".") -> bool:
         ret_val = planner_invoker.call_program(
-            program=self.call_string(domain_filename=domain_filename,
-                                    problem_filename=problem_filename),
+            program=self.call_string(domain_filename=domain_filename, problem_filename=problem_filename),
             working_directory=working_directory
         )
         return self.check_planner_solution(ret_val)
@@ -307,9 +363,10 @@ class LPGPlanner(IPlanner):
         plan = filter(lambda x: re.match('^[0-9]+', x), plan)
         #with the lines in plan we now build the actual plan
         actions = list(map(lambda x: IAction.parse(x), plan))
+        #now we dump actions within a json
 
         ret_val = {}
         ret_val['version'] = "1.0"
-        ret_val['plan'] = actions
+        ret_val['plan'] = {}
 
         return ret_val

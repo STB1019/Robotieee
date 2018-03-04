@@ -3,31 +3,9 @@ import json
 import collections
 import typing
 import itertools
+from planner_wrapper.point import Point
 
 BaseCellContentTuple = collections.namedtuple('BaseCellContentTuple', ' '.join(['character']))
-
-
-class Point:
-
-    def __init__(self, x, y):
-        self._p = [x, y]
-
-    def __iter__(self):
-        return iter(self._p)
-
-    def __getitem__(self, item):
-        return self._p[item]
-
-    def __setitem__(self, key, value):
-        self._p[key] = value
-
-    @property
-    def x(self):
-        return self[0]
-
-    @property
-    def y(self):
-        return self[1]
 
 
 class BaseCellContent(enum.Enum):

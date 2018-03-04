@@ -58,15 +58,63 @@ class SokobanMove(IAction):
             direction=action_parameters[3]
         )
 
-
 class SokobanPushToNonGoal(IAction):
+    #(PUSH-TO-NONGOAL PLAYER-01 STONE-02 POS-08-05 POS-08-06 POS-08-07 DIR-DOWN) [1]
+    #  (:action push-to-nongoal 
+    #:parameters (?p - player ?s - stone ?ppos ?from ?to - location ?dir - direction)
 
-    def __init__(self, name, player, stone, ):
-        self.name = name
+    def __init__(self, name, player, stone, player_pos, start_pos, end_pos, direction):
+        super().__init__(name)
+        self.player = player
+        self.stone = stone
+        self.player_pos = player_pos
+        self.start_pos = start_pos
+        self.end_pos = end_pos
+        self.direction = direction
 
+    @classmethod
+    def parse(cls, action_name, action_parameters):
+        if action_name != 'PUSH-TO-NONGOAL':
+            raise ActionParseException()
+        action_parameters = action_parameters.split(' ')
+        return SokobanPushToNonGoal('PUSH-TO-NONGOAL',
+            player=action_parameters[0],
+            stone=action_parameters[1],
+            player_pos=action_parameters[2],
+            start_pos=action_parameters[3]
+            end_pos=action_parameters[4],
+            direction=action_parameters[5]
+        )
+        
+class SokobanPushToGoal(IAction):
+    #(PUSH-TO-GOAL PLAYER-01 STONE-02 POS-08-03 POS-08-04 POS-08-05 DIR-DOWN) [1]
+    # (:action push-to-goal
+   #:parameters (?p - player ?s - stone ?ppos ?from ?to - location ?dir - direction)
 
+    def __init__(self, name, player, stone, player_pos, start_pos, end_pos, direction):
+        super().__init__(name)
+        self.player = player
+        self.stone = stone
+        self.player_pos = player_pos
+        self.start_pos = start_pos
+        self.end_pos = end_pos
+        self.direction = direction
 
+    @classmethod
+    def parse(cls, action_name, action_parameters):
+        if action_name != 'PUSH-TO-GOAL':
+            raise ActionParseException()
+        action_parameters = action_parameters.split(' ')
+        return SokobanPushToNonGoal('PUSH-TO-GOAL',
+            player=action_parameters[0],
+            stone=action_parameters[1],
+            player_pos=action_parameters[2],
+            start_pos=action_parameters[3]
+            end_pos=action_parameters[4],
+            direction=action_parameters[5]
+        )
 
+#TODO need to explain this section below
 class IPlanner(metaclass=ABCMeta):
 
     @property
@@ -166,7 +214,7 @@ class LPGPlanner(IPlanner):
         domain_filename = os.path.abspath(domain_filename)
         problem_filename = os.path.abspath(problem_filename)
 
-        # we can't put the double quotes on -f or -o parameters
+        #we can't put the double quotes on -f or -o parameters
         ret_val = [
             planner_executable,
             "-n", '{}'.format(str(self.solutions_to_find)),

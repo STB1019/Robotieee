@@ -110,7 +110,7 @@ class TestSokobanWorld(unittest.TestCase):
         self.assertTrue(ret)
         self.assertTrue(os.path.exists("computed.plan"))
 
-        lpg.convert_plan_to_json(lpg.output_filename)
+        #lpg.convert_plan_to_json(lpg.output_filename)
 
 
 if __name__ == '__main__':

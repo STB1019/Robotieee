@@ -7,8 +7,8 @@
  * @author koldar
  */
 
-#ifndef BLOCK_HPP_
-#define BLOCK_HPP_
+#ifndef block_HPP_
+#define block_HPP_
 
 #include "moveable.hpp"
 #include "typedefs.hpp"
@@ -52,4 +52,4 @@ public:
 }
 
 
-#endif /* BLOCK_HPP_ */
+#endif /* block_HPP_ */

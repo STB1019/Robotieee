@@ -12,9 +12,11 @@
 
 #define AVR_BUILD
 
+#include <Zumo32U4.h>
 #include <list.hpp>
 #include <matrix.hpp>
 #include <point.hpp>
+#include "block.hpp"
 #include "robot.hpp"
 
 /**
@@ -88,7 +90,7 @@ typedef unsigned int cell_content;
     /**
      * The list of all blocks in robotieee::model::workspace discovered so far
      */
-		list<block> blocks;
+		point_list blocks;
     /**
      * The list of places where the goals are
      * 

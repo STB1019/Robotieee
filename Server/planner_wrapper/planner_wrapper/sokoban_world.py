@@ -123,12 +123,12 @@ class SokobanWorld:
         js = json.loads(json_str)
         version = str(js['version'])
         if version == "1.0":
-            return SokobanWorldVersion1().parse(js)
+            return SokobanWorldJsonParserVersion1().parse(js)
         else:
             raise ValueError("unsupported version {}".format(version))
 
 
-class SokobanWorldVersion1:
+class SokobanWorldJsonParserVersion1:
 
     def parse(self, js) -> SokobanWorld:
         world = js['world']

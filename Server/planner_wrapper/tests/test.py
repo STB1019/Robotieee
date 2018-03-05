@@ -1,7 +1,7 @@
 import unittest
 import os
 from planner_wrapper import sokoban_world, planner
-from planner_wrapper import pddl_converter
+from planner_wrapper import sokoban_problem_generator
 from planner_wrapper import program_invoker
 
 
@@ -81,7 +81,7 @@ class TestSokobanWorld(unittest.TestCase):
                     }
                 }
                 """)
-        sokoban_converter = pddl_converter.PddlSokobanConverter()
+        sokoban_converter = sokoban_problem_generator.PddlSokobanConverter()
         sokoban_converter.convert_to_pddl(
             problem_filename="tmp",
             domain_name="sokoban",

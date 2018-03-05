@@ -10,7 +10,6 @@ class ParsableEnum(enum.Enum):
     @classmethod
     def parse(cls, string: str):
         for s in (cls[x] for x in list(cls.__members__.keys())):
-            print("s is {} aand string is {}".format(s.parsable_str, string))
             if s.parsable_str == string:
                 return s
         else:

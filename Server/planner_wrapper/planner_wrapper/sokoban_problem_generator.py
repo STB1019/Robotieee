@@ -1,3 +1,5 @@
+import os
+
 __doc__ = """
 Given a sokoban world, creates both a problem filename representing said world 
 """
@@ -39,21 +41,40 @@ class Clause:
         if self.carriage_return:
             self.f.write("\n")
 
-
-class PddlSokobanConverter:
-
-    def __init__(self):
-        pass
-
     @staticmethod
-    def _write_predicate(f, name: str, value: typing.Union[str, typing.Iterable[str]]):
+    def write_predicate(f, name: str, value: typing.Union[str, typing.Iterable[str]]):
+        """
+        Write a first order logic predicate in the file
+        :param f: the file where to put the predicate into
+        :param name: the name of the predicate
+        :param value: the values of the rpedicate. It can either be a string (predicate with a single value) or a list of them
+                (multi value predicate)
+        """
         with Clause(f, indent=0, name=name, carriage_return=False):
             if type(value) == str:
                 f.write(value)
             else:
                 f.write(" ".join(value))
 
-    def convert_to_pddl(self, problem_filename: str, domain_name: str, problem_name: str, world: sokoban_world.SokobanWorld):
+
+class IPddlSokobanConverter:
+
+    def generate_problem(self, problem_filename: str, domain_name: str, problem_name: str,
+                         world: sokoban_world.SokobanWorld) -> str:
+        """
+        Build a new problem file representing the state in then sokoban world given
+        :param problem_filename: the name of the problem file to generate
+        :param domain_name: the name of the domain file to use
+        :param problem_name: the name of the problem. An unique string representing the given problem
+        :param world: the world we must inspect to generate the actual pddl problem file
+        :return: the absolute path of problem_filename
+        """
+        raise NotImplementedError()
+
+
+class PddlSokobanConverterVersion1(IPddlSokobanConverter):
+
+    def generate_problem(self, problem_filename: str, domain_name: str, problem_name: str, world: sokoban_world.SokobanWorld) -> str:
         with open(problem_filename, "w") as f:
             with Clause(f, indent=0, name="define"):
 
@@ -101,16 +122,16 @@ class PddlSokobanConverter:
                             continue
 
                         if sokoban_world.BaseCellContent.ROBOT in world[cell]:
-                            PddlSokobanConverter._write_predicate(f, name="has_player", value=f"cell_{cell.y}_{cell.x}")
+                            Clause.write_predicate(f, name="has_player", value=f"cell_{cell.y}_{cell.x}")
                             f.write(" ")
                         elif sokoban_world.BaseCellContent.BLOCK in world[cell]:
-                            PddlSokobanConverter._write_predicate(f, name="has_box", value=f"cell_{cell.y}_{cell.x}")
+                            Clause.write_predicate(f, name="has_box", value=f"cell_{cell.y}_{cell.x}")
                             f.write(" ")
                         elif sokoban_world.BaseCellContent.GOAL in world[cell]:
-                            PddlSokobanConverter._write_predicate(f, name="IS-GOAL", value=f"pos-{cell.y:02d}-{cell.x:02d}")
+                            Clause.write_predicate(f, name="IS-GOAL", value=f"pos-{cell.y:02d}-{cell.x:02d}")
                             f.write(" ")
                         elif sokoban_world.BaseCellContent.GOAL not in world[cell]:
-                            PddlSokobanConverter._write_predicate(f, name="IS-NONGOAL", value=f"pos-{cell.y:02d}-{cell.x:02d}")
+                            Clause.write_predicate(f, name="IS-NONGOAL", value=f"pos-{cell.y:02d}-{cell.x:02d}")
                             f.write(" ")
 
                         adjacent_cell_callbacks = [world.get_up, world.get_down, world.get_left, world.get_right]
@@ -118,7 +139,7 @@ class PddlSokobanConverter:
                             try:
                                 next_cell = adjacent_cell_callback(*cell)
                                 if world.is_traversable(*next_cell):
-                                    PddlSokobanConverter._write_predicate(f,
+                                    Clause.write_predicate(f,
                                         name="adjacent",
                                         value=[
                                             f"cell_{cell.y}_{cell.x}",
@@ -132,5 +153,7 @@ class PddlSokobanConverter:
                 with Clause(f, indent=1, name="goal", colon=True):
                     with Clause(f, name="and", fake=len(world.goals) == 1):
                         for p in world.goals:
-                            PddlSokobanConverter._write_predicate(f, name="has_box", value=f"cell_{p.y}_{p.x}")
+                            Clause.write_predicate(f, name="has_box", value=f"cell_{p.y}_{p.x}")
                             f.write(" ")
+
+        return os.path.abspath(problem_filename)

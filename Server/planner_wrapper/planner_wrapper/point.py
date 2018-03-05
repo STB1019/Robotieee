@@ -22,3 +22,6 @@ class Point:
     @property
     def y(self):
         return self[1]
+
+    def to_json(self):
+        return {"x": self.x, "y": self.y}

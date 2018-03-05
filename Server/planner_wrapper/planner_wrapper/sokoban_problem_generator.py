@@ -1,5 +1,7 @@
 import os
 
+from planner_wrapper.point import Point
+
 __doc__ = """
 Given a sokoban world, creates both a problem filename representing said world 
 """
@@ -11,7 +13,16 @@ from planner_wrapper import sokoban_world
 
 class Clause:
 
-    def __init__(self, f, indent=0, name=None, colon=False, fake=False, carriage_return=True):
+    def __init__(self, f, indent: int =0, name: str =None, colon: bool =False, fake: bool =False, carriage_return: bool =True):
+        """
+
+        :param f: the file where to write on
+        :param indent: the indentation level of this PDDL clause
+        :param name: the name of the clause
+        :param colon: true if you want to prefix the name of the clause with a ":"
+        :param fake: if true we won't write anything on the file
+        :param carriage_return: if true we will append a carriage return after the clause has terminated
+        """
         self.f = f
         self.name = name
         self.colon = colon
@@ -74,6 +85,9 @@ class IPddlSokobanConverter:
 
 class PddlSokobanConverterVersion1(IPddlSokobanConverter):
 
+    def cell_predicate(self, p: Point) -> str:
+        return f"cell-{p.y:02d}-{p.x:02d}"
+
     def generate_problem(self, problem_filename: str, domain_name: str, problem_name: str, world: sokoban_world.SokobanWorld) -> str:
         with open(problem_filename, "w") as f:
             with Clause(f, indent=0, name="define"):
@@ -87,52 +101,57 @@ class PddlSokobanConverterVersion1(IPddlSokobanConverter):
                 with Clause(f, indent=1, name="objects", colon=True):
                     # write the 4 direction sokoban can move on
                     f.write("dir-down - direction\n")
-                    f.write("dir-left - direction\nn")
+                    f.write("dir-left - direction\n")
                     f.write("dir-right - direction\n")
                     f.write("dir-up - direction\n")
+                    f.write("\n")
 
                     # player
                     f.write("player-01 - player\n")
+                    f.write("\n")
 
                     # the objects in sokoban are the traversable cells
                     f.write("\n".join(
                         # convert cells left in a string
                         map(
                             # filter out cells in the world which are untraversable
-                            lambda p: f"pos-{p.y:02d}-{p.x:02d} - location",
+                            lambda p: "{} - location".format(self.cell_predicate(p)),
                             filter(
                                 lambda p2: sokoban_world.BaseCellContent.UNTRAVERSABLE not in world[p2],
                                 world.cells
                             )
                         )
                     ))
+                    f.write("\n")
 
                     # blocks
                     f.write("\n".join(
                         map(
-                            lambda x: f"block-{x:02d}",
+                            lambda x: f"stone-{x:02d} - stone",
                             range(len(world.blocks))
                         )
                     ))
+                    f.write("\n")
 
                 with Clause(f, indent=1, name="init", colon=True):
                     # position of the robot
+                    f.write("\n")
                     for cell in world.cells:
                         if not world.is_traversable(*cell):
                             continue
-
+                        f.write(";; CELL: y={} x={}\n".format(cell.y, cell.x))
                         if sokoban_world.BaseCellContent.ROBOT in world[cell]:
-                            Clause.write_predicate(f, name="has_player", value=f"cell_{cell.y}_{cell.x}")
-                            f.write(" ")
-                        elif sokoban_world.BaseCellContent.BLOCK in world[cell]:
-                            Clause.write_predicate(f, name="has_box", value=f"cell_{cell.y}_{cell.x}")
-                            f.write(" ")
-                        elif sokoban_world.BaseCellContent.GOAL in world[cell]:
-                            Clause.write_predicate(f, name="IS-GOAL", value=f"pos-{cell.y:02d}-{cell.x:02d}")
-                            f.write(" ")
-                        elif sokoban_world.BaseCellContent.GOAL not in world[cell]:
-                            Clause.write_predicate(f, name="IS-NONGOAL", value=f"pos-{cell.y:02d}-{cell.x:02d}")
-                            f.write(" ")
+                            Clause.write_predicate(f, name="has_player", value=self.cell_predicate(cell))
+                            f.write("\n")
+                        if sokoban_world.BaseCellContent.BLOCK in world[cell]:
+                            Clause.write_predicate(f, name="has_box", value=self.cell_predicate(cell))
+                            f.write("\n")
+                        if sokoban_world.BaseCellContent.GOAL in world[cell]:
+                            Clause.write_predicate(f, name="IS-GOAL", value=self.cell_predicate(cell))
+                            f.write("\n")
+                        if sokoban_world.BaseCellContent.GOAL not in world[cell]:
+                            Clause.write_predicate(f, name="IS-NONGOAL", value=self.cell_predicate(cell))
+                            f.write("\n")
 
                         adjacent_cell_callbacks = [world.get_up, world.get_down, world.get_left, world.get_right]
                         for adjacent_cell_callback in adjacent_cell_callbacks:
@@ -142,10 +161,10 @@ class PddlSokobanConverterVersion1(IPddlSokobanConverter):
                                     Clause.write_predicate(f,
                                         name="adjacent",
                                         value=[
-                                            f"cell_{cell.y}_{cell.x}",
-                                            f"cell_{next_cell.y}_{next_cell.x}"
+                                            self.cell_predicate(cell),
+                                            self.cell_predicate(next_cell)
                                         ])
-                                    f.write(" ")
+                                    f.write("\n")
                             except ValueError as e:
                                 # there is no such cell
                                 pass
@@ -153,7 +172,7 @@ class PddlSokobanConverterVersion1(IPddlSokobanConverter):
                 with Clause(f, indent=1, name="goal", colon=True):
                     with Clause(f, name="and", fake=len(world.goals) == 1):
                         for p in world.goals:
-                            Clause.write_predicate(f, name="has_box", value=f"cell_{p.y}_{p.x}")
-                            f.write(" ")
+                            Clause.write_predicate(f, name="has_box", value=self.cell_predicate(p))
+                            f.write("\n")
 
         return os.path.abspath(problem_filename)

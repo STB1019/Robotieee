@@ -3,7 +3,7 @@ from logging.handlers import RotatingFileHandler
 
 from flask import Flask, jsonify
 from web.static import sokoban_route
-from web.static.flask_exceptions import SolutionNotFoundException
+from web.static.flask_exceptions import SolutionNotFoundException, FlaskException
 
 # main application
 app = Flask(__name__)
@@ -19,9 +19,7 @@ log.addHandler(handler)
 app.register_blueprint(sokoban_route.simple_page)
 
 # error handler
-
-
-@app.errorhandler(SolutionNotFoundException)
+@app.errorhandler(FlaskException)
 def handle_invalid_usage(error):
     response = jsonify(error.to_dict())
     response.status_code = error.status_code

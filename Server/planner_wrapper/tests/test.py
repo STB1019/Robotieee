@@ -81,8 +81,8 @@ class TestSokobanWorld(unittest.TestCase):
                     }
                 }
                 """)
-        sokoban_converter = sokoban_problem_generator.PddlSokobanConverter()
-        sokoban_converter.convert_to_pddl(
+        sokoban_converter = sokoban_problem_generator.PddlSokobanConverterVersion1()
+        sokoban_converter.generate_problem(
             problem_filename="tmp",
             domain_name="sokoban",
             problem_name="simple",

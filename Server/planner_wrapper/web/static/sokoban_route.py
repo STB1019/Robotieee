@@ -2,14 +2,14 @@ import os
 from flask import Blueprint, request
 
 from planner_wrapper.planner import LPGPlanner
-from planner_wrapper import sokoban_problem_generator
+from planner_wrapper import sokoban_problem_generator, solution_converter
 from planner_wrapper.sokoban_world import SokobanWorldJsonParserVersion1
 from web.static.flask_exceptions import SolutionNotFoundException
 
 simple_page = Blueprint('index', __name__)
 
 
-@simple_page.route("/sokoban_problem", method=['POST'])
+@simple_page.route("/sokoban_problem")
 def sokoban_problem():
     content = request.get_json(silent=True)
 
@@ -48,6 +48,21 @@ def sokoban_problem():
         raise SolutionNotFoundException(f"Couldn't find solution for problem!")
 
     simple_page.logger.info('Solution found! computing the json of it!')
-    json_string = planner.convert_plan_to_json(planner.output_filename)
+
+    ##############################
+    #NICOLA implementation (slick)
+    ##############################
+
+    p = solution_converter.plan_to_dict(planner.output_filename)
+    json_outputfilename = "output.json"
+    solution_converter.dict_to_json(p, json_outputfilename)
+    with open(json_outputfilename, "r") as f:
+        json_string = f.read()
+
+    ##############################
+    # MAX implementation (too big)
+    ##############################
+
+    # json_string = planner.convert_plan_to_json(planner.output_filename)
     simple_page.logger.info('Returning json')
     return json_string

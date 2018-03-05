@@ -32,6 +32,7 @@ def convert_positions_tag(positions):
         res.append(dict(zip(coords, values)))
     return res
 
+
 def plan_to_dict(file_in):
     plan = []
 
@@ -48,9 +49,10 @@ def plan_to_dict(file_in):
     
     return plan
 
+
 def dict_to_json(d, file_out):
     with open(file_out, 'w') as f:
         json.dump(d,f,indent=4)
             
-p = plan_to_dict(r"C:\Users\Nicola\Desktop\ZUMOrobot\Robotieee\Server\planner_wrapper\tests\test-instance.sol")
-dict_to_json(p, r"C:\Users\Nicola\Desktop\ZUMOrobot\Robotieee\Server\planner_wrapper\tests\plan.json")
+#p = plan_to_dict(r"C:\Users\Nicola\Desktop\ZUMOrobot\Robotieee\Server\planner_wrapper\tests\test-instance.sol")
+#dict_to_json(p, r"C:\Users\Nicola\Desktop\ZUMOrobot\Robotieee\Server\planner_wrapper\tests\plan.json")

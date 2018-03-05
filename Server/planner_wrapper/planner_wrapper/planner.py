@@ -6,7 +6,7 @@ import os
 import re
 from functools import singledispatch
 
-from planner_wrapper import planner_invoker
+from planner_wrapper import program_invoker
 from planner_wrapper.point import Point
 from planner_wrapper.sokoban_actions import ISokobanAction, Direction, SokobanMove, SokobanPushToGoal, \
     SokobanPushToNonGoal
@@ -70,7 +70,7 @@ class IPlanner(metaclass=ABCMeta):
         raise NotImplementedError()
 
     @abstractmethod
-    def check_planner_solution(self, call_result: planner_invoker.CallProgram) -> bool:
+    def check_planner_solution(self, call_result: program_invoker.CallProgram) -> bool:
         """
 
         :param call_result: the return value of the function call_string
@@ -79,7 +79,7 @@ class IPlanner(metaclass=ABCMeta):
         raise NotImplementedError()
 
     def invoke(self, domain_filename: str, problem_filename: str, working_directory: str=".") -> bool:
-        ret_val = planner_invoker.call_program(
+        ret_val = program_invoker.call_program(
             program=self.call_string(domain_filename=domain_filename, problem_filename=problem_filename),
             working_directory=working_directory
         )
@@ -185,7 +185,7 @@ class LPGPlanner(IPlanner):
 
         return ret_val
 
-    def check_planner_solution(self, call_result: planner_invoker.CallProgram) -> bool:
+    def check_planner_solution(self, call_result: program_invoker.CallProgram) -> bool:
         if call_result.stdout.find("Solution number") > 0:
             return True
         else:

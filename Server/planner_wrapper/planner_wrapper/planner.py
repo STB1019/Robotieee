@@ -79,6 +79,13 @@ class IPlanner(metaclass=ABCMeta):
         raise NotImplementedError()
 
     def invoke(self, domain_filename: str, problem_filename: str, working_directory: str=".") -> bool:
+        """
+        Run the planner. This call is a blocking one!
+        :param domain_filename: the pddl domain filename of the problem to solve
+        :param problem_filename: the pddl problem filename of the problem to solve
+        :param working_directory: where we need to call the planner
+        :return: true if a solution has been found, false otherwise
+        """
         ret_val = program_invoker.call_program(
             program=self.call_string(domain_filename=domain_filename, problem_filename=problem_filename),
             working_directory=working_directory

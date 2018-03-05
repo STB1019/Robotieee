@@ -3,27 +3,19 @@ import json
 import collections
 import typing
 import itertools
+
+from planner_wrapper.parsable_enum import ParsableEnum
 from planner_wrapper.point import Point
 
 BaseCellContentTuple = collections.namedtuple('BaseCellContentTuple', ' '.join(['character']))
 
 
-class BaseCellContent(enum.Enum):
+class BaseCellContent(ParsableEnum):
     ROBOT = BaseCellContentTuple(character="R")
     DOCKING_STATION = BaseCellContentTuple(character="D")
     BLOCK = BaseCellContentTuple(character="B")
     GOAL = BaseCellContentTuple(character="G")
     UNTRAVERSABLE = BaseCellContentTuple(character="U")
-
-    @classmethod
-    def parse(cls, string: str):
-        if len(string) != 1:
-            raise ValueError("can't parse to {} the non-character string {}".format(cls.__name__, string))
-        for s in BaseCellContent:
-            if s.value.character == string:
-                return s
-        else:
-            raise ValueError("unsupport string {}", string)
 
 
 class SokobanWorld:

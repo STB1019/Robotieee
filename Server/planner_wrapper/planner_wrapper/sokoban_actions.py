@@ -3,26 +3,15 @@ import enum
 import re
 
 from planner_wrapper.exceptions import ActionParseException
+from planner_wrapper.parsable_enum import ParsableEnum
 from planner_wrapper.point import Point
 
 
-class Direction(enum.Enum):
-    LEFT = 0
-    RIGHT = 1
-    UP = 2
-    DOWN = 3
-
-    @classmethod
-    def parse(cls, string: str):
-        m = {
-            "DIR-LEFT": Direction.LEFT,
-            "DIR-RIGHT": Direction.RIGHT,
-            "DIR-UP": Direction.UP,
-            "DIR-DOWN": Direction.DOWN
-        }
-        if string not in m:
-            raise ValueError(f"Can't convert {string} in Direction enum!")
-        return m[string]
+class Direction(ParsableEnum):
+    LEFT = ("DIR-LEFT", 0)
+    RIGHT = ("DIR-RIGHT", 1)
+    UP = ("DIR-UP", 2)
+    DOWN = ("DIR-DOWN", 3)
 
     def to_json(self):
         return str(self.name)

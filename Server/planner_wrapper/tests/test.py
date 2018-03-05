@@ -1,8 +1,8 @@
 import unittest
 import os
 from planner_wrapper import sokoban_world, planner
-from planner_wrapper import pddl_converter
-from planner_wrapper import planner_invoker
+from planner_wrapper import sokoban_problem_generator
+from planner_wrapper import program_invoker
 
 
 class TestSokobanWorld(unittest.TestCase):
@@ -81,7 +81,7 @@ class TestSokobanWorld(unittest.TestCase):
                     }
                 }
                 """)
-        sokoban_converter = pddl_converter.PddlSokobanConverter()
+        sokoban_converter = sokoban_problem_generator.PddlSokobanConverter()
         sokoban_converter.convert_to_pddl(
             problem_filename="tmp",
             domain_name="sokoban",
@@ -110,7 +110,9 @@ class TestSokobanWorld(unittest.TestCase):
         self.assertTrue(ret)
         self.assertTrue(os.path.exists("computed.plan"))
 
-        lpg.convert_plan_to_json(lpg.output_filename)
+        j = lpg.convert_plan_to_json(lpg.output_filename)
+        print(j)
+        self.assertTrue(j == "ciao")
 
 
 if __name__ == '__main__':

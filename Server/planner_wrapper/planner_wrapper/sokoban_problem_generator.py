@@ -1,3 +1,7 @@
+__doc__ = """
+Given a sokoban world, creates both a problem filename representing said world 
+"""
+
 import typing
 
 from planner_wrapper import sokoban_world

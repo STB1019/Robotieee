@@ -4,48 +4,18 @@ import collections
 import typing
 import itertools
 
+from planner_wrapper.parsable_enum import ParsableEnum
+from planner_wrapper.point import Point
+
 BaseCellContentTuple = collections.namedtuple('BaseCellContentTuple', ' '.join(['character']))
 
 
-class Point:
-
-    def __init__(self, x, y):
-        self._p = [x, y]
-
-    def __iter__(self):
-        return iter(self._p)
-
-    def __getitem__(self, item):
-        return self._p[item]
-
-    def __setitem__(self, key, value):
-        self._p[key] = value
-
-    @property
-    def x(self):
-        return self[0]
-
-    @property
-    def y(self):
-        return self[1]
-
-
-class BaseCellContent(enum.Enum):
+class BaseCellContent(ParsableEnum):
     ROBOT = BaseCellContentTuple(character="R")
     DOCKING_STATION = BaseCellContentTuple(character="D")
     BLOCK = BaseCellContentTuple(character="B")
     GOAL = BaseCellContentTuple(character="G")
     UNTRAVERSABLE = BaseCellContentTuple(character="U")
-
-    @classmethod
-    def parse(cls, string: str):
-        if len(string) != 1:
-            raise ValueError("can't parse to {} the non-character string {}".format(cls.__name__, string))
-        for s in BaseCellContent:
-            if s.value.character == string:
-                return s
-        else:
-            raise ValueError("unsupport string {}", string)
 
 
 class SokobanWorld:

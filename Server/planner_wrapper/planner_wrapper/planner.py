@@ -1,70 +1,51 @@
+import enum
+import json
 from abc import ABCMeta, abstractmethod
 import typing
 import os
 import re
-from planner_wrapper import planner_invoker
+from functools import singledispatch
+
+from planner_wrapper import program_invoker
+from planner_wrapper.point import Point
+from planner_wrapper.sokoban_actions import ISokobanAction, Direction, SokobanMove, SokobanPushToGoal, \
+    SokobanPushToNonGoal
 
 
-class ActionParseException(Exception):
-    pass
+@singledispatch
+def to_serializable(val):
+    """Used by default."""
+    return str(val)
 
 
-class IAction:
-
-    def __init__(self, name):
-        self.name = name
-
-    @staticmethod
-    def _remove_double_spaces(string):
-        return re.sub("\s+", " ", string)
-
-    @classmethod
-    def parse(cls, string: str):
-        m = re.search("^\s*\d+:\s*\((?P<actionname>[^\s]+)\s*(?P<actionparameters>[^\)]+)\)\s*(\[\d+\])?$", string)
-        if m is None:
-            raise ValueError(f"{string} can't be parsed")
-        action_name = m.group('action')
-        action_parameters = m.group('actionparameters')
-        action_classes = [SokobanMove]
-        for action_class in action_classes:
-            try:
-                action_parameters = IAction._remove_double_spaces(action_parameters)
-                ret_val = action_class.parse(action_name, action_parameters)
-                return ret_val
-            except ActionParseException as e:
-                continue
-        else:
-            raise ValueError(f"Can't convert action!")
+@to_serializable.register(Point)
+def ts_point(val: Point):
+    """Used if *val* is an instance of datetime."""
+    return val.to_json()
 
 
-class SokobanMove(IAction):
-
-    def __init__(self, name, player, start_pos, end_pos, direction):
-        super().__init__(name)
-        self.player = player
-        self.start_pos = start_pos
-        self.end_pos = end_pos
-        self.direction = direction
-
-    @classmethod
-    def parse(cls, action_name, action_parameters):
-        if action_name != 'MOVE':
-            raise ActionParseException()
-        action_parameters = action_parameters.split(' ')
-        return SokobanMove('MOVE',
-            player=action_parameters[0],
-            start_pos=action_parameters[1],
-            end_pos=action_parameters[2],
-            direction=action_parameters[3]
-        )
+@to_serializable.register(Direction)
+def ts_point(val: Direction):
+    """Used if *val* is an instance of datetime."""
+    return str(val.to_json())
 
 
-class SokobanPushToNonGoal(IAction):
+@to_serializable.register(SokobanMove)
+def ts_point(val: SokobanMove):
+    """Used if *val* is an instance of datetime."""
+    return str(val.to_json())
 
-    def __init__(self, name, player, stone, ):
-        self.name = name
+
+@to_serializable.register(SokobanPushToGoal)
+def ts_point(val: SokobanPushToGoal):
+    """Used if *val* is an instance of datetime."""
+    return str(val.to_json())
 
 
+@to_serializable.register(SokobanPushToNonGoal)
+def ts_point(val: SokobanPushToNonGoal):
+    """Used if *val* is an instance of datetime."""
+    return str(val.to_json())
 
 
 class IPlanner(metaclass=ABCMeta):
@@ -72,27 +53,45 @@ class IPlanner(metaclass=ABCMeta):
     @property
     @abstractmethod
     def name(self):
+        """
+
+        :return: the unique name fo the planner
+        """
         raise NotImplementedError()
 
     @abstractmethod
     def call_string(self, domain_filename: str, problem_filename: str) -> typing.List[str]:
+        """
+        Execute the planner
+        :param domain_filename: the domain file to execute
+        :param problem_filename: the problem file to execute
+        :return:
+        """
         raise NotImplementedError()
 
     @abstractmethod
-    def check_planner_solution(self, call_result: planner_invoker.CallProgram) -> bool:
+    def check_planner_solution(self, call_result: program_invoker.CallProgram) -> bool:
+        """
+
+        :param call_result: the return value of the function call_string
+        :return: true if the plaanner has return a solution, fale otherwise
+        """
         raise NotImplementedError()
 
     def invoke(self, domain_filename: str, problem_filename: str, working_directory: str=".") -> bool:
-        ret_val = planner_invoker.call_program(
-            program=self.call_string(domain_filename=domain_filename,
-                                    problem_filename=problem_filename),
+        ret_val = program_invoker.call_program(
+            program=self.call_string(domain_filename=domain_filename, problem_filename=problem_filename),
             working_directory=working_directory
         )
         return self.check_planner_solution(ret_val)
 
     @abstractmethod
-    def convert_plan_to_json(self, plan_filename: str):
+    def convert_plan_to_json_structure(self, plan_filename: str) -> typing.Dict:
         raise NotImplementedError()
+
+    def convert_plan_to_json(self, plan_filename: str) -> str:
+        j = self.convert_plan_to_json_structure(plan_filename)
+        return json.dumps(j, default=to_serializable)
 
 
 class LPGPlanner(IPlanner):
@@ -166,7 +165,7 @@ class LPGPlanner(IPlanner):
         domain_filename = os.path.abspath(domain_filename)
         problem_filename = os.path.abspath(problem_filename)
 
-        # we can't put the double quotes on -f or -o parameters
+        #we can't put the double quotes on -f or -o parameters
         ret_val = [
             planner_executable,
             "-n", '{}'.format(str(self.solutions_to_find)),
@@ -186,13 +185,13 @@ class LPGPlanner(IPlanner):
 
         return ret_val
 
-    def check_planner_solution(self, call_result: planner_invoker.CallProgram) -> bool:
+    def check_planner_solution(self, call_result: program_invoker.CallProgram) -> bool:
         if call_result.stdout.find("Solution number") > 0:
             return True
         else:
             return False
 
-    def convert_plan_to_json(self, plan_filename: str):
+    def convert_plan_to_json_structure(self, plan_filename: str) -> typing.Dict:
         plan_filename = os.path.abspath(plan_filename)
         with open(plan_filename, "r") as f:
             plan = f.readlines()
@@ -208,9 +207,14 @@ class LPGPlanner(IPlanner):
         #the lines starting with a number represents a step of the solution
         plan = filter(lambda x: re.match('^[0-9]+', x), plan)
         #with the lines in plan we now build the actual plan
-        actions = list(map(lambda x: IAction.parse(x), plan))
+        actions = list(map(lambda x: ISokobanAction.parse(x), plan))
+        #now we dump actions within a json
 
         ret_val = {}
         ret_val['version'] = "1.0"
         ret_val['plan'] = []
 
+        for i, action in enumerate(actions):
+            ret_val['plan'].append(action.to_json())
+
+        return ret_val

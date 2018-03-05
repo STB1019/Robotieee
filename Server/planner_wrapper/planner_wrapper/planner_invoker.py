@@ -1,7 +1,6 @@
 import os
 import typing
 import subprocess
-from planner_wrapper import planner
 
 
 class CallProgram:

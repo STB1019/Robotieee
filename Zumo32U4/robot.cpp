@@ -47,11 +47,11 @@ void robot::moveStraight(int16_t centimeters){
   int speed = MOTORS_POWER;
 
   if (centimeters > 0) {
-    timeNeeded = sqrt ( (abs(centimeters)/1000) / _averageSpeedFw ); 
+    timeNeeded = sqrt ( (abs(centimeters)/1000) / _averageAccelFw ); 
   }
 
   else {
-    timeNeeded = sqrt ( (abs(centimeters)/1000) / _averageSpeedBw );
+    timeNeeded = sqrt ( (abs(centimeters)/1000) / _averageAccelBw );
   }
 
   Zumo32U4Motors::setSpeeds(speed, speed);
@@ -62,7 +62,7 @@ void robot::moveStraight(int16_t centimeters){
 
 void robot::calibrateAccelerometer(){
   float maxAccelValue;
-  int n_measurements
+  int n_measurements;
   int power = MOTORS_POWER;
 
   for (int i = 0; i < 2; i++) {
@@ -85,7 +85,7 @@ void robot::calibrateAccelerometer(){
     else {
       _averageAccelBw = maxAccelValue * ACCEL_SENSITIVITY;
     }
-    power = -power
+    power = -power;
   }
 }
 

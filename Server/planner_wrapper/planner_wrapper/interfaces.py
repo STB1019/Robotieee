@@ -2,8 +2,30 @@ import typing
 import json
 from abc import ABCMeta, abstractmethod
 
-from planner_wrapper import program_invoker
-from planner_wrapper.sokoban_solution_converter import to_serializable
+from planner_wrapper import utils, sokoban_world
+
+
+class IPddlSokobanConverter(metaclass=ABCMeta):
+
+    @abstractmethod
+    def generate_problem(self, problem_filename: str, domain_name: str, problem_name: str,
+                         world: sokoban_world.SokobanWorld) -> str:
+        """
+        Build a new problem file representing the state in then sokoban world given
+        :param problem_filename: the name of the problem file to generate
+        :param domain_name: the name of the domain file to use
+        :param problem_name: the name of the problem. An unique string representing the given problem
+        :param world: the world we must inspect to generate the actual pddl problem file
+        :return: the absolute path of problem_filename
+        """
+        raise NotImplementedError()
+
+
+class IPlanJsonConverter(metaclass=ABCMeta):
+
+    @abstractmethod
+    def convert_plan(self, plan_filename: str) -> typing.Dict[typing.AnyStr, typing.Any]:
+        raise NotImplementedError()
 
 
 class IPlanner(metaclass=ABCMeta):
@@ -28,7 +50,7 @@ class IPlanner(metaclass=ABCMeta):
         raise NotImplementedError()
 
     @abstractmethod
-    def check_planner_solution(self, call_result: program_invoker.CallProgram) -> bool:
+    def check_planner_solution(self, call_result: utils.CallProgram) -> bool:
         """
 
         :param call_result: the return value of the function call_string
@@ -44,16 +66,8 @@ class IPlanner(metaclass=ABCMeta):
         :param working_directory: where we need to call the planner
         :return: true if a solution has been found, false otherwise
         """
-        ret_val = program_invoker.call_program(
+        ret_val = utils.call_program(
             program=self.call_string(domain_filename=domain_filename, problem_filename=problem_filename),
             working_directory=working_directory
         )
         return self.check_planner_solution(ret_val)
-
-    @abstractmethod
-    def convert_plan_to_json_structure(self, plan_filename: str) -> typing.Dict:
-        raise NotImplementedError()
-
-    def convert_plan_to_json(self, plan_filename: str) -> str:
-        j = self.convert_plan_to_json_structure(plan_filename)
-        return json.dumps(j, default=to_serializable)

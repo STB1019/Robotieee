@@ -13,11 +13,8 @@ class Direction(ParsableEnum):
     UP = ("DIR-UP", 2)
     DOWN = ("DIR-DOWN", 3)
 
-    def to_json(self):
-        return str(self.name)
 
-
-class ISokobanAction:
+class IPlannerAction:
 
     def __init__(self, name):
         self.name = name
@@ -33,29 +30,31 @@ class ISokobanAction:
         :param pos_value: the string to convert
         :return: the point converted
         """
-        x, y = list(map(lambda x: int(x), pos_value.split('-')[1:3])) # consider only the last 2 position in the arrya splitted by -
+        x, y = list(map(lambda x: int(x),
+                        pos_value.split('-')[1:3]))  # consider only the last 2 position in the arrya splitted by -
         return Point(x, y)
 
     @classmethod
-    def parse(cls, string: str):
+    def parse(cls, string: str, acceptable_classes=None):
+        action_classes = acceptable_classes or []
+
         m = re.search("^\s*\d+:\s*\((?P<actionname>[^\s]+)\s*(?P<actionparameters>[^\)]+)\)\s*(\[\d+\])?$", string)
         if m is None:
             raise ValueError(f"{string} can't be parsed")
         action_name = m.group('actionname')
         action_parameters = m.group('actionparameters')
-        action_classes = [SokobanMove, SokobanPushToGoal, SokobanPushToNonGoal]
         for action_class in action_classes:
             try:
-                action_parameters = ISokobanAction._remove_double_spaces(action_parameters)
+                action_parameters = IPlannerAction._remove_double_spaces(action_parameters)
                 ret_val = action_class.parse(action_name, action_parameters)
                 return ret_val
             except ActionParseException as e:
                 continue
         else:
-            raise ValueError(f"Can't convert action {string}!")
+            raise ValueError(f"Can't convert action {string}. Acceptable action classes are {action_classes}!")
 
 
-class SokobanMove(ISokobanAction):
+class SokobanMove(IPlannerAction):
     """
     0:   (MOVE PLAYER-01 POS-05-08 POS-04-08 DIR-LEFT) [1]
     """
@@ -73,24 +72,14 @@ class SokobanMove(ISokobanAction):
             raise ActionParseException()
         action_parameters = action_parameters.split(' ')
         return SokobanMove('MOVE',
-                           player=action_parameters[0],
-                           start_pos=ISokobanAction.convert_pos_into_cell(action_parameters[1]),
-                           end_pos=ISokobanAction.convert_pos_into_cell(action_parameters[2]),
-                           direction=Direction.parse(action_parameters[3]),
-                           )
-
-    def to_json(self):
-        """Used if *val* is an instance of SokobanMove."""
-        return {"move": {
-            "player": self.player,
-            "from": self.start_pos,
-            "to": self.end_pos,
-            "direction": self.direction
-        }
-        }
+           player=action_parameters[0],
+           start_pos=IPlannerAction.convert_pos_into_cell(action_parameters[1]),
+           end_pos=IPlannerAction.convert_pos_into_cell(action_parameters[2]),
+           direction=Direction.parse(action_parameters[3]),
+        )
 
 
-class SokobanPushToNonGoal(ISokobanAction):
+class SokobanPushToNonGoal(IPlannerAction):
     #(PUSH-TO-NONGOAL PLAYER-01 STONE-02 POS-08-05 POS-08-06 POS-08-07 DIR-DOWN) [1]
     #  (:action push-to-nongoal
     #:parameters (?p - player ?s - stone ?ppos ?from ?to - location ?dir - direction)
@@ -112,25 +101,14 @@ class SokobanPushToNonGoal(ISokobanAction):
         return SokobanPushToNonGoal('PUSH-TO-NONGOAL',
                                     player=action_parameters[0],
                                     stone=action_parameters[1],
-                                    player_pos=ISokobanAction.convert_pos_into_cell(action_parameters[2]),
-                                    start_pos=ISokobanAction.convert_pos_into_cell(action_parameters[3]),
-                                    end_pos=ISokobanAction.convert_pos_into_cell(action_parameters[4]),
+                                    player_pos=IPlannerAction.convert_pos_into_cell(action_parameters[2]),
+                                    start_pos=IPlannerAction.convert_pos_into_cell(action_parameters[3]),
+                                    end_pos=IPlannerAction.convert_pos_into_cell(action_parameters[4]),
                                     direction=Direction.parse(action_parameters[5]),
                                     )
 
-    def to_json(self):
-        """Used if val is an instance of SokobanPushToGoal class"""
-        return {"push_goal": {
-            "player": self.player,
-            "stone_position": self.stone,
-            "player_position": self.player_pos,
-            "start": self.start_pos,
-            "end": self.end_pos,
-            "direction": self.direction,
-        }}
 
-
-class SokobanPushToGoal(ISokobanAction):
+class SokobanPushToGoal(IPlannerAction):
     #(PUSH-TO-GOAL PLAYER-01 STONE-02 POS-08-03 POS-08-04 POS-08-05 DIR-DOWN) [1]
     # (:action push-to-goal
    #:parameters (?p - player ?s - stone ?ppos ?from ?to - location ?dir - direction)
@@ -152,19 +130,8 @@ class SokobanPushToGoal(ISokobanAction):
         return SokobanPushToNonGoal('PUSH-TO-GOAL',
                                     player=action_parameters[0],
                                     stone=action_parameters[1],
-                                    player_pos=ISokobanAction.convert_pos_into_cell(action_parameters[2]),
-                                    start_pos=ISokobanAction.convert_pos_into_cell(action_parameters[3]),
-                                    end_pos=ISokobanAction.convert_pos_into_cell(action_parameters[4]),
+                                    player_pos=IPlannerAction.convert_pos_into_cell(action_parameters[2]),
+                                    start_pos=IPlannerAction.convert_pos_into_cell(action_parameters[3]),
+                                    end_pos=IPlannerAction.convert_pos_into_cell(action_parameters[4]),
                                     direction=Direction.parse(action_parameters[5])
                                     )
-
-    def to_json(self):
-        """Used if val is an instance of SokobanPushToNonGoal class"""
-        return {"push_non_goal": {
-            "player": self.player,
-            "stone_position": self.stone,
-            "player_position": self.player_pos,
-            "start": self.start_pos,
-            "end": self.end_pos,
-            "direction": self.direction,
-        }}

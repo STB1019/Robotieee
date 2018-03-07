@@ -3,6 +3,7 @@ import os
 from planner_wrapper import sokoban_world, lpg_planner
 from planner_wrapper import sokoban_problem_generator
 from planner_wrapper import program_invoker
+from planner_wrapper.sokoban_actions import SokobanMove, SokobanPushToGoal, SokobanPushToNonGoal
 
 
 class TestSokobanWorld(unittest.TestCase):
@@ -110,9 +111,8 @@ class TestSokobanWorld(unittest.TestCase):
         self.assertTrue(ret)
         self.assertTrue(os.path.exists("computed.plan"))
 
-        j = lpg.convert_plan_to_json(lpg.output_filename)
+        j = lpg.convert_plan_to_json(lpg.output_filename, acceptable_classes=[SokobanMove, SokobanPushToGoal, SokobanPushToNonGoal])
         print(j)
-        self.assertTrue(j == "ciao")
 
 
 if __name__ == '__main__':

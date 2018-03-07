@@ -6,9 +6,9 @@ import os
 import re
 from functools import singledispatch
 
-from planner_wrapper import program_invoker
+from planner_wrapper import utils
 from planner_wrapper.interfaces import IPlanner
-from planner_wrapper.sokoban_actions import ISokobanAction
+from planner_wrapper.sokoban_actions import IPlannerAction
 
 
 class LPGPlanner(IPlanner):
@@ -102,36 +102,8 @@ class LPGPlanner(IPlanner):
 
         return ret_val
 
-    def check_planner_solution(self, call_result: program_invoker.CallProgram) -> bool:
+    def check_planner_solution(self, call_result: utils.CallProgram) -> bool:
         if call_result.stdout.find("Solution number") > 0:
             return True
         else:
             return False
-
-    def convert_plan_to_json_structure(self, plan_filename: str) -> typing.Dict:
-        plan_filename = os.path.abspath(plan_filename)
-        with open(plan_filename, "r") as f:
-            plan = f.readlines()
-
-        #trim lines
-        plan = map(lambda x: x.strip(' '), plan)
-        plan = map(lambda x: x.strip('\t'), plan)
-        plan = map(lambda x: x.strip('\n'), plan)
-        #filter out empty lines
-        plan = filter(lambda x: len(x) > 0, plan)
-        #filter out lines starting with ";" a comment
-        plan = filter(lambda x: x[0] != ';', plan)
-        #the lines starting with a number represents a step of the solution
-        plan = filter(lambda x: re.match('^[0-9]+', x), plan)
-        #with the lines in plan we now build the actual plan
-        actions = list(map(lambda x: ISokobanAction.parse(x), plan))
-        #now we dump actions within a json
-
-        ret_val = {}
-        ret_val['version'] = "1.0"
-        ret_val['plan'] = []
-
-        for i, action in enumerate(actions):
-            ret_val['plan'].append(action.to_json())
-
-        return ret_val

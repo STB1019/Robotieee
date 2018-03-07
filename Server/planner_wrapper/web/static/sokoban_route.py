@@ -3,8 +3,10 @@ from flask import Blueprint, request
 from flask import current_app
 from werkzeug.local import LocalProxy
 
+from planner_wrapper.lpg_planjsonconverter_v1 import LPGPlanJsonConverterV1
 from planner_wrapper.lpg_planner import LPGPlanner
 from planner_wrapper import sokoban_problem_generator, solution_converter
+from planner_wrapper.sokoban_actions import SokobanMove, SokobanPushToGoal, SokobanPushToNonGoal
 from planner_wrapper.sokoban_world import SokobanWorldJsonParserVersion1
 from web.static.flask_exceptions import SolutionNotFoundException, MalformedRequestException
 
@@ -67,16 +69,17 @@ def sokoban_problem():
     #NICOLA implementation (slick)
     ##############################
 
-    p = solution_converter.plan_to_dict(planner.output_filename)
-    json_outputfilename = "output.json"
-    solution_converter.dict_to_json(p, json_outputfilename)
-    with open(json_outputfilename, "r") as f:
-        json_string = f.read()
+    # p = solution_converter.plan_to_dict(planner.output_filename)
+    # json_outputfilename = "output.json"
+    # solution_converter.dict_to_json(p, json_outputfilename)
+    # with open(json_outputfilename, "r") as f:
+    #     json_string = f.read()
 
     ##############################
     # MAX implementation (too big)
     ##############################
 
-    # json_string = planner.convert_plan_to_json(planner.output_filename)
+    plan_converter = LPGPlanJsonConverterV1()
+    json_string = plan_converter.convert_plan(planner.output_filename)
     logger.info('Returning json')
     return json_string

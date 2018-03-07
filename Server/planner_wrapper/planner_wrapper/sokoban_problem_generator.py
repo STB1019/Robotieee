@@ -1,5 +1,6 @@
 import os
 
+from planner_wrapper.interfaces import IPddlSokobanConverter
 from planner_wrapper.utils import Point
 from planner_wrapper.sokoban_actions import Direction
 
@@ -14,6 +15,9 @@ from planner_wrapper.utils import TabFileWriter
 
 
 class Clause:
+    """
+    Represents a PDDL clause
+    """
 
     def __init__(self, f: TabFileWriter, parent_clause=None, name: str =None, colon: bool =False, fake: bool =False, carriage_return: bool =True):
         """
@@ -72,21 +76,6 @@ class Clause:
                 f.write(value)
             else:
                 f.write(" ".join(value))
-
-
-class IPddlSokobanConverter:
-
-    def generate_problem(self, problem_filename: str, domain_name: str, problem_name: str,
-                         world: sokoban_world.SokobanWorld) -> str:
-        """
-        Build a new problem file representing the state in then sokoban world given
-        :param problem_filename: the name of the problem file to generate
-        :param domain_name: the name of the domain file to use
-        :param problem_name: the name of the problem. An unique string representing the given problem
-        :param world: the world we must inspect to generate the actual pddl problem file
-        :return: the absolute path of problem_filename
-        """
-        raise NotImplementedError()
 
 
 class PddlSokobanConverterVersion1(IPddlSokobanConverter):

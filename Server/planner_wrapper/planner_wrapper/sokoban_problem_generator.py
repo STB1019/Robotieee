@@ -10,49 +10,12 @@ Given a sokoban world, creates both a problem filename representing said world
 import typing
 
 from planner_wrapper import sokoban_world
-
-
-class TabFile:
-
-    def __init__(self, f, start_indent: int = 0, element_per_indent: int = 1,tabs_instead_of_spaces: bool = True):
-        self.f = f
-        self.indent = start_indent
-        self.tabs_instead_of_spaces = tabs_instead_of_spaces
-        self.new_line = True
-
-    def __iadd__(self, other: int):
-        self.indent += 1
-        return self
-
-    def __isub__(self, other: int):
-        self.indent -= 1
-        return self
-
-    def write(self, string: str = ""):
-        if '\n' not in string:
-            if self.new_line:
-                #generate indentation
-                if self.tabs_instead_of_spaces:
-                    self.f.write('\t' * self.indent)
-                else:
-                    self.f.write(' ' * self.indent)
-            #write real line
-            self.f.write(string)
-            self.new_line = False
-        else:
-            lines = string.split('\n')
-            for line in lines:
-                self.writeln(line)
-
-    def writeln(self, string: str = ""):
-        self.write(string)
-        self.f.write('\n')
-        self.new_line = True
+from planner_wrapper.utils import TabFileWriter
 
 
 class Clause:
 
-    def __init__(self, f: TabFile, parent_clause=None, name: str =None, colon: bool =False, fake: bool =False, carriage_return: bool =True):
+    def __init__(self, f: TabFileWriter, parent_clause=None, name: str =None, colon: bool =False, fake: bool =False, carriage_return: bool =True):
         """
 
         :param f: the file where to write on
@@ -153,7 +116,7 @@ class PddlSokobanConverterVersion1(IPddlSokobanConverter):
 
     def generate_problem(self, problem_filename: str, domain_name: str, problem_name: str, world: sokoban_world.SokobanWorld) -> str:
         with open(problem_filename, "w") as f:
-            tf = TabFile(f, start_indent=0, element_per_indent=2, tabs_instead_of_spaces=False)
+            tf = TabFileWriter(f, start_indent=0, element_per_indent=2, tabs_instead_of_spaces=False)
             with Clause(tf, name="define"):
 
                 with Clause(tf, name="problem", carriage_return=True):

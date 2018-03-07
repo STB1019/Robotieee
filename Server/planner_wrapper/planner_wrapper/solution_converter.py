@@ -25,6 +25,7 @@ def convert_instruction(tags, invoker_label):
     instructions.update(p)
     return instructions
 
+
 def convert_positions_tag(positions):
     res = []
     coords = ('x', 'y')
@@ -37,7 +38,7 @@ def convert_positions_tag(positions):
 def plan_to_dict(file_in):
     plan = {}
     plan['version'] = "1.0"
-    plan['plan'] = []
+    plan['actions'] = []
 
     #parse the entire file
     with open(file_in, 'r') as f:

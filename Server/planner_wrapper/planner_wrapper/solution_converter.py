@@ -8,6 +8,7 @@ action_tags = {
     'push-to-nongoal': ('action','player','stone','player-start-pos','start-pos','end-pos','direction')
 }
 
+
 def convert_instruction(tags, invoker_label):
     instructions = collections.OrderedDict(zip(action_tags[invoker_label],tags))
 
@@ -36,7 +37,7 @@ def convert_positions_tag(positions):
 def plan_to_dict(file_in):
     plan = {}
     plan['version'] = "1.0"
-    plan['actions'] = []
+    plan['plan'] = []
 
     #parse the entire file
     with open(file_in, 'r') as f:

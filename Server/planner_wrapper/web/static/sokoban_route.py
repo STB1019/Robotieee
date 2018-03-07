@@ -3,6 +3,7 @@ from flask import Blueprint, request
 from flask import current_app
 from werkzeug.local import LocalProxy
 
+from planner_wrapper import solution_converter
 from planner_wrapper.lpg_sokoban_v1.factory import LPG_V1_Factory
 from web.static.flask_exceptions import SolutionNotFoundException, MalformedRequestException
 
@@ -61,21 +62,21 @@ def sokoban_problem():
 
     logger.info('Solution found! computing the json of it!')
 
-    ##############################
-    #NICOLA implementation (slick)
-    ##############################
+    ###############################
+    #NICOLA implementation (slick)#
+    ###############################
 
-    # p = solution_converter.plan_to_dict(planner.output_filename)
-    # json_outputfilename = "output.json"
-    # solution_converter.dict_to_json(p, json_outputfilename)
-    # with open(json_outputfilename, "r") as f:
-    #     json_string = f.read()
+    p = solution_converter.plan_to_dict(planner.output_filename)
+    json_outputfilename = "output.json"
+    solution_converter.dict_to_json(p, json_outputfilename)
+    with open(json_outputfilename, "r") as f:
+        json_string = f.read()
 
-    ##############################
-    # MAX implementation (too big)
-    ##############################
+    #######################################
+    # MAX implementation (more structured)#
+    #######################################
 
-    actions = factory.plan_filename_to_plan().convert_plan_filename_into_plan(planner.output_filename)
-    json_string = factory.plan_to_json().convert_plan(actions)
+    # actions = factory.plan_filename_to_plan().convert_plan_filename_into_plan(planner.output_filename)
+    # json_string = factory.plan_to_json().convert_plan(actions)
     logger.info('Returning json...')
     return json_string

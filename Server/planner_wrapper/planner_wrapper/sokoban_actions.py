@@ -3,8 +3,8 @@ import enum
 import re
 
 from planner_wrapper.exceptions import ActionParseException
-from planner_wrapper.parsable_enum import ParsableEnum
-from planner_wrapper.point import Point
+from planner_wrapper.utils import ParsableEnum
+from planner_wrapper.utils import Point
 
 
 class Direction(ParsableEnum):

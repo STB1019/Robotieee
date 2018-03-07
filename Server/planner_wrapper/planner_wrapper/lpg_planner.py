@@ -8,9 +8,8 @@ from functools import singledispatch
 
 from planner_wrapper import program_invoker
 from planner_wrapper.interfaces import IPlanner
-from planner_wrapper.point import Point
-from planner_wrapper.sokoban_actions import ISokobanAction, Direction, SokobanMove, SokobanPushToGoal, \
-    SokobanPushToNonGoal
+from planner_wrapper.sokoban_actions import ISokobanAction
+
 
 class LPGPlanner(IPlanner):
 

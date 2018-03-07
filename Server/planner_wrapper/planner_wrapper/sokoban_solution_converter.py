@@ -5,7 +5,7 @@ planner into a json
 
 from functools import singledispatch
 
-from planner_wrapper.point import Point
+from planner_wrapper.utils import Point
 from planner_wrapper.sokoban_actions import Direction, SokobanPushToGoal, SokobanPushToNonGoal, SokobanMove
 
 

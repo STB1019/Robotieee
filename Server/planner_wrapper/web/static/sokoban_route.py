@@ -3,7 +3,7 @@ from flask import Blueprint, request
 from flask import current_app
 from werkzeug.local import LocalProxy
 
-from planner_wrapper.planner import LPGPlanner
+from planner_wrapper.lpg_planner import LPGPlanner
 from planner_wrapper import sokoban_problem_generator, solution_converter
 from planner_wrapper.sokoban_world import SokobanWorldJsonParserVersion1
 from web.static.flask_exceptions import SolutionNotFoundException, MalformedRequestException

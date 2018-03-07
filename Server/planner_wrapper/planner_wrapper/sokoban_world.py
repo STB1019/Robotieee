@@ -4,8 +4,8 @@ import collections
 import typing
 import itertools
 
-from planner_wrapper.parsable_enum import ParsableEnum
-from planner_wrapper.point import Point
+from planner_wrapper.utils import ParsableEnum
+from planner_wrapper.utils import Point
 
 BaseCellContentTuple = collections.namedtuple('BaseCellContentTuple', ' '.join(['character']))
 

@@ -1,6 +1,6 @@
 import os
 
-from planner_wrapper.point import Point
+from planner_wrapper.utils import Point
 from planner_wrapper.sokoban_actions import Direction
 
 __doc__ = """

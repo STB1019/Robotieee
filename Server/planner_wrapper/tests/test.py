@@ -1,6 +1,6 @@
 import unittest
 import os
-from planner_wrapper import sokoban_world, planner
+from planner_wrapper import sokoban_world, lpg_planner
 from planner_wrapper import sokoban_problem_generator
 from planner_wrapper import program_invoker
 
@@ -94,7 +94,7 @@ class TestSokobanWorld(unittest.TestCase):
             lines = f.readlines()
 
     def test_planner_invoker(self):
-        lpg = planner.LPGPlanner(lpg_location="/home/koldar/Documents/LPGFrancesco/LPG/lpg")
+        lpg = lpg_planner.LPGPlanner(lpg_location="/home/koldar/Documents/LPGFrancesco/LPG/lpg")
 
         lpg.use_best_first = True
         lpg.use_lpg = False

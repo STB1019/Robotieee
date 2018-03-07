@@ -34,7 +34,9 @@ def convert_positions_tag(positions):
 
 
 def plan_to_dict(file_in):
-    plan = []
+    plan = {}
+    plan['version'] = "1.0"
+    plan['actions'] = []
 
     #parse the entire file
     with open(file_in, 'r') as f:
@@ -45,7 +47,7 @@ def plan_to_dict(file_in):
         if len(l) > 0:
             if l[0].isdigit():
                 l = re.sub(r'^\d*:\s*\(|\)\s*\[\d\]', '',l).lower().split()
-                plan.append(convert_instruction(l, str(l[0])))
+                plan['actions'].append(convert_instruction(l, str(l[0])))
     
     return plan
 

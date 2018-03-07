@@ -14,3 +14,9 @@ Server/planner_wrapper/venv
 #automatically generated files
 build/
 
+#ignore planner solutions
+*.plan
+*.SOL
+
+#ignore log files
+*.log*

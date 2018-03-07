@@ -1,9 +1,9 @@
 import unittest
 import os
-from planner_wrapper import sokoban_world, lpg_planner
+from planner_wrapper.planners import lpg_planner
+from planner_wrapper.domains.sokoban import sokoban_world
 from planner_wrapper import sokoban_problem_generator
-from planner_wrapper import program_invoker
-from planner_wrapper.sokoban_actions import SokobanMove, SokobanPushToGoal, SokobanPushToNonGoal
+from planner_wrapper.domains.sokoban.sokoban_actions import SokobanMove, SokobanPushToGoal, SokobanPushToNonGoal
 
 
 class TestSokobanWorld(unittest.TestCase):
@@ -82,7 +82,7 @@ class TestSokobanWorld(unittest.TestCase):
                     }
                 }
                 """)
-        sokoban_converter = sokoban_problem_generator.PddlSokobanConverterVersion1()
+        sokoban_converter = sokoban_problem_generator.V1_SokobanWorldToPddlConverter()
         sokoban_converter.generate_problem(
             problem_filename="tmp",
             domain_name="sokoban",

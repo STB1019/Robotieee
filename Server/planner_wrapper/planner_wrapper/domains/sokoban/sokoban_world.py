@@ -1,3 +1,7 @@
+__doc__="""
+Represents a module containing all the class representing the model of the sokoban world
+"""
+
 import enum
 import json
 import collections
@@ -7,7 +11,8 @@ import itertools
 from planner_wrapper.utils import ParsableEnum
 from planner_wrapper.utils import Point
 
-BaseCellContentTuple = collections.namedtuple('BaseCellContentTuple', ' '.join(['character']))
+
+BaseCellContentTuple = collections.namedtuple('BaseCellContentTuple', ' '.join(['character', ]))
 
 
 class BaseCellContent(ParsableEnum):
@@ -16,7 +21,6 @@ class BaseCellContent(ParsableEnum):
     BLOCK = BaseCellContentTuple(character="B")
     GOAL = BaseCellContentTuple(character="G")
     UNTRAVERSABLE = BaseCellContentTuple(character="U")
-
 
 class Block:
 
@@ -149,33 +153,3 @@ class SokobanWorld:
             if BaseCellContent.GOAL in self[self._1d22d(index)]:
                 ret_val.append(self._1d22d(index))
         return ret_val
-
-
-
-    @classmethod
-    def parse(cls, json_str: str):
-        js = json.loads(json_str)
-        version = str(js['version'])
-        if version == "1.0":
-            return SokobanWorldJsonParserVersion1().parse(js)
-        else:
-            raise ValueError("unsupported version {}".format(version))
-
-
-class SokobanWorldJsonParserVersion1:
-
-    def parse(self, js) -> SokobanWorld:
-        world = js['world']
-        rows = int(world['rows'])
-        cols = int(world['columns'])
-        retval = SokobanWorld(rows, cols)
-
-        for cell in world['cells']:
-            for ch in cell['entities']:
-                retval.add_content_in(
-                    col=int(cell['x']),
-                    row=int(cell['y']),
-                    content=BaseCellContent.parse(str(ch))
-                )
-
-        return retval

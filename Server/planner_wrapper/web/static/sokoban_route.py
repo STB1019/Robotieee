@@ -3,11 +3,7 @@ from flask import Blueprint, request
 from flask import current_app
 from werkzeug.local import LocalProxy
 
-from planner_wrapper.lpg_planjsonconverter_v1 import LPGPlanJsonConverterV1
-from planner_wrapper.lpg_planner import LPGPlanner
-from planner_wrapper import sokoban_problem_generator, solution_converter
-from planner_wrapper.sokoban_actions import SokobanMove, SokobanPushToGoal, SokobanPushToNonGoal
-from planner_wrapper.sokoban_world import SokobanWorldJsonParserVersion1
+from planner_wrapper.lpg_sokoban_v1.factory import LPG_V1_Factory
 from web.static.flask_exceptions import SolutionNotFoundException, MalformedRequestException
 
 simple_page = Blueprint('index', __name__)
@@ -29,15 +25,20 @@ def sokoban_problem():
     if content is None:
         raise MalformedRequestException("Couldn't fetch world json in this request. You should mark this request as a json one and put in the payload a compliant json!")
 
-    domain_version1_filename = os.path.abspath("../Problems/Sokoban/domain.pddl")
+    #get request version
+    if "version" not in content:
+        raise MalformedRequestException("version key is not present in the json request!")
+
+    #ok, let's decide which factory to use
+    if content["version"] == "1.0":
+        factory = LPG_V1_Factory()
+    else:
+        raise MalformedRequestException("unsupported version number!")
 
     logger.info('generating sokoban world from received json...')
-    json_to_world_parser = SokobanWorldJsonParserVersion1()
-    sokoban_world = json_to_world_parser.parse(content)
-
+    sokoban_world = factory.json_to_world().convert_json_to_sokoban_world(content)
     logger.info('generating pddl problem file from sokoban world...')
-    problem_generator = sokoban_problem_generator.PddlSokobanConverterVersion1()
-    problem_filename = problem_generator.generate_problem(
+    problem_filename = factory.sokoban_world_to_pddl_problem().generate_problem(
         problem_filename="problem_instance",
         domain_name="sokobanSequential",
         problem_name="sokobanSequential-01",
@@ -45,16 +46,11 @@ def sokoban_problem():
     )
 
     logger.info('generating planner instance manager...')
-    planner = LPGPlanner(lpg_location="/home/koldar/Documents/LPGFrancesco/LPG/lpg")
-
-    planner.use_best_first = True
-    planner.use_lpg = False
-    planner.solutions_to_find = 1
-    planner.output_filename = os.path.join(".", "computed.plan")
+    planner = factory.planner
 
     logger.info('invoking planner (this may take quite time!)...')
     ret = planner.invoke(
-        domain_filename=domain_version1_filename,
+        domain_filename=factory.domain_filename,
         problem_filename=problem_filename,
         working_directory="."
     )
@@ -79,7 +75,7 @@ def sokoban_problem():
     # MAX implementation (too big)
     ##############################
 
-    plan_converter = LPGPlanJsonConverterV1()
-    json_string = plan_converter.convert_plan(planner.output_filename)
-    logger.info('Returning json')
+    actions = factory.plan_filename_to_plan().convert_plan_filename_into_plan(planner.output_filename)
+    json_string = factory.plan_to_json().convert_plan(actions)
+    logger.info('Returning json...')
     return json_string

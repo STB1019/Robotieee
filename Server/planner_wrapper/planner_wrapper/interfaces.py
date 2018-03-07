@@ -1,11 +1,22 @@
 import typing
-import json
 from abc import ABCMeta, abstractmethod
 
-from planner_wrapper import utils, sokoban_world
+import re
+
+from planner_wrapper import utils
+from planner_wrapper.domains.sokoban import sokoban_world
 
 
-class IPddlSokobanConverter(metaclass=ABCMeta):
+class IPlannerAction:
+
+    def __init__(self, name):
+        self.name = name
+
+
+class ISokobanWorldToPddlProblemConverter(metaclass=ABCMeta):
+    """
+    Represents a class allowing you to generate a PDDL problem instance for a sokoban world
+    """
 
     @abstractmethod
     def generate_problem(self, problem_filename: str, domain_name: str, problem_name: str,
@@ -21,10 +32,34 @@ class IPddlSokobanConverter(metaclass=ABCMeta):
         raise NotImplementedError()
 
 
-class IPlanJsonConverter(metaclass=ABCMeta):
+class IPlanFilenameToPlanConverter(metaclass=ABCMeta):
 
     @abstractmethod
-    def convert_plan(self, plan_filename: str) -> typing.Dict[typing.AnyStr, typing.Any]:
+    def convert_plan_filename_into_plan(self, plan_filename: str) -> typing.List[IPlannerAction]:
+        raise NotImplementedError()
+
+    def fetch_action_information(cls, string: str) -> typing.Tuple[str, typing.List[str]]:
+        """
+        Process the action move in order to fetch action information from the output plan
+        :param string: the string present inside the output plan the planner has created
+        :return: a tuple. The first item is the name of the action while the second element is the list of string parameters of the action (if any)
+        """
+        m = re.search("^\s*\d+:\s*\((?P<actionname>[^\s]+)\s*(?P<actionparameters>[^\)]+)\)\s*(\[\d+\])?$", string)
+        if m is None:
+            raise ValueError(f"'{string}' can't be correctly parsed")
+
+        action_name = m.group('actionname')
+        action_parameters = m.group('actionparameters')
+
+        action_parameters = re.sub('\s+', ' ', action_parameters)
+        action_parameters = action_parameters.split(' ')
+        return action_name, action_parameters
+
+
+class IPlanToJsonConverter(metaclass=ABCMeta):
+
+    @abstractmethod
+    def convert_plan(self, actions: typing.List[IPlannerAction]) -> typing.Dict[typing.AnyStr, typing.Any]:
         raise NotImplementedError()
 
 
@@ -71,3 +106,70 @@ class IPlanner(metaclass=ABCMeta):
             working_directory=working_directory
         )
         return self.check_planner_solution(ret_val)
+
+    @property
+    @abstractmethod
+    def output_filename(self):
+        """
+        :return: the filename of the solution computed by the planner
+        """
+        raise NotImplementedError()
+
+
+class IJsonToWorld(metaclass=ABCMeta):
+
+    @abstractmethod
+    def convert_json_to_sokoban_world(self, j: typing.Dict[str, typing.Any]) -> sokoban_world.SokobanWorld:
+        pass
+
+
+class IPlannerFactory(metaclass=ABCMeta):
+
+    @property
+    @abstractmethod
+    def domain_filename(self) -> str:
+        """
+        :return: the filename of the domain the planner will use to solve the PDDL problem
+        """
+        raise NotImplementedError()
+
+    @abstractmethod
+    def json_to_world(self) -> IJsonToWorld:
+        """
+
+        :return: a structure allows to convert the json received into a world representation
+        """
+        pass
+
+    @abstractmethod
+    def sokoban_world_to_pddl_problem(self) -> ISokobanWorldToPddlProblemConverter:
+        """
+
+        :return: a structure converting a wordl representation into a valid PDDL problem file
+        """
+        pass
+
+    @property
+    @abstractmethod
+    def planner(self) -> IPlanner:
+        """
+
+        :return: the planner to use to solve tbe problem
+        """
+        pass
+
+    @abstractmethod
+    def plan_filename_to_plan(self) -> IPlanFilenameToPlanConverter:
+        """
+
+        :return: a structure allowing you to conveert the plan output by a planner into an in-memory  representation of the plan
+        """
+        pass
+
+    @abstractmethod
+    def plan_to_json(self) -> IPlanToJsonConverter:
+        """
+
+        :return: a structure allowing yout to convert the in-memory representation of the plan into a json
+        """
+        pass

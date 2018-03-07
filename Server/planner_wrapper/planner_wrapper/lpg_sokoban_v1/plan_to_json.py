@@ -1,51 +1,22 @@
 import typing
-import os
-import re
 import json
 import sys
 
-from planner_wrapper.interfaces import IPlanJsonConverter
 from functools import singledispatch
 
+from planner_wrapper.interfaces import IPlanToJsonConverter, IPlannerAction
+from planner_wrapper.domains.sokoban.sokoban_actions import SokobanPushToNonGoal, SokobanPushToGoal, SokobanMove, \
+    Direction
 from planner_wrapper.utils import Point
-from planner_wrapper.sokoban_actions import Direction, SokobanPushToGoal, SokobanPushToNonGoal, SokobanMove, \
-    IPlannerAction
-
-__doc__ = """
-The file is not used right now since it is necessary to Massimo method to convert the model of the plan returned by the
-planner into a json
-"""
 
 
-class LPGPlanJsonConverterV1(IPlanJsonConverter):
+class LPG_V1_PlanToJsonConverter(IPlanToJsonConverter):
 
     def __init__(self):
         self.parsable_classes = [SokobanMove, SokobanPushToGoal, SokobanPushToNonGoal]
 
-    def convert_plan(self, plan_filename: str) -> typing.Dict[typing.AnyStr, typing.Any]:
-        j = self._convert_plan_to_json_structure(plan_filename)
-        return json.dumps(j, default=to_serializable)
-
-    def _convert_plan_to_json_structure(self, plan_filename: str) -> typing.Dict[typing.AnyStr, typing.Any]:
-        plan_filename = os.path.abspath(plan_filename)
-        with open(plan_filename, "r") as f:
-            plan = f.readlines()
-
-        # trim lines
-        plan = map(lambda x: x.strip(' '), plan)
-        plan = map(lambda x: x.strip('\t'), plan)
-        plan = map(lambda x: x.strip('\n'), plan)
-        # filter out empty lines
-        plan = filter(lambda x: len(x) > 0, plan)
-        # filter out lines starting with ";" a comment
-        plan = filter(lambda x: x[0] != ';', plan)
-        # the lines starting with a number represents a step of the solution
-        plan = filter(lambda x: re.match('^[0-9]+', x), plan)
-        # with the lines in plan we now build the actual plan
-        actions = list(map(lambda x: IPlannerAction.parse(x, acceptable_classes=self.parsable_classes), plan))
-
+    def convert_plan(self, actions: typing.List[IPlannerAction]) -> typing.Dict[typing.AnyStr, typing.Any]:
         # now we dump actions within a json
-
         ret_val = {}
         ret_val['version'] = "1.0"
         ret_val['plan'] = []
@@ -58,11 +29,11 @@ class LPGPlanJsonConverterV1(IPlanJsonConverter):
                     method = self_module.__dict__[method_name]
                     break
             else:
-                raise ValueError("no to_json methods available for class {action.__class__.__name__}!")
+                raise ValueError(f"no to_json methods available for class {action.__class__.__name__}!")
 
             ret_val['plan'].append(method(action))
 
-        return ret_val
+        return json.dumps(ret_val, default=to_serializable)
 
 
 @singledispatch

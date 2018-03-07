@@ -1,84 +1,18 @@
 import os
 
-from planner_wrapper.interfaces import IPddlSokobanConverter
-from planner_wrapper.utils import Point
-from planner_wrapper.sokoban_actions import Direction
+from planner_wrapper.domains.sokoban.sokoban_actions import Direction
+from planner_wrapper.interfaces import ISokobanWorldToPddlProblemConverter
+from planner_wrapper.utils import Point, Clause
 
 __doc__ = """
 Given a sokoban world, creates both a problem filename representing said world 
 """
 
-import typing
-
-from planner_wrapper import sokoban_world
+from planner_wrapper.domains.sokoban import sokoban_world
 from planner_wrapper.utils import TabFileWriter
 
 
-class Clause:
-    """
-    Represents a PDDL clause
-    """
-
-    def __init__(self, f: TabFileWriter, parent_clause=None, name: str =None, colon: bool =False, fake: bool =False, carriage_return: bool =True):
-        """
-
-        :param f: the file where to write on
-        :param parent_clause: the clause containing this new cluase of PDDL
-        :param name: the name of the clause
-        :param colon: true if you want to prefix the name of the clause with a ":"
-        :param fake: if true we won't write anything on the file
-        :param carriage_return: if true we will append a carriage return after the clause has terminated
-        """
-        self.tf = f
-        self.name = name
-        self.colon = colon
-        self.fake = fake
-        self.parent_clause = parent_clause
-        self.carriage_return = carriage_return
-
-    def __enter__(self):
-        self.tf += 1
-        if self.fake:
-            return self
-
-        if self.colon:
-            self.tf.write("(:")
-        else:
-            self.tf.write("(")
-
-        if self.name is not None:
-            self.tf.write(self.name)
-            self.tf.write(" ")
-
-        return self
-
-    def __exit__(self, t, value, traceback):
-        self.tf -= 1
-        if self.fake:
-            return
-
-        if self.carriage_return:
-            self.tf.writeln(")")
-        else:
-            self.tf.write(")")
-
-    @staticmethod
-    def write_predicate(f, name: str, value: typing.Union[str, typing.Iterable[str]]):
-        """
-        Write a first order logic predicate in the file
-        :param f: the file where to put the predicate into
-        :param name: the name of the predicate
-        :param value: the values of the rpedicate. It can either be a string (predicate with a single value) or a list of them
-                (multi value predicate)
-        """
-        with Clause(f, name=name, carriage_return=False):
-            if type(value) == str:
-                f.write(value)
-            else:
-                f.write(" ".join(value))
-
-
-class PddlSokobanConverterVersion1(IPddlSokobanConverter):
+class V1_SokobanWorldToPddlConverter(ISokobanWorldToPddlProblemConverter):
 
     def cell_predicate(self, p: Point) -> str:
         return f"cell-{p.y:02d}-{p.x:02d}"

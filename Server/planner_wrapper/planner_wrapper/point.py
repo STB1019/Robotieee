@@ -15,6 +15,17 @@ class Point:
     def __setitem__(self, key, value):
         self._p[key] = value
 
+    def __eq__(self, other):
+        if other is None:
+            return False
+        try:
+            return self.x == other.x and self.y == other.y
+        except AttributeError:
+            return False
+
+    def __str__(self):
+        return f"<x={self.x}, y={self.y}>"
+
     @property
     def x(self):
         return self[0]

@@ -1,5 +1,6 @@
 import os
 
+from planner_wrapper import config
 from planner_wrapper.interfaces import IJsonToWorld, ISokobanWorldToPddlProblemConverter, IPlanner, \
     IPlanFilenameToPlanConverter, IPlanToJsonConverter, IPlannerFactory
 from planner_wrapper.planners.lpg_planner import LPGPlanner
@@ -13,7 +14,7 @@ class LPG_V1_Factory(IPlannerFactory):
 
     @property
     def domain_filename(self) -> str:
-        return os.path.abspath("../Problems/Sokoban/domain.pddl")
+        return os.path.abspath(config.SOKOBAN_DOMAIN_FILENAME)
 
     def json_to_world(self)-> IJsonToWorld:
         return JsonToSokobanWorld_V1()
@@ -23,7 +24,7 @@ class LPG_V1_Factory(IPlannerFactory):
 
     @property
     def planner(self) -> IPlanner:
-        planner = LPGPlanner(lpg_location="/home/koldar/Documents/LPGFrancesco/LPG/lpg")
+        planner = LPGPlanner(lpg_location=config.PLANNER_LOCATION)
 
         planner.use_best_first = True
         planner.use_lpg = False

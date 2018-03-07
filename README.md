@@ -69,7 +69,7 @@ The software uses LPG planner, which on server should be located in the location
 
 In the following we will assume the following problem (made thanks by the website [sokoban-editor](https://deificx.github.io/sokoban-editor/) ):
 
-[sokoban example](https://github.com/STB1019/Robotieee/blob/master/images/sokobanExample.PNG "Sokoban example")
+![sokoban example](https://github.com/STB1019/Robotieee/blob/master/images/sokobanExample.PNG "Sokoban example")
 
 The yellow circle is the robot, the crate is the block that needs to be put on the red cross. If this is the state of the world, the json to send to the server is:
 

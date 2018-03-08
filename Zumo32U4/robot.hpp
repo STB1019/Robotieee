@@ -1,4 +1,4 @@
-/**
+ /**
  * @file
  * 
  * API specifying a class representing the Zumo robot itself
@@ -13,6 +13,12 @@
 #include <Zumo32U4.h>
 #include "moveable.hpp"
 
+extern uint32_t turnAngle;
+extern int16_t turnRate;
+
+
+  
+
 namespace robotieee {
 
 /**
@@ -21,6 +27,8 @@ namespace robotieee {
 class robot : public moveable {
 
 public:
+
+  
   /**
    * initialize a robot
    * 
@@ -43,6 +51,14 @@ public:
   void rotate(int16_t degrees);
 
   /**
+   * Moves the robot forward (or backwards) a given amount of meters. Positive values represent a movement forward,
+   * negative ones represent a movement backwards.
+   * 
+   * @param[in] cent The amount of meters we want the robot to be moving
+   */
+   void moveStraight(float centimeters);
+
+  /**
    * Computes the average angular rate measured by the gyroscope during rotations.
    * In particular, the robot rotates until a fixed amount of measurements are taken. 
    * Once done, the robot will use the computed values to approximatively determine the 
@@ -54,11 +70,22 @@ public:
    */
   void calibrateGyroscope();
 
+  void hardwareInit();
+
+
+
+  
+   
 private:
   static const int MOTORS_POWER = 150;
   static const int MOVEMENT_DELAY = 500;
   static const int GYRO_CALIBRATION_MEASUREMENTS = 10000;
+  static const int ACCEL_CALIBRATION_MEASUREMENTS = 10000;
   static const float GYRO_SENSITIVITY = 0.008750f;
+  static const float ACCEL_SENS = 0.000061f;
+  static const float G_ACCELERATION = 9.806650f;
+  static const float SPEED_100 = 12.666666f;
+
   
   float _averageAngularRateCcw;
   float _averageAngularRateCw;

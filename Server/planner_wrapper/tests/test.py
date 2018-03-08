@@ -1,8 +1,9 @@
 import unittest
 import os
-from planner_wrapper import sokoban_world, planner
-from planner_wrapper import pddl_converter
-from planner_wrapper import planner_invoker
+from planner_wrapper.planners import lpg_planner
+from planner_wrapper.domains.sokoban import sokoban_world
+from planner_wrapper import sokoban_problem_generator
+from planner_wrapper.domains.sokoban.sokoban_actions import SokobanMove, SokobanPushToGoal, SokobanPushToNonGoal
 
 
 class TestSokobanWorld(unittest.TestCase):
@@ -81,8 +82,8 @@ class TestSokobanWorld(unittest.TestCase):
                     }
                 }
                 """)
-        sokoban_converter = pddl_converter.PddlSokobanConverter()
-        sokoban_converter.convert_to_pddl(
+        sokoban_converter = sokoban_problem_generator.V1_SokobanWorldToPddlConverter()
+        sokoban_converter.generate_problem(
             problem_filename="tmp",
             domain_name="sokoban",
             problem_name="simple",
@@ -94,7 +95,7 @@ class TestSokobanWorld(unittest.TestCase):
             lines = f.readlines()
 
     def test_planner_invoker(self):
-        lpg = planner.LPGPlanner(lpg_location="/home/koldar/Documents/LPGFrancesco/LPG/lpg")
+        lpg = lpg_planner.LPGPlanner(lpg_location="/home/koldar/Documents/LPGFrancesco/LPG/lpg")
 
         lpg.use_best_first = True
         lpg.use_lpg = False
@@ -110,7 +111,8 @@ class TestSokobanWorld(unittest.TestCase):
         self.assertTrue(ret)
         self.assertTrue(os.path.exists("computed.plan"))
 
-        lpg.convert_plan_to_json(lpg.output_filename)
+        j = lpg.convert_plan_to_json(lpg.output_filename, acceptable_classes=[SokobanMove, SokobanPushToGoal, SokobanPushToNonGoal])
+        print(j)
 
 
 if __name__ == '__main__':

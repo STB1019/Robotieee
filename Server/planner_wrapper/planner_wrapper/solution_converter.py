@@ -8,6 +8,7 @@ action_tags = {
     'push-to-nongoal': ('action','player','stone','player-start-pos','start-pos','end-pos','direction')
 }
 
+
 def convert_instruction(tags, invoker_label):
     instructions = collections.OrderedDict(zip(action_tags[invoker_label],tags))
 
@@ -24,16 +25,20 @@ def convert_instruction(tags, invoker_label):
     instructions.update(p)
     return instructions
 
+
 def convert_positions_tag(positions):
     res = []
     coords = ('x', 'y')
     for pos in positions:
-        values = re.sub(r'^pos|-0', ' ', pos).lstrip().split()
+        values = re.sub(r'^pos|-0|-', ' ', pos).lstrip().split()
         res.append(dict(zip(coords, values)))
     return res
 
+
 def plan_to_dict(file_in):
-    plan = []
+    plan = {}
+    plan['version'] = "1.0"
+    plan['actions'] = []
 
     #parse the entire file
     with open(file_in, 'r') as f:
@@ -44,9 +49,10 @@ def plan_to_dict(file_in):
         if len(l) > 0:
             if l[0].isdigit():
                 l = re.sub(r'^\d*:\s*\(|\)\s*\[\d\]', '',l).lower().split()
-                plan.append(convert_instruction(l, str(l[0])))
+                plan['actions'].append(convert_instruction(l, str(l[0])))
     
     return plan
+
 
 def dict_to_json(d, file_out):
     with open(file_out, 'w') as f:

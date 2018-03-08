@@ -6,8 +6,10 @@ import re
 
 from planner_wrapper.exceptions import ActionParseException
 from planner_wrapper.interfaces import IPlanFilenameToPlanConverter, IPlannerAction
-from planner_wrapper.domains.sokoban.sokoban_actions import SokobanMove, SokobanPushToNonGoal, Direction
+from planner_wrapper.domains.sokoban.sokoban_actions import SokobanMove, SokobanPushToNonGoal, Direction, \
+    SokobanPullToNonGoal, SokobanPullToGoal
 from planner_wrapper.utils import Point
+
 
 
 class LPG_V1_FilenameToPlanConverter(IPlanFilenameToPlanConverter):
@@ -35,7 +37,7 @@ class LPG_V1_FilenameToPlanConverter(IPlanFilenameToPlanConverter):
 
     def _convert_pos_into_cell(self, pos_value: str) -> Point:
         """
-        Concvert stringa s like "POS-05-08" into points like <5,8>
+        Concvert string s like "POS-05-08" into points like <5,8>
         :param pos_value: the string to convert
         :return: the point converted
         """
@@ -62,6 +64,24 @@ class LPG_V1_FilenameToPlanConverter(IPlanFilenameToPlanConverter):
             )
         elif action_name == 'PUSH-TO-GOAL':
             return SokobanPushToNonGoal(action_name,
+                player=action_parameters[0],
+                stone=action_parameters[1],
+                player_pos=self._convert_pos_into_cell(action_parameters[2]),
+                start_pos=self._convert_pos_into_cell(action_parameters[3]),
+                end_pos=self._convert_pos_into_cell(action_parameters[4]),
+                direction=Direction.parse(action_parameters[5])
+            )
+        elif action_name == 'PULL-TO-NONGOAL':
+            return SokobanPullToNonGoal(action_name,
+                player=action_parameters[0],
+                stone=action_parameters[1],
+                player_pos=self._convert_pos_into_cell(action_parameters[2]),
+                start_pos=self._convert_pos_into_cell(action_parameters[3]),
+                end_pos=self._convert_pos_into_cell(action_parameters[4]),
+                direction=Direction.parse(action_parameters[5]),
+            )
+        elif action_name == 'PULL-TO-GOAL':
+            return SokobanPullToGoal(action_name,
                 player=action_parameters[0],
                 stone=action_parameters[1],
                 player_pos=self._convert_pos_into_cell(action_parameters[2]),

@@ -10,6 +10,7 @@
 extern Zumo32U4LCD lcd;
 extern L3G gyro;
 extern LSM303 accel;
+extern Zumo32U4Encoders encoders;
 
 namespace robotieee {
 
@@ -20,6 +21,7 @@ robot::robot(const point& start_position) : moveable{start_position} {
 robot::~robot() {
 
 }
+
 
 void robot::rotate(int16_t degrees) {
   uint32_t timeNeeded;
@@ -42,51 +44,47 @@ void robot::rotate(int16_t degrees) {
   
 }
 
-void robot::moveStraight(int16_t centimeters){
-  uint32_t timeNeeded;
-  int speed = MOTORS_POWER;
-
-  if (centimeters > 0) {
-    timeNeeded = sqrt ( (abs(centimeters)/1000) / _averageAccelFw ); 
-  }
-
-  else {
-    timeNeeded = sqrt ( (abs(centimeters)/1000) / _averageAccelBw );
-  }
-
-  Zumo32U4Motors::setSpeeds(speed, speed);
-  delay(timeNeeded);
-  Zumo32U4Motors::setSpeeds(0, 0);
-  delay(MOVEMENT_DELAY);
+void robot::calibrateMovement(double distance) {
+  int acceleration;
+  unsigned long t;
+  unsigned long newtime;
+  float dtime;
+  float timeNeeded;
+  float velocity = 0;
+  float n_velocity;
+  
+  delay(2000);
+  Zumo32U4Motors::setSpeeds(150,150);
+  t = micros();
+  do {
+    accel.readAcc();
+    newtime = micros();
+    dtime = (float) (newtime - t) / 1000000;
+    acceleration = abs(accel.a.x) * G_ACCELERATION * ACCEL_SENS;
+    if (accel.a.x > 500) {
+      n_velocity = velocity + acceleration * dtime;
+      distance = distance - (velocity + n_velocity) / 2 * dtime;
+      velocity = n_velocity;
+      t = newtime;
+    }
+    Serial.println(distance);
+  } while (distance > 0);
+  Zumo32U4Motors::setSpeeds(0,0);
 }
 
-void robot::calibrateAccelerometer(){
-  float maxAccelValue;
-  int n_measurements;
-  int power = MOTORS_POWER;
+void robot::moveStraight(float centimeters){
 
-  for (int i = 0; i < 2; i++) {
-    maxAccelValue = 0.0f;
-    n_measurements = 0;
-
-    Zumo32U4Motors::setSpeeds(power, power);
-    while (n_measurements < ACCEL_CALIBRATION_MEASUREMENTS){
-      accel.readAcc();
-      if (abs(accel.a.x) > maxAccelValue) maxAccelValue = abs(accel.a.x);
-      n_measurements++;
-    }
-    Zumo32U4Motors::setSpeeds(0,0);
-    delay(MOVEMENT_DELAY);
-
-    //Forward calibration on first iteration, backwards on second
-    if (i == 0) {
-      _averageAccelFw = maxAccelValue * ACCEL_SENSITIVITY;
-    }
-    else {
-      _averageAccelBw = maxAccelValue * ACCEL_SENSITIVITY;
-    }
-    power = -power;
+  float time_needed;
+  time_needed = (centimeters / SPEED_100)*1000;
+  if (centimeters > 0) {
+    Zumo32U4Motors::setSpeeds(100,100);
   }
+  else{
+    Zumo32U4Motors::setSpeeds(-100,-100);
+  }
+  delay(time_needed);
+  Zumo32U4Motors::setSpeeds(0,0);
+
 }
 
 void robot::calibrateGyroscope() {

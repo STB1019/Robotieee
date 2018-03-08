@@ -30,7 +30,7 @@ def convert_positions_tag(positions):
     res = []
     coords = ('x', 'y')
     for pos in positions:
-        values = re.sub(r'^pos|-0|-', ' ', pos).lstrip().split()
+        values = re.sub(r'^cell|-0|-', ' ', pos).lstrip().split()
         res.append(dict(zip(coords, values)))
     return res
 

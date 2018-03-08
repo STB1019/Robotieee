@@ -109,76 +109,78 @@ Multiple objects can be within the same cell.
 ## JSON reply
 
 ```
-{
-  "version": "1.0",
-  "actions": [
-    {
-      "action": "move",
-      "player": "player-01",
-      "start-pos": {"x": "cell","y": "0"},
-      "end-pos": {"x": "cell","y": "0"},
-      "direction": "dir-left"
-    },{
-      "action": "move",
-      "player": "player-01",
-      "start-pos": {"x": "cell","y": "0"},
-      "end-pos": {"x": "cell","y": "1"},
-      "direction": "dir-down"
-    },{
-      "action": "move",
-      "player": "player-01",
-      "start-pos": {"x": "cell","y": "1"},
-      "end-pos": {"x": "cell","y": "2"},
-      "direction": "dir-down"
-    },{
-      "action": "move",
-      "player": "player-01",
-      "start-pos": {"x": "cell","y": "2"},
-      "end-pos": {"x": "cell","y": "2"},
-      "direction": "dir-right"
-    },{
-      "action": "move",
-      "player": "player-01",
-      "start-pos": {"x": "cell","y": "2"},
-      "end-pos": {"x": "cell","y": "2"},
-      "direction": "dir-right"
-    },{
-      "action": "move",
-      "player": "player-01",
-      "start-pos": {"x": "cell","y": "2"},
-      "end-pos": {"x": "cell","y": "1"},
-      "direction": "dir-up"
-    },{
-      "action": "push-to-nongoal",
-      "player": "player-01",
-      "stone": "stone-00",
-      "player-start-pos": {"x": "cell","y": "1"},
-      "start-pos": {"x": "cell","y": "1"},
-      "end-pos": {"x": "cell","y": "1"},
-      "direction": "dir-left"
-    },
-    {
-      "action": "move",
-      "player": "player-01",
-      "start-pos": {"x": "cell","y": "1"},
-      "end-pos": {"x": "cell","y": "2"},
-      "direction": "dir-down"
-    },{
-      "action": "move",
-      "player": "player-01",
-      "start-pos": {"x": "cell","y": "2"},
-      "end-pos": {"x": "cell","y": "2"},
-      "direction": "dir-left"
-    },{
-      "action": "push-to-goal",
-      "player": "player-01",
-      "stone": "stone-00",
-      "player-start-pos": {"x": "cell","y": "2"},
-      "start-pos": {"x": "cell","y": "1"},
-      "end-pos": {"x": "cell","y": "0"},
-      "direction": "dir-up"
-    }
-  ]
+{    
+    "version": "1.0",
+    "actions": [
+        {
+            "action": "move",
+            "player": "player-01",
+            "start-pos": {"x": "0","y": "0"},
+            "end-pos": {"x": "1","y": "0"},
+            "direction": "dir-down"
+        },
+        {
+            "action": "move",
+            "player": "player-01",
+            "start-pos": {"x": "1","y": "0"},
+            "end-pos": {"x": "2","y": "0"
+            },
+            "direction": "dir-down"
+        },
+        {
+            "action": "move",
+            "player": "player-01",
+            "start-pos": {"x": "2","y": "0"},
+            "end-pos": {"x": "2","y": "1"},
+            "direction": "dir-right"
+        },
+        {
+            "action": "move",
+            "player": "player-01",
+            "start-pos": {"x": "2","y": "1"},
+            "end-pos": {"x": "2","y": "2"},
+            "direction": "dir-right"
+        },
+        {
+            "action": "move",
+            "player": "player-01",
+            "start-pos": {"x": "2","y": "2"},
+            "end-pos": {"x": "1","y": "2"},
+            "direction": "dir-up"
+        },
+        {
+            "action": "push-to-nongoal",
+            "player": "player-01",
+            "stone": "stone-00",
+            "player-start-pos": {"x": "1","y": "2"},
+            "start-pos": {"x": "1","y": "1"},
+            "end-pos": {"x": "1","y": "0"},
+            "direction": "dir-left"
+        },
+        {
+            "action": "move",
+            "player": "player-01",
+            "start-pos": {"x": "1","y": "1"},
+            "end-pos": {"x": "2","y": "1"},
+            "direction": "dir-down"
+        },
+        {
+            "action": "move",
+            "player": "player-01",
+            "start-pos": {"x": "2","y": "1"},
+            "end-pos": {"x": "2","y": "0"},
+            "direction": "dir-left"
+        },
+        {
+            "action": "push-to-goal",
+            "player": "player-01",
+            "stone": "stone-00",
+            "player-start-pos": {"x": "2","y": "0"},
+            "start-pos": {"x": "1","y": "0"},
+            "end-pos": {"x": "0","y": "0"},
+            "direction": "dir-up"
+        }
+    ]
 }
 ```
 

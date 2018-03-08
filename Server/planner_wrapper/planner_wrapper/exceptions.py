@@ -1,0 +1,2 @@
+class ActionParseException(Exception):
+    pass

@@ -1,0 +1,47 @@
+{
+    "info": {
+        "version": "LPG-td-1.0",
+        "seed": "89065539",
+        "command-line": "/home/koldar/Documents/LPGFrancesco/LPG/lpg -n 1 -f /home/koldar/git/Robotieee/Server/planner_wrapper/Problems/Sokoban/instance-1 -o /home/koldar/git/Robotieee/Server/planner_wrapper/Problems/Sokoban/domain.pddl -out /home/koldar/git/Robotieee/Server/planner_wrapper/tests/computed.plan -onlybestfirst",
+        "problem": "/home/koldar/git/Robotieee/Server/planner_wrapper/Problems/Sokoban/instance-1",
+        "actions": "having STRIPS duration",
+        "time": 4.28,
+        "search-time": 4.27,
+        "parsing-time": 0.01,
+        "mutex-time": 0.00,
+        "nr-actions": 211
+    },
+    "solution": [
+        {
+            "IAction": "MOVE",
+            "player": "PLAYER-01",
+            "start-pos": {
+                "x": 5,
+                "y": 8
+            },
+            "end-pos": {
+                "x": 4,
+                "y": 8
+            },
+            "direction": "DIR-LEFT"
+        },
+        {
+            "IAction": "PUSH-TO-NONGOAL",
+            "player": "PLAYER-01",
+            "stone": "STONE-06",
+            "player-pos": {
+                "x": 5,
+                "y": 8
+            },
+            "start-pos": {
+                "x": 5,
+                "y": 8
+            },
+            "end-pos": {
+                "x": 4,
+                "y": 8
+            },
+            "direction": "DIR-LEFT"
+        }
+    ]
+}

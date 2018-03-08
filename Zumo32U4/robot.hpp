@@ -13,6 +13,12 @@
 #include <Zumo32U4.h>
 #include "moveable.hpp"
 
+extern uint32_t turnAngle;
+extern int16_t turnRate;
+
+
+  
+
 namespace robotieee {
 
 /**
@@ -21,6 +27,8 @@ namespace robotieee {
 class robot : public moveable {
 
 public:
+
+  
   /**
    * initialize a robot
    * 
@@ -62,7 +70,10 @@ public:
    */
   void calibrateGyroscope();
 
-  void calibrateMovement(double distance);
+  void hardwareInit();
+
+
+
   
    
 private:
@@ -74,11 +85,10 @@ private:
   static const float ACCEL_SENS = 0.000061f;
   static const float G_ACCELERATION = 9.806650f;
   static const float SPEED_100 = 12.666666f;
+
   
   float _averageAngularRateCcw;
   float _averageAngularRateCw;
-  float _velocityFw;
-  float _velocityBw;
 };
 
 }

@@ -25,15 +25,8 @@ model zumo_model = model{10, 10};
 void setup() {
 
   //Hardware initialization
-  Wire.begin();
-  lcd.init();
-  gyro.init();
-  accel.init();
-  gyro.setTimeout(1000);
-  gyro.enableDefault();
-  accel.setTimeout(1000);
-  accel.enableDefault();
-
+  zumo_model.zumo_robot.hardwareInit();
+  
   lcd.clear();
   lcd.print(F("Select"));
   lcd.gotoXY(0, 1);
@@ -42,26 +35,27 @@ void setup() {
   delay(3000);
 
   lcd.clear();
-  lcd.print(F("A)Rot B)Mv"));
+  lcd.print(F("A)Rt/B)Mv"));
   lcd.gotoXY(0, 1);
   lcd.print(F("C)Test"));
 }
+
 void loop() { 
   
   while(exit_switch == 0){
     if(buttonA.getSingleDebouncedPress())
     {
-      function = 1;
+      function = 1; //Rotation
       exit_switch = 1;
     }
     else if(buttonB.getSingleDebouncedPress())
     {
-      function = 2;
+      function = 2; //Movement
       exit_switch = 1;
     }
     else if(buttonC.getSingleDebouncedPress())
     {
-      function = 3;
+      function = 3; //End function
       exit_switch = 1;
     } 
     else
@@ -74,7 +68,6 @@ void loop() {
   do {
     if (function == 1){
   
-      //Rotation
       lcd.clear();
       lcd.print(F("Select"));
       lcd.gotoXY(0, 1);
@@ -88,6 +81,8 @@ void loop() {
       lcd.print(F("C)360"));
       
       exit_switch = 0;
+      
+      //Allows the user to choose how many degrees to rotate
       while (exit_switch == 0){
         if(buttonA.getSingleDebouncedPress())
         {
@@ -110,6 +105,8 @@ void loop() {
         }
       }
       delay(1000);
+      
+      //Calibrates the Gyroscope and then rotates.
       zumo_model.zumo_robot.calibrateGyroscope();
       buttonA.waitForButton();
       zumo_model.zumo_robot.rotate(rotation);
@@ -117,14 +114,15 @@ void loop() {
     }
   
     else if(function == 2){
-      //Movement forward
+      
       lcd.clear();
       lcd.print(F("+10/-10"));
       lcd.gotoXY(0, 1);
       lcd.print(F("C)onfirm"));
       delay(1000);
       exit_switch = 0;
-  
+
+      //Allows the user to choose how many cms to move
       while (exit_switch == 0) {
         if(buttonA.getSingleDebouncedPress())
         {
@@ -144,6 +142,8 @@ void loop() {
         }
       };
       delay(1000);
+
+      //Moves the robot
       zumo_model.zumo_robot.moveStraight(distance);
       function = 3;
     }
@@ -154,44 +154,5 @@ void loop() {
       lcd.clear();
       lcd.print(F("End"));
     }
-  }while(function == 0);
-    
+  }while(function == 0);   
 }
-  /*if(buttonA.isPressed()){
-    //Gyroscope calibration
-    lcd.clear();
-    delay(1000);
-    lcd.print(F("Calibr."));
-    //Rotation test
-    lcd.clear();
-    lcd.print(F("Reset"));
-    lcd.gotoXY(0, 1);
-    lcd.print(F("Press A"));
-    buttonA.waitForButton();
-    delay(1000);
-
-  }
-
-  if(buttonB.isPressed()){
-    //Movement forward
-    lcd.clear();
-    lcd.print(F("Press"));
-    lcd.gotoXY(0, 1);
-    lcd.print(F("B"));
-    buttonB.waitForButton();
-    zumo_model.zumo_robot.moveStraight(10);
-   delay(1000);
-  }
-
-  
-  if(buttonC.isPressed()){
-    //Movement backwards
-    lcd.clear();
-    lcd.print(F("Press"));
-    lcd.gotoXY(0, 1);
-    lcd.print(F("B"));
-    buttonC.waitForButton();
-    zumo_model.zumo_robot.moveStraight(-10);
-   delay(1000);
-  }
-}*/

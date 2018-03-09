@@ -1,0 +1,288 @@
+{
+    "version": "1.0",
+    "actions": [
+        {
+            "action": "move",
+            "player": "player-01",
+            "start-pos": {
+                "x": "pos",
+                "y": "5"
+            },
+            "end-pos": {
+                "x": "pos",
+                "y": "4"
+            },
+            "direction": "dir-left"
+        },
+        {
+            "action": "move",
+            "player": "player-01",
+            "start-pos": {
+                "x": "pos",
+                "y": "4"
+            },
+            "end-pos": {
+                "x": "pos",
+                "y": "3"
+            },
+            "direction": "dir-left"
+        },
+        {
+            "action": "move",
+            "player": "player-01",
+            "start-pos": {
+                "x": "pos",
+                "y": "3"
+            },
+            "end-pos": {
+                "x": "pos",
+                "y": "2"
+            },
+            "direction": "dir-left"
+        },
+        {
+            "action": "move",
+            "player": "player-01",
+            "start-pos": {
+                "x": "pos",
+                "y": "2"
+            },
+            "end-pos": {
+                "x": "pos",
+                "y": "2"
+            },
+            "direction": "dir-up"
+        },
+        {
+            "action": "move",
+            "player": "player-01",
+            "start-pos": {
+                "x": "pos",
+                "y": "2"
+            },
+            "end-pos": {
+                "x": "pos",
+                "y": "2"
+            },
+            "direction": "dir-up"
+        },
+        {
+            "action": "move",
+            "player": "player-01",
+            "start-pos": {
+                "x": "pos",
+                "y": "2"
+            },
+            "end-pos": {
+                "x": "pos",
+                "y": "3"
+            },
+            "direction": "dir-right"
+        },
+        {
+            "action": "move",
+            "player": "player-01",
+            "start-pos": {
+                "x": "pos",
+                "y": "3"
+            },
+            "end-pos": {
+                "x": "pos",
+                "y": "4"
+            },
+            "direction": "dir-right"
+        },
+        {
+            "action": "move",
+            "player": "player-01",
+            "start-pos": {
+                "x": "pos",
+                "y": "4"
+            },
+            "end-pos": {
+                "x": "pos",
+                "y": "5"
+            },
+            "direction": "dir-right"
+        },
+        {
+            "action": "move",
+            "player": "player-01",
+            "start-pos": {
+                "x": "pos",
+                "y": "5"
+            },
+            "end-pos": {
+                "x": "pos",
+                "y": "6"
+            },
+            "direction": "dir-right"
+        },
+        {
+            "action": "move",
+            "player": "player-01",
+            "start-pos": {
+                "x": "pos",
+                "y": "6"
+            },
+            "end-pos": {
+                "x": "pos",
+                "y": "7"
+            },
+            "direction": "dir-right"
+        },
+        {
+            "action": "move",
+            "player": "player-01",
+            "start-pos": {
+                "x": "pos",
+                "y": "7"
+            },
+            "end-pos": {
+                "x": "pos",
+                "y": "7"
+            },
+            "direction": "dir-down"
+        },
+        {
+            "action": "move",
+            "player": "player-01",
+            "start-pos": {
+                "x": "pos",
+                "y": "7"
+            },
+            "end-pos": {
+                "x": "pos",
+                "y": "7"
+            },
+            "direction": "dir-down"
+        },
+        {
+            "action": "move",
+            "player": "player-01",
+            "start-pos": {
+                "x": "pos",
+                "y": "7"
+            },
+            "end-pos": {
+                "x": "pos",
+                "y": "8"
+            },
+            "direction": "dir-right"
+        },
+        {
+            "action": "move",
+            "player": "player-01",
+            "start-pos": {
+                "x": "pos",
+                "y": "8"
+            },
+            "end-pos": {
+                "x": "pos",
+                "y": "9"
+            },
+            "direction": "dir-right"
+        },
+        {
+            "action": "move",
+            "player": "player-01",
+            "start-pos": {
+                "x": "pos",
+                "y": "9"
+            },
+            "end-pos": {
+                "x": "pos",
+                "y": "9"
+            },
+            "direction": "dir-up"
+        },
+        {
+            "action": "move",
+            "player": "player-01",
+            "start-pos": {
+                "x": "pos",
+                "y": "9"
+            },
+            "end-pos": {
+                "x": "pos",
+                "y": "9"
+            },
+            "direction": "dir-up"
+        },
+        {
+            "action": "pull-to-nongoal",
+            "player": "player-01",
+            "stone": "stone-04",
+            "player-start-pos": {
+                "x": "pos",
+                "y": "9"
+            },
+            "start-pos": {
+                "x": "pos",
+                "y": "8"
+            },
+            "end-pos": {
+                "x": "pos",
+                "y": "7"
+            },
+            "direction": "dir-left"
+        },
+        {
+            "action": "move",
+            "player": "player-01",
+            "start-pos": {
+                "x": "pos",
+                "y": "8"
+            },
+            "end-pos": {
+                "x": "pos",
+                "y": "9"
+            },
+            "direction": "dir-right"
+        },
+        {
+            "action": "move",
+            "player": "player-01",
+            "start-pos": {
+                "x": "pos",
+                "y": "9"
+            },
+            "end-pos": {
+                "x": "pos",
+                "y": "9"
+            },
+            "direction": "dir-down"
+        },
+        {
+            "action": "pull-to-nongoal",
+            "player": "player-01",
+            "stone": "stone-06",
+            "player-start-pos": {
+                "x": "pos",
+                "y": "9"
+            },
+            "start-pos": {
+                "x": "pos",
+                "y": "8"
+            },
+            "end-pos": {
+                "x": "pos",
+                "y": "7"
+            },
+            "direction": "dir-left"
+        },
+        {
+            "action": "move",
+            "player": "player-01",
+            "start-pos": {
+                "x": "pos",
+                "y": "8"
+            },
+            "end-pos": {
+                "x": "pos",
+                "y": "8"
+            },
+            "direction": "dir-up"
+        }
+    ]
+}

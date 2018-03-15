@@ -51,12 +51,15 @@ public:
   void rotate(int16_t degrees);
 
   /**
-   * Moves the robot forward (or backwards) a given amount of meters. Positive values represent a movement forward,
-   * negative ones represent a movement backwards.
+   * Make the robot folow a black line
    * 
-   * @param[in] cent The amount of meters we want the robot to be moving
+   * \pre
+   *  \li the center line sensor is on a black track;
+   *  
+   * @param[in] the speed the robot needs to have when following the line
+   * @param[in] speedCompensation the amount of speed to increase or decrease if the robot is going out of trail
    */
-   void moveStraight(float centimeters);
+  void robot::followLine(int speed, int speedCompensation);
 
   /**
    * Computes the average angular rate measured by the gyroscope during rotations.

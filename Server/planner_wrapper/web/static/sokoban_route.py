@@ -37,6 +37,8 @@ def sokoban_problem():
 
     #ok, let's decide which factory to use
     if content["version"] == "1.0":
+        factory = LPG_V1_Factory()
+    elif content["version"] == "1.1":
         factory = LPG_V2_Factory()
     else:
         raise MalformedRequestException("unsupported version number!")

@@ -147,11 +147,18 @@ def call_program(program: typing.List[str], working_directory: str = os.path.abs
     working_directory = os.path.abspath(working_directory)
     print('CWD is "{}"'.format(working_directory))
     print('Executing "{}"'.format(' '.join(program)))
-    with subprocess.Popen(program, cwd=working_directory, stdout=subprocess.PIPE) as proc:
+    if len(' '.join(program)) > 0:
+        with subprocess.Popen(program, cwd=working_directory, stdout=subprocess.PIPE) as proc:
+            return CallProgram(
+                exit_status=proc.returncode,
+                stdout=str(proc.stdout.read(), 'utf8') if proc.stdout is not None else "",
+                stderr=str(proc.stderr.read(), 'utf8') if proc.stderr is not None else ""
+            )
+    else:
         return CallProgram(
-            exit_status=proc.returncode,
-            stdout=str(proc.stdout.read(), 'utf8') if proc.stdout is not None else "",
-            stderr=str(proc.stderr.read(), 'utf8') if proc.stderr is not None else ""
+            exit_status=0,
+            stdout="",
+            stderr="",
         )
 
 

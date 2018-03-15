@@ -159,7 +159,9 @@ class V1_SokobanWorldToPddlConverter(ISokobanWorldToPddlProblemConverter):
                                 pass
 
                 with Clause(tf, name="goal", colon=True):
-                    with Clause(tf, name="and", fake=len(world.goals) == 1):
+                    with Clause(tf, name="and", fake=False):
+                        # player needs to return to the docking station
+                        Clause.write_predicate(tf, name="at", value=["player-01", self.cell_predicate(world.docking_station)])
                         for b in world.blocks:
                             Clause.write_predicate(tf, name="at-goal", value=b.to_pddl_predicate())
                             tf.write("\n")

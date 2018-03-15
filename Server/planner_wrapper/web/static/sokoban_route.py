@@ -19,10 +19,10 @@ def sokoban_problem():
     Example:
 
     PUSH
-    curl -i http://localhost:5000/sokoban_problem -X POST -d '{"version": "1.0","world": {"rows": 3,"columns": 3,"cells": [{ "y": 0, "x": 0, "entities": "RG"},{ "y": 0, "x": 1, "entities": ""},{ "y": 0, "x": 2, "entities": "U"},{ "y": 1, "x": 0, "entities": ""},{ "y": 1, "x": 1, "entities": "B"},{ "y": 1, "x": 2, "entities": ""},{ "y": 2, "x": 0, "entities": ""},{ "y": 2, "x": 1, "entities": ""},{ "y": 2, "x": 2, "entities": ""}]}}' -H "Content-Type: application/json"
+    curl -i http://localhost:5000/sokoban_problem -X POST -d '{"version": "1.0","world": {"rows": 3,"columns": 3,"cells": [{ "y": 0, "x": 0, "entities": "DRG"},{ "y": 0, "x": 1, "entities": ""},{ "y": 0, "x": 2, "entities": "U"},{ "y": 1, "x": 0, "entities": ""},{ "y": 1, "x": 1, "entities": "B"},{ "y": 1, "x": 2, "entities": ""},{ "y": 2, "x": 0, "entities": ""},{ "y": 2, "x": 1, "entities": ""},{ "y": 2, "x": 2, "entities": ""}]}}' -H "Content-Type: application/json"
 
     PULL
-    curl -i http://localhost:5000/sokoban_problem -X POST -d '{"version": "1.1","world": {"rows": 3,"columns": 3,"cells": [{ "y": 0, "x": 0, "entities": "R"},{ "y": 0, "x": 1, "entities": ""},{ "y": 0, "x": 2, "entities": "U"},{ "y": 1, "x": 0, "entities": ""},{ "y": 1, "x": 1, "entities": "G"},{ "y": 1, "x": 2, "entities": ""},{ "y": 2, "x": 0, "entities": ""},{ "y": 2, "x": 1, "entities": ""},{ "y": 2, "x": 2, "entities": "B"}]}}' -H "Content-Type: application/json"
+    curl -i http://localhost:5000/sokoban_problem -X POST -d '{"version": "1.1","world": {"rows": 3,"columns": 3,"cells": [{ "y": 0, "x": 0, "entities": "RD"},{ "y": 0, "x": 1, "entities": ""},{ "y": 0, "x": 2, "entities": "U"},{ "y": 1, "x": 0, "entities": ""},{ "y": 1, "x": 1, "entities": "G"},{ "y": 1, "x": 2, "entities": ""},{ "y": 2, "x": 0, "entities": ""},{ "y": 2, "x": 1, "entities": ""},{ "y": 2, "x": 2, "entities": "B"}]}}' -H "Content-Type: application/json"
 
 
     :return:

@@ -135,7 +135,7 @@ class SokobanWorld:
         return self._robot
 
     @property
-    def docking_station(self):
+    def docking_station(self) -> Point:
         return self._docking_station
 
     @property

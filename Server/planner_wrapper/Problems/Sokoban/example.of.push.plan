@@ -1,0 +1,21 @@
+
+; Version LPG-td-1.0
+; Seed 88460413
+; Command line: /home/koldar/Documents/LPGFrancesco/LPG/lpg -n 1 -f /home/koldar/git/Robotieee/Server/planner_wrapper/web/problem_instance -o /home/koldar/git/Robotieee/Server/planner_wrapper/Problems/Sokoban/domain.pddl -out /home/koldar/git/Robotieee/Server/planner_wrapper/web/computed.plan -onlybestfirst 
+; Problem /home/koldar/git/Robotieee/Server/planner_wrapper/web/problem_instance
+; Actions having STRIPS duration
+; Time 0.04
+; Search time 0.03
+; Parsing time 0.01
+; Mutex time 0.00
+; NrActions 9
+
+0:   (MOVE PLAYER-01 CELL-00-00 CELL-01-00 DIR-DOWN) [1]
+1:   (MOVE PLAYER-01 CELL-01-00 CELL-02-00 DIR-DOWN) [1]
+2:   (MOVE PLAYER-01 CELL-02-00 CELL-02-01 DIR-RIGHT) [1]
+3:   (MOVE PLAYER-01 CELL-02-01 CELL-02-02 DIR-RIGHT) [1]
+4:   (MOVE PLAYER-01 CELL-02-02 CELL-01-02 DIR-UP) [1]
+5:   (PUSH-TO-NONGOAL PLAYER-01 STONE-00 CELL-01-02 CELL-01-01 CELL-01-00 DIR-LEFT) [1]
+6:   (MOVE PLAYER-01 CELL-01-01 CELL-02-01 DIR-DOWN) [1]
+7:   (MOVE PLAYER-01 CELL-02-01 CELL-02-00 DIR-LEFT) [1]
+8:   (PUSH-TO-GOAL PLAYER-01 STONE-00 CELL-02-00 CELL-01-00 CELL-00-00 DIR-UP) [1]

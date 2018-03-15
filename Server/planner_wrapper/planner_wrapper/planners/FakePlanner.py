@@ -19,9 +19,10 @@ class FakePlanner(IPlanner):
 
     @property
     def output_filename(self):
-        if "pull" in self.domain_filename.lower():
+        tmp = self.domain_filename.lower()
+        if "pull" in tmp:
             return "../Problems/Sokoban/example.of.pull.plan"
-        elif "push" in self.domain_filename:
+        elif "push" in tmp:
             return "../Problems/Sokoban/example.of.push.plan"
         else:
             raise ValueError("'{}' is invalid!".format(self.domain_filename))

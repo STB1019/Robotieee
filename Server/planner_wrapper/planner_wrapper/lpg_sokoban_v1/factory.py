@@ -15,7 +15,7 @@ class LPG_V1_Factory(IPlannerFactory):
 
     @property
     def domain_filename(self) -> str:
-        return os.path.abspath("../Problems/Sokoban/domain.pddl")
+        return os.path.abspath("../Problems/Sokoban/domainPush.pddl")
 
     def json_to_world(self)-> IJsonToWorld:
         return JsonToSokobanWorld_V1()

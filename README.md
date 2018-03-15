@@ -64,8 +64,23 @@ The output is in `build/doc`, accessible via HTML on the file `index.html`
 
 # Python planner web server
 
+The web server uses Python3.6. The web server can be customized with the following CLI options:
+
+```
+cd Server/planner_wrapper/
+virtualenv venv
+pip install -f requirements.txt
+python main.py --planner_location="place/where/the/planner/is" --use_planner="lpg"
+```
+
+Alternatively you can simulate the planner by using:
+
+```
+python main.py --planner_location="ignored" --use_planner="fake"`
+```
+
 In *Server/planner_wrapper* you can find a python program generating a server which execute a classic planner to solve Sokoban problem.
-The software uses LPG planner, which on server should be located in the location specified by the file `config.py`. You can easily change the location by changing such file. The server listen for POST requests at the URL `ip:5000/sokoban_problem`. In the payload of the request, a json needs to be provided. Furthermore, be sure to add to the header of the request the "Content-Type" "application/json". The server will reply with a 200 response containing a payload with the plan computed.
+The server listen for POST requests at the URL `ip:5000/sokoban_problem`. In the payload of the request, a json needs to be provided. Furthermore, be sure to add to the header of the request the "Content-Type" "application/json". The server will reply with a 200 response containing a payload with the plan computed.
 
 In the following we will assume the following problem (made thanks by the website [sokoban-editor](https://deificx.github.io/sokoban-editor/) ):
 
@@ -77,7 +92,7 @@ The yellow circle is the robot, the crate is the block that needs to be put on t
 
 ```
 {
-  "version": "1.0",
+  "version": "1.1",
   "world": {
     "rows": 3,
     "columns": 3,
@@ -109,8 +124,8 @@ Multiple objects can be within the same cell.
 ## JSON reply
 
 ```
-{    
-    "version": "1.0",
+{
+    "version": "1.1",
     "actions": [
         {
             "action": "move",

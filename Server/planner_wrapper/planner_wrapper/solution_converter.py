@@ -4,8 +4,8 @@ import re
 
 action_tags = {
     'move': ('action','player','start-pos','end-pos','direction'),
-    'push-to-goal': ('action','player','stone','player-start-pos','start-pos','end-pos','direction'),
-    'push-to-nongoal': ('action','player','stone','player-start-pos','start-pos','end-pos','direction')
+    'pull-to-goal': ('action','player','stone','player-start-pos','start-pos','end-pos','direction'),
+    'pull-to-nongoal': ('action','player','stone','player-start-pos','start-pos','end-pos','direction')
 }
 
 
@@ -58,5 +58,5 @@ def dict_to_json(d, file_out):
     with open(file_out, 'w') as f:
         json.dump(d,f,indent=4)
             
-#p = plan_to_dict(r"C:\Users\Nicola\Desktop\ZUMOrobot\Robotieee\Server\planner_wrapper\tests\test-instance.sol")
-#dict_to_json(p, r"C:\Users\Nicola\Desktop\ZUMOrobot\Robotieee\Server\planner_wrapper\tests\plan.json")
+p = plan_to_dict(r"/home/danielevezz/Programming/Python/Robotieee/Server/planner_wrapper/tests/test-instance-pull.sol")
+dict_to_json(p, r"/home/danielevezz/Programming/Python/Robotieee/Server/planner_wrapper/tests/planPull.json")

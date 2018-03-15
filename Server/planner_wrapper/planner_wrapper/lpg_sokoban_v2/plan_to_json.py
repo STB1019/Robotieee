@@ -18,7 +18,7 @@ class LPG_V2_PlanToJsonConverter(IPlanToJsonConverter):
     def convert_plan(self, actions: typing.List[IPlannerAction]) -> typing.Dict[typing.AnyStr, typing.Any]:
         # now we dump actions within a json
         ret_val = {}
-        ret_val['version'] = "1.0"
+        ret_val['version'] = "1.1"
         ret_val['plan'] = []
 
         # get method whose name involve class name of the action to conveert to json

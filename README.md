@@ -199,6 +199,12 @@ Multiple objects can be within the same cell.
 }
 ```
 
+# Middelware Blue
+
+Middleware to send data between Bluetooth (App-Robot) and Wifi (App-Server).
+
+_coming soon_
+
 # References
 
  - [Sumo Robot manual](https://www.pololu.com/docs/0J63);

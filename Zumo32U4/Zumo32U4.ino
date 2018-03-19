@@ -1,6 +1,7 @@
  
 #define AVR_BUILD
 
+
 #include <Zumo32U4.h>
 #include <Wire.h>
 #include "model.hpp"
@@ -28,23 +29,38 @@ void setup() {
   //Hardware initialization
   zumo_model.zumo_robot.hardwareInit();
   
-  lcd.clear();
-  lcd.print(F("Select"));
-  lcd.gotoXY(0, 1);
-  lcd.print(F("Funct."));
+//  lcd.clear();
+//  lcd.print(F("Select"));
+//  lcd.gotoXY(0, 1);
+//  lcd.print(F("Funct."));
 
-  delay(3000);
+  delay(1000);
 
+//  lcd.clear();
+//  lcd.print(F("A)Rt/B)Mv"));
+//  lcd.gotoXY(0, 1);
+//  lcd.print(F("C)Test"));
+
+# ifdef DEBUG
+  for (int i = 0; i < 3; i++) {
+    lcd.print(lineSensors.calibratedMinimumOn[i]);
+    lcd.gotoXY(0,1);
+    lcd.print(lineSensors.calibratedMaximumOn[i]);
+    delay(2000);
+    lcd.clear();
+  }
+# endif
+
+  delay(5000);
+  zumo_model.zumo_robot.followLine(100,2);
+  //zumo_model.zumo_robot.rotate(-120, 150, false);
+  
   lcd.clear();
-  lcd.print(F("A)Rt/B)Mv"));
-  lcd.gotoXY(0, 1);
-  lcd.print(F("C)Test"));
+  lcd.print(F("DONE!"));
 }
 
 void loop() {
-  lcd.print(F("Start"));
-  followLine(100, 10);
-  lcd.print(F("Stop");
+  
 }
 
 //void loop() { 

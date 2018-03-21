@@ -44,9 +44,8 @@ namespace robotieee {
     
     //Wire.begin();
     lcd.init();
-    accel.init();
-    accel.setTimeout(500);
-    accel.enableDefault();
+    
+    // At the moment, the gyroscope is initialized by TurnSensor.cpp code
     //gyro.init();
     //gyro.setTimeout(500);
     //gyro.enableDefault();

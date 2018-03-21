@@ -9,6 +9,11 @@
 #include "TurnSensor.h"
 #include <Wire.h>
 
+#define DEFAULT_SPEED                   150
+#define DEFAULT_CENTERING_DELAY         150
+#define DEFAULT_PATH_SEEK_COMPENSATION  5
+#define DEFAULT_SPEED_COMPENSATION      5
+
 extern Zumo32U4LCD lcd;
 extern L3G gyro;
 extern LSM303 accel;
@@ -20,7 +25,11 @@ namespace robotieee {
   static struct line_readings readLineSensors();
 
   robot::robot(const point& start_position) : moveable{start_position} {
-  
+    _hardwareInitialized   = false;
+    _speed                 = DEFAULT_SPEED;
+    _centeringDelay        = DEFAULT_CENTERING_DELAY;
+    _pathSeekCompensation  = DEFAULT_PATH_SEEK_COMPENSATION;
+    _speedCompensation     = DEFAULT_SPEED_COMPENSATION;
   }
   
   robot::~robot() {
@@ -28,6 +37,11 @@ namespace robotieee {
   }
 
   void robot::hardwareInit() {
+
+    if (_hardwareInitialized) {
+      return;
+    }
+    
     //Wire.begin();
     lcd.init();
     accel.init();
@@ -37,7 +51,6 @@ namespace robotieee {
     //gyro.setTimeout(500);
     //gyro.enableDefault();
    
-    // Disable LED pulses readings
     lineSensors.initThreeSensors(); 
     
     // Gyroscope offset calibration
@@ -45,16 +58,18 @@ namespace robotieee {
 
     // Manual line sensor calibration
     calibrateLineSensors();
+
+    _hardwareInitialized = true;
   }
   
   
-  bool robot::rotate(int16_t degrees, unsigned int speed, bool stopIfCenterBlack = false) {
+  bool robot::rotate(int16_t degrees, bool stopIfCenterBlack = false) {
 
     int sign = (degrees > 0) ? 1 : -1;
     bool retVal;
 
     turnSensorReset();
-    Zumo32U4Motors::setSpeeds(-sign * speed, sign * speed);
+    Zumo32U4Motors::setSpeeds(-sign * _speed, sign * _speed);
     while (true) {
       turnSensorUpdate();
 
@@ -78,48 +93,51 @@ namespace robotieee {
   
   }
 
-  void robot::followLine(unsigned int speed, unsigned int delta) {
+  void robot::followLine() {
 
-    int sxMotor = speed;
-    int dxMotor = speed;
+    int sxSpeed = _speed;
+    int dxSpeed = _speed;
 
     while (true) {
       
-      Zumo32U4Motors::setSpeeds(sxMotor, dxMotor);
+      Zumo32U4Motors::setSpeeds(sxSpeed, dxSpeed);
       struct line_readings lineReadings = readLineSensors();
 
       /* The possible scenarios are:
-       * x- WWW: the robot has just abandoned the path
-       * x- WWB: we lost the path but we know that we are going left too much
-       * x - WBW: we are correctly following the path
+       * - WWW: the robot has just abandoned the path
+       * - WWB: we lost the path but we know that we are going left too much
+       * - WBW: we are correctly following the path
        * - WBB: we reached the intersection but we are a bit off from the track
-       * x- BWW: we lost the path but we know that we are going right too much
-       * x- BWB: we are looking for the path we lost
+       * - BWW: we lost the path but we know that we are going right too much
+       * - BWB: we are looking for the path we lost
        * - BBW: we reached the intersection but we are a bit off from the track
-       * x - BBB: we reached the intersection with no relevant error
+       * - BBB: we reached the intersection with no relevant error
        */
 
       if (lineReadings.left == LC_BLACK && lineReadings.center == LC_BLACK && lineReadings.right == LC_BLACK) {
+        // The delay is used to make sure that the robot reaches the center of the intersection
+        // and does not stop as soon as it sees the black horizontal line
+        delay(_centeringDelay);
         break;
       }
 
       if (lineReadings.left == LC_WHITE && lineReadings.center == LC_BLACK && lineReadings.right == LC_WHITE) {
-        sxMotor = speed;
-        dxMotor = speed;
+        sxSpeed = _speed;
+        dxSpeed = _speed;
         continue; 
       }
 
       if (lineReadings.center == LC_WHITE) {
-        fixPath(speed, delta);
+        fixPath();
         continue;
       }
 
       if (lineReadings.left == LC_BLACK && lineReadings.center == LC_BLACK && lineReadings.right == LC_WHITE) {
-        dxMotor += delta;
+        dxSpeed += _speedCompensation;
       }
 
       if (lineReadings.left == LC_WHITE && lineReadings.center == LC_BLACK && lineReadings.right == LC_BLACK) {
-        sxMotor += delta;
+        sxSpeed += _speedCompensation;
       }
       
     }
@@ -128,12 +146,12 @@ namespace robotieee {
     Zumo32U4Motors::setSpeeds(0, 0);
   }
 
-  void robot::fixPath(unsigned int speed, unsigned int delta) {
+  void robot::fixPath() {
 
     int i = 1;
 
     while (true) {
-      bool foundBlack = rotate(i * delta, speed, true);
+      bool foundBlack = rotate(i * _pathSeekCompensation, true);
       if (foundBlack) {
         break;
       }
@@ -163,6 +181,30 @@ namespace robotieee {
 
     lcd.clear();
     
+  }
+
+  void robot::turnRight() {
+    rotate(-90, false); 
+  }
+
+  void robot::turnLeft() {
+    rotate(90, false); 
+  }
+
+  void robot::turnBack() {
+    // A value of 179 degrees is used due to the way TurnSensor.cpp encodes degrees: a value of 180 would overflow and therefore not work
+    // This isn't that bad after all: rotating 179 degrees + error should lead to a almost perfect 180 degrees turn anyway
+    rotate(179, false); 
+  }
+
+  void robot::goAhead(unsigned int cells) {
+    for (int i = 0; i < cells; i++) {
+      followLine(); 
+    }
+  }
+
+  void robot::setSpeed(uint16_t speed) {
+    _speed = speed;
   }
 
   static enum line_color convertValueToLineColor(int value) {

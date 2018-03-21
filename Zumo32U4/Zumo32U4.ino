@@ -52,8 +52,10 @@ void setup() {
 # endif
 
   delay(5000);
-  zumo_model.zumo_robot.followLine(100,2);
-  //zumo_model.zumo_robot.rotate(-120, 150, false);
+  //zumo_model.zumo_robot.followLine();
+  //zumo_model.zumo_robot.turnBack();
+  //zumo_model.zumo_robot.followLine();
+  zumo_model.zumo_robot.goAhead(2);
   
   lcd.clear();
   lcd.print(F("DONE!"));

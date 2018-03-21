@@ -13,13 +13,29 @@
 #include <Zumo32U4.h>
 #include "moveable.hpp"
 
-extern uint32_t turnAngle;
-extern int16_t turnRate;
-
-
-  
-
 namespace robotieee {
+
+enum line_sensors {
+    LEFT = 0,
+    CENTER = 1,
+    RIGHT = 2,
+  };
+
+/**
+ * the light intensity dected by one of the line sensor
+ */
+enum line_color {
+  LC_WHITE,
+  LC_LIGHTGRAY,
+  LC_DARKGRAY,
+  LC_BLACK,
+};
+
+struct line_readings {
+  enum line_color left;
+  enum line_color center;
+  enum line_color right;
+};
 
 /**
  * Represents Zumo32U4 robot itself
@@ -28,13 +44,13 @@ class robot : public moveable {
 
 public:
 
-  
   /**
-   * initialize a robot
+   * Initializes the robot given its starting position in the grid. Default values are used for movement parameters
    * 
    * @param[in] start_position the position where the robot is in robotieee::model::workplace
    */
 	robot(const point& start_position);
+ 
  /**
   * dispose the robot
   */
@@ -44,54 +60,95 @@ public:
    * Rotates the robot a given amount of degrees. Positive values represent counter clockwise rotations,
    * while negative values represent clockwise ones.
    * 
-   * \note Before calling this function for the first time, you MUST call robotieee::robot::calibrateGyroscope at least once
+   * \note 
+   *    \li Before calling this function for the first time, robotieee::robot::harwareInit must have been already run
    * 
    * @param[in] degrees The amount of desired rotation in degrees
+   * @param[in] stopIfCenterBlack If true, the rotation will prematurely terminate if the center line sensor finds a black surface
    */
-  void rotate(int16_t degrees);
+  bool rotate(int16_t degrees, bool stopIfCenterBlack = false);
+
+  /**
+   * Rotates the robot 90 degrees clockwise
+   * 
+   * \note 
+   *    \li Before calling this function for the first time, robotieee::robot::harwareInit must have been already run 
+   */
+  void turnRight();
+
+  /**
+   * Rotates the robot 180 degrees
+   * 
+   * \note 
+   *    \li Before calling this function for the first time, robotieee::robot::harwareInit must have been already run
+   */
+  void turnBack();
+
+  /**
+   * Rotates the robot 90 degrees counter-clockwise
+   * 
+   * \note 
+   *    \li Before calling this function for the first time, robotieee::robot::harwareInit must have been already run
+   */
+  void turnLeft();
+
+  /**
+   * Makes the robot go through a given number of cells.
+   * 
+   * \note 
+   *    \li Before calling this function for the first time, robotieee::robot::harwareInit must have been already run
+   * 
+   * @param[in] cells The number of cells to go through
+   */
+  void goAhead(unsigned int cells);
 
   /**
    * Make the robot folow a black line
    * 
+   * \note 
+   *    \li Before calling this function for the first time, robotieee::robot::harwareInit must have been already run
+   * 
    * \pre
-   *  \li the center line sensor is on a black track;
-   *  
-   * @param[in] the speed the robot needs to have when following the line
-   * @param[in] speedCompensation the amount of speed to increase or decrease if the robot is going out of trail
+   *    \li the center line sensor is on a black track;
+   *
    */
-  void robot::followLine(int speed, int speedCompensation);
+  void followLine();
 
   /**
-   * Computes the average angular rate measured by the gyroscope during rotations.
-   * In particular, the robot rotates until a fixed amount of measurements are taken. 
-   * Once done, the robot will use the computed values to approximatively determine the 
-   * amount of time needed for a rotation of a given angle.
-   * 
-   * @see robotieee::robot::rotate
-   * 
-   * \note Before calling robotieee::robot::rotate for the first time, you MUST call this function at least once.
+   * Initializes, configures and calibrates when needed the hardware of
+   * the Zumo32U3 robot.
+   * \note This function needs to be called explicitly before calling any
+   * hardware related function of the robotieee::robot class
    */
-  void calibrateGyroscope();
-
   void hardwareInit();
 
+  /**
+   * Sets the speed to be used by every future movement-related function
+   * 
+   * @param[in] speed The speed to be used for robot movement
+   */
+  void setSpeed(uint16_t speed);
 
-
-  
-   
+ 
 private:
-  static const int MOTORS_POWER = 150;
-  static const int MOVEMENT_DELAY = 500;
-  static const int GYRO_CALIBRATION_MEASUREMENTS = 10000;
-  static const int ACCEL_CALIBRATION_MEASUREMENTS = 10000;
-  static const float GYRO_SENSITIVITY = 0.008750f;
-  static const float ACCEL_SENS = 0.000061f;
-  static const float G_ACCELERATION = 9.806650f;
-  static const float SPEED_100 = 12.666666f;
+  bool _hardwareInitialized;      // Used to avoid multiple hardware initializations.
+  uint16_t _speed;                // The speed to be used by the robot in both rotations and straight movement. This values must be in range [-400, 400]
+  uint16_t _centeringDelay;       // The amount of milliseconds to wait after finding an intersection. This is needed to center the robot on the cross
+  uint8_t _pathSeekCompensation;  // The initial number of degrees to rotate when the robot is searching the lost black line. See fixPath function
+  uint8_t _speedCompensation;     // The speed increase used to make the robot slightly rotate when it arrives at an intersection but it is not parallel to it
 
-  
-  float _averageAngularRateCcw;
-  float _averageAngularRateCw;
+  /**
+   * This function is used internally by the other robot methods to adjust its trajectory
+   * when an error is detected.
+   */
+  void fixPath();
+
+  /**
+   * This function is used to manually calibrate the Zumo32U4 line sensors.
+   * This is done by first moving the robot manually on a light surface and
+   * then on a dark one.
+   */
+  void calibrateLineSensors();
 };
 
 }

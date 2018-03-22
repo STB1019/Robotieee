@@ -1,0 +1,77 @@
+;;   #####
+;;   #@ ##
+;;   # $ #
+;;   #   #
+;;   #####
+
+(define (problem simpleexploration)
+  (:domain exploration)
+  (:objects
+    dir-down - direction
+    dir-left - direction
+    dir-right - direction
+    dir-up - direction
+    player-01 - player
+    pos-01-01 - location
+    pos-01-02 - location
+    pos-02-01 - location
+    pos-02-02 - location
+    pos-02-03 - location
+    pos-03-01 - location
+    pos-03-02 - location
+    pos-03-03 - location
+  )
+  (:init
+
+    (MOVE-DIR pos-01-01 pos-01-02 dir-right)
+    (MOVE-DIR pos-01-01 pos-02-01 dir-down)
+
+    (MOVE-DIR pos-01-02 pos-01-01 dir-left)
+    (MOVE-DIR pos-01-02 pos-02-02 dir-down)
+
+    (MOVE-DIR pos-02-01 pos-01-01 dir-up)
+    (MOVE-DIR pos-02-01 pos-02-02 dir-right)
+    (MOVE-DIR pos-02-01 pos-03-01 dir-down)
+
+    (MOVE-DIR pos-02-02 pos-01-02 dir-up)
+    (MOVE-DIR pos-02-02 pos-02-01 dir-left)
+    (MOVE-DIR pos-02-02 pos-02-03 dir-right)
+    (MOVE-DIR pos-02-02 pos-03-02 dir-down)
+
+    (MOVE-DIR pos-02-03 pos-02-02 dir-left)
+    (MOVE-DIR pos-02-03 pos-03-03 dir-down)
+
+    (MOVE-DIR pos-03-01 pos-02-01 dir-up)
+    (MOVE-DIR pos-03-01 pos-03-02 dir-right)
+
+    (MOVE-DIR pos-03-02 pos-02-02 dir-up)
+    (MOVE-DIR pos-03-02 pos-03-01 dir-left)
+    (MOVE-DIR pos-03-02 pos-03-03 dir-right)
+
+    (MOVE-DIR pos-03-03 pos-02-03 dir-up)
+    (MOVE-DIR pos-03-03 pos-03-02 dir-left)
+
+    (at player-01 pos-01-01)
+    (visited pos-01-01)
+    
+    (clear pos-01-01)
+    (clear pos-01-02)
+    
+    (clear pos-02-01)
+    (clear pos-02-03)
+
+    (clear pos-03-01)
+    (clear pos-03-02)
+    (clear pos-03-03)
+
+  )
+  (:goal (and
+    (visited pos-01-01)
+    (visited pos-01-02)
+    (visited pos-02-01)
+    (visited pos-02-03)
+    (visited pos-03-01)
+    (visited pos-03-02)
+    (visited pos-03-03)
+  ))
+)

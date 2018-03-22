@@ -1,0 +1,23 @@
+
+; Version LPG-td-1.0
+; Seed 78983175
+; Command line: /home/koldar/Documents/LPGFrancesco/LPG/lpg -n 2 -o domain.pddl -f instanceExample 
+; Problem instanceExample
+; Actions having STRIPS duration
+; Time 0.01
+; Search time 0.01
+; Parsing time 0.00
+; Mutex time 0.00
+; NrActions 11
+
+0:   (MOVE PLAYER-01 POS-01-01 POS-02-01 DIR-DOWN) [1]
+1:   (MOVE PLAYER-01 POS-02-01 POS-03-01 DIR-DOWN) [1]
+2:   (MOVE PLAYER-01 POS-03-01 POS-03-02 DIR-RIGHT) [1]
+3:   (MOVE PLAYER-01 POS-03-02 POS-03-03 DIR-RIGHT) [1]
+4:   (MOVE PLAYER-01 POS-03-03 POS-02-03 DIR-UP) [1]
+5:   (MOVE PLAYER-01 POS-02-03 POS-03-03 DIR-DOWN) [1]
+6:   (MOVE PLAYER-01 POS-03-03 POS-03-02 DIR-LEFT) [1]
+7:   (MOVE PLAYER-01 POS-03-02 POS-03-01 DIR-LEFT) [1]
+8:   (MOVE PLAYER-01 POS-03-01 POS-02-01 DIR-UP) [1]
+9:   (MOVE PLAYER-01 POS-02-01 POS-01-01 DIR-UP) [1]
+10:   (MOVE PLAYER-01 POS-01-01 POS-01-02 DIR-RIGHT) [1]

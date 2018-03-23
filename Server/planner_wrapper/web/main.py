@@ -3,7 +3,7 @@ from optparse import OptionParser
 from logging.handlers import RotatingFileHandler
 
 from flask import Flask, jsonify
-from web.static import sokoban_route
+from web.static import sokoban_route, exploration_route
 from web.static.flask_exceptions import SolutionNotFoundException, FlaskException
 from planner_wrapper import config
 
@@ -19,6 +19,7 @@ log.setLevel(logging.INFO)
 log.addHandler(handler)
 # blueprint registration
 app.register_blueprint(sokoban_route.simple_page)
+app.register_blueprint(exploration_route.simple_page)
 
 # error handler
 @app.errorhandler(FlaskException)

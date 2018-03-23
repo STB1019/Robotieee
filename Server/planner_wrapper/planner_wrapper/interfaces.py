@@ -150,7 +150,7 @@ class IPlannerFactory(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def sokoban_world_to_pddl_problem(self) -> ISokobanWorldToPddlProblemConverter:
+    def world_to_pddl_problem(self) -> IWorldToPddlProblemConverter:
         """
 
         :return: a structure converting a wordl representation into a valid PDDL problem file

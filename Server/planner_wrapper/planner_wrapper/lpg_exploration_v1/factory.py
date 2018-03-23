@@ -1,9 +1,11 @@
 import os
 
 from planner_wrapper import config
-from planner_wrapper.interfaces import IJsonToWorld, ISokobanWorldToPddlProblemConverter, IPlanner, \
+from planner_wrapper.interfaces import IJsonToWorld, IWorldToPddlProblemConverter, IPlanner, \
     IPlanFilenameToPlanConverter, IPlanToJsonConverter, IPlannerFactory
 from planner_wrapper.lpg_exploration_v1.explorationworld_to_pddlproblem import ExplorationWorldToPddlConverter
+from planner_wrapper.lpg_exploration_v1.plan_to_json import LPG_V1_ExplorationPlanToJsonConverter
+from planner_wrapper.lpg_exploration_v1.planneroutput_to_plan import LPG_V1_FilenameToExplorationPlanConverter
 from planner_wrapper.planners.FakePlanner import FakePlanner
 from planner_wrapper.planners.lpg_planner import LPGPlanner
 from planner_wrapper.lpg_sokoban_v1.json_to_sokobanworld import JsonToSokobanWorld_V1
@@ -21,7 +23,7 @@ class LPG_Exploration_V1_Factory(IPlannerFactory):
     def json_to_world(self)-> IJsonToWorld:
         return JsonToSokobanWorld_V1()
 
-    def sokoban_world_to_pddl_problem(self) -> ISokobanWorldToPddlProblemConverter:
+    def world_to_pddl_problem(self) -> IWorldToPddlProblemConverter:
         return ExplorationWorldToPddlConverter()
 
     @property
@@ -44,5 +46,5 @@ class LPG_Exploration_V1_Factory(IPlannerFactory):
         return LPG_V1_FilenameToExplorationPlanConverter()
 
     def plan_to_json(self) -> IPlanToJsonConverter:
-        return LPG_V1_PlanToJsonConverter()
+        return LPG_V1_ExplorationPlanToJsonConverter()
 

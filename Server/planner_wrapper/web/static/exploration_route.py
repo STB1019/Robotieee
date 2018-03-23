@@ -4,11 +4,12 @@ from flask import current_app
 from werkzeug.local import LocalProxy
 
 from planner_wrapper import solution_converter
+from planner_wrapper.lpg_exploration_v1.factory import LPG_Exploration_V1_Factory
 from planner_wrapper.lpg_sokoban_v1.factory import LPG_V1_Factory
 from planner_wrapper.lpg_sokoban_v2.factory import LPG_V2_Factory
 from web.static.flask_exceptions import SolutionNotFoundException, MalformedRequestException
 
-simple_page = Blueprint('index', __name__)
+simple_page = Blueprint('exploration', __name__)
 
 # logger
 logger = LocalProxy(lambda: current_app.logger)
@@ -28,26 +29,24 @@ def sokoban_problem():
     if content is None:
         raise MalformedRequestException("Couldn't fetch world json in this request. You should mark this request as a json one and put in the payload a compliant json!")
 
-    #get request version
+    # get request version
     if "version" not in content:
         raise MalformedRequestException("version key is not present in the json request!")
 
-    #ok, let's decide which factory to use
+    # ok, let's decide which factory to use
     if content["version"] == "1.0":
-        factory = LPG_V1_Factory()
-    elif content["version"] == "1.1":
-        factory = LPG_V2_Factory()
+        factory = LPG_Exploration_V1_Factory()
     else:
         raise MalformedRequestException("unsupported version number!")
 
-    logger.info('generating sokoban world from received json...')
-    sokoban_world = factory.json_to_world().convert_json_to_sokoban_world(content)
-    logger.info('generating pddl problem file from sokoban world...')
-    problem_filename = factory.sokoban_world_to_pddl_problem().generate_problem(
-        problem_filename="problem_instance",
-        domain_name="sokobanSequential",
-        problem_name="sokobanSequential-01",
-        world=sokoban_world,
+    logger.info('generating exploration world from received json...')
+    exploration_world = factory.json_to_world().convert_json_to_model_world(content)
+    logger.info('generating pddl problem file from exploration world...')
+    problem_filename = factory.world_to_pddl_problem().generate_problem(
+        problem_filename="problem_exploration_instance",
+        domain_name="exploration",
+        problem_name="exploration-01",
+        world=exploration_world,
     )
 
     logger.info('generating planner instance manager...')

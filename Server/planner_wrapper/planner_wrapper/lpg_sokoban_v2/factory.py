@@ -1,7 +1,7 @@
 import os
 
 from planner_wrapper import config
-from planner_wrapper.interfaces import IJsonToWorld, ISokobanWorldToPddlProblemConverter, IPlanner, \
+from planner_wrapper.interfaces import IJsonToWorld, IWorldToPddlProblemConverter, IPlanner, \
     IPlanFilenameToPlanConverter, IPlanToJsonConverter, IPlannerFactory
 from planner_wrapper.lpg_sokoban_v2.plan_to_json import LPG_V2_PlanToJsonConverter
 from planner_wrapper.planners.FakePlanner import FakePlanner
@@ -21,7 +21,7 @@ class LPG_V2_Factory(IPlannerFactory):
     def json_to_world(self)-> IJsonToWorld:
         return JsonToSokobanWorld_V1()
 
-    def sokoban_world_to_pddl_problem(self) -> ISokobanWorldToPddlProblemConverter:
+    def world_to_pddl_problem(self) -> IWorldToPddlProblemConverter:
         return V1_SokobanWorldToPddlConverter()
 
     @property

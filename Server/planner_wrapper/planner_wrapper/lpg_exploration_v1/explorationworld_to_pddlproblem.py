@@ -1,7 +1,7 @@
 import os
 
 from planner_wrapper.domains.sokoban.sokoban_actions import Direction
-from planner_wrapper.interfaces import ISokobanWorldToPddlProblemConverter
+from planner_wrapper.interfaces import IWorldToPddlProblemConverter
 from planner_wrapper.utils import Point, Clause
 
 __doc__ = """

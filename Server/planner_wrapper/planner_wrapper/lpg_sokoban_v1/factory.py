@@ -28,8 +28,8 @@ class LPG_V1_Factory(IPlannerFactory):
         if config.USE_PLANNER == "lpg":
             planner = LPGPlanner(lpg_location=config.PLANNER_LOCATION)
 
-            planner.use_best_first = True
-            planner.use_lpg = False
+            planner.use_best_first = False
+            planner.use_lpg = True
             planner.solutions_to_find = 1
             planner.output_filename = os.path.join(".", "computed.plan")
         elif config.USE_PLANNER == "fake":

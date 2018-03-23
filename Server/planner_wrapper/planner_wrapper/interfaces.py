@@ -13,14 +13,14 @@ class IPlannerAction:
         self.name = name
 
 
-class ISokobanWorldToPddlProblemConverter(metaclass=ABCMeta):
+class IWorldToPddlProblemConverter(metaclass=ABCMeta):
     """
-    Represents a class allowing you to generate a PDDL problem instance for a sokoban world
+    Represents a class allowing you to generate PDDL problem instance from a model of a problem
     """
 
     @abstractmethod
     def generate_problem(self, problem_filename: str, domain_name: str, problem_name: str,
-                         world: sokoban_world.SokobanWorld) -> str:
+                         world) -> str:
         """
         Build a new problem file representing the state in then sokoban world given
         :param problem_filename: the name of the problem file to generate

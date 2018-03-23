@@ -1,7 +1,7 @@
 import os
 
 from planner_wrapper.domains.sokoban.sokoban_actions import Direction
-from planner_wrapper.interfaces import ISokobanWorldToPddlProblemConverter
+from planner_wrapper.interfaces import ISokobanWorldToPddlProblemConverter, IWorldToPddlProblemConverter
 from planner_wrapper.utils import Point, Clause
 
 __doc__ = """
@@ -12,7 +12,7 @@ from planner_wrapper.domains.sokoban import sokoban_world
 from planner_wrapper.utils import TabFileWriter
 
 
-class V1_SokobanWorldToPddlConverter(ISokobanWorldToPddlProblemConverter):
+class V1_SokobanWorldToPddlConverter(IWorldToPddlProblemConverter):
 
     def cell_predicate(self, p: Point) -> str:
         return f"cell-{p.y:02d}-{p.x:02d}"

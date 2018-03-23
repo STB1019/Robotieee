@@ -1,7 +1,6 @@
  
 #define AVR_BUILD
 
-
 #include <Zumo32U4.h>
 #include <Wire.h>
 #include "model.hpp"
@@ -16,6 +15,7 @@ Zumo32U4ButtonA buttonA;
 Zumo32U4ButtonB buttonB;
 Zumo32U4ButtonC buttonC;
 Zumo32U4LineSensors lineSensors;
+Zumo32U4ProximitySensors proxSensors;
 
 int function;
 int exit_switch = 0;
@@ -55,10 +55,12 @@ void setup() {
   //zumo_model.zumo_robot.followLine();
   //zumo_model.zumo_robot.turnBack();
   //zumo_model.zumo_robot.followLine();
-  zumo_model.zumo_robot.goAhead(2);
-  
-  lcd.clear();
-  lcd.print(F("DONE!"));
+  zumo_model.zumo_robot.goAhead(4);
+
+  #ifndef DEBUG
+    lcd.clear();
+    lcd.print(F("DONE!"));
+  #endif
 }
 
 void loop() {

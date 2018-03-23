@@ -59,6 +59,18 @@ public:
   /**
    * Rotates the robot a given amount of degrees. Positive values represent counter clockwise rotations,
    * while negative values represent clockwise ones.
+   * After rotation the robot will check for a block on the next cell.
+   * 
+   * \note 
+   *    \li Before calling this function for the first time, robotieee::robot::harwareInit must have been already run
+   * 
+   * @param[in] degrees The amount of desired rotation in degrees
+   */
+  bool rotateAndCheck(int16_t degrees);
+  
+  /**
+   * Rotates the robot a given amount of degrees. Positive values represent counter clockwise rotations,
+   * while negative values represent clockwise ones.
    * 
    * \note 
    *    \li Before calling this function for the first time, robotieee::robot::harwareInit must have been already run
@@ -103,6 +115,19 @@ public:
   void goAhead(unsigned int cells);
 
   /**
+   * Make the robot folow a black line while checking for a block in the following cell
+   * 
+   *    * \note 
+   *    \li Before calling this function for the first time, robotieee::robot::harwareInit must have been already run
+   * 
+   * \pre
+   *    \li the center line sensor is on a black track;
+   *    
+   * @return true: block found; false: no block on the route
+   */
+  bool followLineAndCheck();
+  
+  /**
    * Make the robot folow a black line
    * 
    * \note 
@@ -110,9 +135,11 @@ public:
    * 
    * \pre
    *    \li the center line sensor is on a black track;
-   *
+   * 
+   * @param[in] searchBlock Flag to activate the block searching routine while following the black line
+   * @return true: block found; false: no block on the route
    */
-  void followLine();
+  bool followLine(bool searchBlock = false);
 
   /**
    * Initializes, configures and calibrates when needed the hardware of
@@ -143,6 +170,12 @@ private:
    */
   void fixPath();
 
+  /**
+   * This fuction is used internally by the other robot methods to check, with proximity sensors,
+   * if there is a block in front of the robot with the nearest level.
+   */
+  bool checkForBlock();
+  
   /**
    * This function is used to manually calibrate the Zumo32U4 line sensors.
    * This is done by first moving the robot manually on a light surface and

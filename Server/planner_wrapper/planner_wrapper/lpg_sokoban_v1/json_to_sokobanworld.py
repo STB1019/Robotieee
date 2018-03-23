@@ -7,7 +7,7 @@ from planner_wrapper.interfaces import IJsonToWorld
 
 class JsonToSokobanWorld_V1(IJsonToWorld):
 
-    def convert_json_to_sokoban_world(self, js: typing.Dict[str, typing.Any]) -> sokoban_world.SokobanWorld:
+    def convert_json_to_model_world(self, js: typing.Dict[str, typing.Any]) -> typing.Any:
         world = js['world']
         rows = int(world['rows'])
         cols = int(world['columns'])

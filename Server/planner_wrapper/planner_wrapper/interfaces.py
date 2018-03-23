@@ -119,7 +119,15 @@ class IPlanner(metaclass=ABCMeta):
 class IJsonToWorld(metaclass=ABCMeta):
 
     @abstractmethod
-    def convert_json_to_sokoban_world(self, j: typing.Dict[str, typing.Any]) -> sokoban_world.SokobanWorld:
+    def convert_json_to_model_world(self, j: typing.Dict[str, typing.Any]) -> typing.Any:
+        """
+        Represents a function which, given a json fetched somewhere
+        genereates a model of a world python can understand
+
+
+        :param j:  the json
+        :return: an object representing the worl
+        """
         pass
 
 

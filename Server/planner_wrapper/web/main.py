@@ -1,5 +1,5 @@
+import argparse
 import logging
-from optparse import OptionParser
 from logging.handlers import RotatingFileHandler
 
 from flask import Flask, jsonify
@@ -34,19 +34,28 @@ def parse_arguments():
     Parse the option arguments
     :return: an object storing the parsed arguments
     """
-    parser = OptionParser()
-    parser.add_option("-l", "--planner_location",
-            dest="planner_location",
-            metavar="str",
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-l", "--planner_location",
+            type=str,
             help="""If we're using a planner in the system, the string represents the location where the planner executable is"""
     )
-    parser.add_option("-p", "--use_planner",
-        dest="use_planner",
-        metavar="str",
+    parser.add_argument("-p", "--use_planner",
+        metavar=str,
+        required=True,
         help="""the planner to use. Accepted values are "lpg" or "fake"."""
     )
+    parser.add_argument("-I", "--ip",
+        metavar=str,
+        default="0.0.0.0",
+        help="""The ips where the server will accepts connections from"""
+    )
+    parser.add_argument("-P", "--port",
+        metavar=int,
+        default=5000,
+        help="""The port where the server will accept connections from"""
+    )
 
-    (o, _) = parser.parse_args()
+    o = parser.parse_args()
     return o
 
 
@@ -55,4 +64,4 @@ if __name__ == "__main__":
     config.PLANNER_LOCATION = options.planner_location
     config.USE_PLANNER = options.use_planner
 
-    app.run()
+    app.run(host=options.ip, port=options.port)

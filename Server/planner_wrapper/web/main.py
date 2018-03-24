@@ -4,16 +4,16 @@ from logging.handlers import RotatingFileHandler
 
 from flask import Flask, jsonify
 from web.static import sokoban_route, exploration_route
-from web.static.flask_exceptions import SolutionNotFoundException, FlaskException
+from web.static.flask_exceptions import FlaskException
 from planner_wrapper import config
 
 # main application
 app = Flask(__name__)
-#log file
+# log file
 handler = RotatingFileHandler('flask.log', maxBytes=10000, backupCount=1)
 handler.setLevel(logging.INFO)
 app.logger.addHandler(handler)
-#setup werkzeug log file (in order to have everything in the logfile
+# setup werkzeug log file (in order to have everything in the logfile
 log = logging.getLogger('werkzeug')
 log.setLevel(logging.INFO)
 log.addHandler(handler)
@@ -37,7 +37,9 @@ def parse_arguments():
     parser = argparse.ArgumentParser()
     parser.add_argument("-l", "--planner_location",
             type=str,
-            help="""If we're using a planner in the system, the string represents the location where the planner executable is"""
+            help="""
+            If we're using a planner in the system, 
+            the string represents the location where the planner executable is"""
     )
     parser.add_argument("-p", "--use_planner",
         metavar=str,

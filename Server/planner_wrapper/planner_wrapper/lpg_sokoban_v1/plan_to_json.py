@@ -19,7 +19,7 @@ class LPG_V1_PlanToJsonConverter(IPlanToJsonConverter):
         # now we dump actions within a json
         ret_val = {}
         ret_val['version'] = "1.0"
-        ret_val['plan'] = []
+        ret_val['actions'] = []
 
         # get method whose name involve class name of the action to conveert to json
         self_module = sys.modules[self.__module__]
@@ -31,7 +31,7 @@ class LPG_V1_PlanToJsonConverter(IPlanToJsonConverter):
             else:
                 raise ValueError(f"no to_json methods available for class {action.__class__.__name__}!")
 
-            ret_val['plan'].append(method(action))
+            ret_val['actions'].append(method(action))
 
         return json.dumps(ret_val, default=to_serializable)
 
@@ -49,37 +49,46 @@ def json_to_Point(val: Point):
 
 @to_serializable.register(Direction)
 def json_to_Direction(val: Direction):
-    return val.name
+    d = {
+        Direction.LEFT: "dir-left",
+        Direction.RIGHT: "dir-right",
+        Direction.UP: "dir-up",
+        Direction.DOWN: "dir-down",
+    }
+    return d[val]
 
 
 @to_serializable.register(SokobanMove)
 def json_to_SokobanMove(val: SokobanMove):
-    return {"move": {
-        "player": val.player,
+    return {
+        "action": "move",
+        "player": val.player.lower(),
         "from": val.start_pos,
         "to": val.end_pos,
         "direction": val.direction
-    }}
+    }
 
 @to_serializable.register(SokobanPushToGoal)
 def json_to_SokobanPushToGoal(val: SokobanPushToGoal):
-    return {"push_goal": {
-        "player": val.player,
-        "stone_position": val.stone,
-        "player_position": val.player_pos,
-        "start": val.start_pos,
-        "end": val.end_pos,
+    return {
+        "action": "push-to-goal",
+        "player": val.player.lower(),
+        "stone": val.stone.lower(),
+        "player-start-pos": val.player_pos,
+        "start-pos": val.start_pos,
+        "end-pos": val.end_pos,
         "direction": val.direction,
-    }}
+    }
 
 
 @to_serializable.register(SokobanPushToNonGoal)
 def json_to_SokobanPushToNonGoal(val: SokobanPushToNonGoal):
-    return {"push_non_goal": {
-        "player": val.player,
-        "stone_position": val.stone,
-        "player_position": val.player_pos,
-        "start": val.start_pos,
-        "end": val.end_pos,
+    return {
+        "action": "push-to-nongoal",
+        "player": val.player.lower(),
+        "stone": val.stone.lower(),
+        "player-start-pos": val.player_pos,
+        "start-pos": val.start_pos,
+        "end-pos": val.end_pos,
         "direction": val.direction,
-    }}
+    }

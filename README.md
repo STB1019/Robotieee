@@ -102,7 +102,7 @@ For solving a Sokoban problem using *push* actions, use the following json:
     "columns": 3,
     "cells": [
       { "y": 0, "x": 0, "entities": "G"},
-      { "y": 0, "x": 1, "entities": "R"},
+      { "y": 0, "x": 1, "entities": "RD"},
       { "y": 0, "x": 2, "entities": "U"},
       { "y": 1, "x": 0, "entities": ""},
       { "y": 1, "x": 1, "entities": "B"},
@@ -129,77 +129,20 @@ Multiple objects can be within the same cell.
 
 ```
 {
-    "version": "1.0",
-    "actions": [
-        {
-            "action": "move",
-            "player": "player-01",
-            "start-pos": {"x": "0","y": "0"},
-            "end-pos": {"x": "1","y": "0"},
-            "direction": "dir-down"
-        },
-        {
-            "action": "move",
-            "player": "player-01",
-            "start-pos": {"x": "1","y": "0"},
-            "end-pos": {"x": "2","y": "0"
-            },
-            "direction": "dir-down"
-        },
-        {
-            "action": "move",
-            "player": "player-01",
-            "start-pos": {"x": "2","y": "0"},
-            "end-pos": {"x": "2","y": "1"},
-            "direction": "dir-right"
-        },
-        {
-            "action": "move",
-            "player": "player-01",
-            "start-pos": {"x": "2","y": "1"},
-            "end-pos": {"x": "2","y": "2"},
-            "direction": "dir-right"
-        },
-        {
-            "action": "move",
-            "player": "player-01",
-            "start-pos": {"x": "2","y": "2"},
-            "end-pos": {"x": "1","y": "2"},
-            "direction": "dir-up"
-        },
-        {
-            "action": "push-to-nongoal",
-            "player": "player-01",
-            "stone": "stone-00",
-            "player-start-pos": {"x": "1","y": "2"},
-            "start-pos": {"x": "1","y": "1"},
-            "end-pos": {"x": "1","y": "0"},
-            "direction": "dir-left"
-        },
-        {
-            "action": "move",
-            "player": "player-01",
-            "start-pos": {"x": "1","y": "1"},
-            "end-pos": {"x": "2","y": "1"},
-            "direction": "dir-down"
-        },
-        {
-            "action": "move",
-            "player": "player-01",
-            "start-pos": {"x": "2","y": "1"},
-            "end-pos": {"x": "2","y": "0"},
-            "direction": "dir-left"
-        },
-        {
-            "action": "push-to-goal",
-            "player": "player-01",
-            "stone": "stone-00",
-            "player-start-pos": {"x": "2","y": "0"},
-            "start-pos": {"x": "1","y": "0"},
-            "end-pos": {"x": "0","y": "0"},
-            "direction": "dir-up"
-        }
-    ]
+  "version": "1.0", 
+  "actions": [
+    {"action": "move",            "player": "player-01", "from": {"x": 0, "y": 0}, "to": {"x": 1, "y": 0}, "direction": "dir-down"}, 
+    {"action": "move",            "player": "player-01", "from": {"x": 1, "y": 0}, "to": {"x": 2, "y": 0}, "direction": "dir-down"}, 
+    {"action": "move",            "player": "player-01", "from": {"x": 2, "y": 0}, "to": {"x": 2, "y": 1}, "direction": "dir-right"}, 
+    {"action": "move",            "player": "player-01", "from": {"x": 2, "y": 1}, "to": {"x": 2, "y": 2}, "direction": "dir-right"}, 
+    {"action": "move",            "player": "player-01", "from": {"x": 2, "y": 2}, "to": {"x": 1, "y": 2}, "direction": "dir-up"}, 
+    {"action": "push-to-nongoal", "player": "player-01", "stone": "stone-00", "player-start-pos": {"x": 1, "y": 2}, "start-pos": {"x": 1, "y": 1}, "end-pos": {"x": 1, "y": 0}, "direction": "dir-left"},
+    {"action": "move",            "player": "player-01", "from": {"x": 1, "y": 1}, "to": {"x": 2, "y": 1}, "direction": "dir-down"}, 
+    {"action": "move",            "player": "player-01", "from": {"x": 2, "y": 1}, "to": {"x": 2, "y": 0}, "direction": "dir-left"}, 
+    {"action": "push-to-goal",    "player": "player-01", "stone": "stone-00", "player-start-pos": {"x": 2, "y": 0}, "start-pos": {"x": 1, "y": 0}, "end-pos": {"x": 0, "y": 0}, "direction": "dir-up"}, 
+    {"action": "move",            "player": "player-01", "from": {"x": 1, "y": 0}, "to": {"x": 1, "y": 1}, "direction": "dir-right"}, 
+    {"action": "move",            "player": "player-01", "from": {"x": 1, "y": 1}, "to": {"x": 0, "y": 1}, "direction": "dir-up"}
+  ]
 }
 ```
 
@@ -210,7 +153,7 @@ The agent (robot) won't return in any prefixed cell. The server listen for POST 
 
 In the following we will assume the following problem (made thanks by the website [sokoban-editor](https://deificx.github.io/sokoban-editor/) ):
 
-![exploration example](https://github.com/STB1019/Robotieee/blob/master/images/explorationProblem.PNG "Exploration example")
+![exploration example](https://github.com/STB1019/Robotieee/blob/master/images/explorationProblem.png "Exploration example")
 
 The yellow circle is the robot, the crate is the block which can't be moved.
 

@@ -21,7 +21,7 @@ class LPG_Exploration_V1_Factory(IPlannerFactory):
         return os.path.abspath("../Problems/Exploration/domain.pddl")
 
     def json_to_world(self)-> IJsonToWorld:
-        return JsonToSokobanWorld_V1()
+        return JsonToExplorationWorld_V1()
 
     def world_to_pddl_problem(self) -> IWorldToPddlProblemConverter:
         return ExplorationWorldToPddlConverter()

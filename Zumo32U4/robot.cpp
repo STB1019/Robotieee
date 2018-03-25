@@ -4,7 +4,6 @@
     Created on: Feb 19, 2018
         Author: koldar
 */
-
 #include "robot.hpp"
 #include "TurnSensor.h"
 #include <Wire.h>
@@ -19,6 +18,7 @@ extern L3G gyro;
 extern LSM303 accel;
 extern Zumo32U4Encoders encoders;
 extern Zumo32U4LineSensors lineSensors;
+extern Zumo32U4ProximitySensors proxSensors;
 
 namespace robotieee {
 
@@ -51,6 +51,7 @@ namespace robotieee {
     //gyro.enableDefault();
    
     lineSensors.initThreeSensors(); 
+    proxSensors.initThreeSensors(); 
     
     // Gyroscope offset calibration
     turnSensorSetup();
@@ -89,19 +90,35 @@ namespace robotieee {
     }
     Zumo32U4Motors::setSpeeds(0, 0);
     return retVal;
-  
   }
 
-  void robot::followLine() {
+  bool robot::rotateAndCheck(int16_t degrees) {
+    rotate(degrees, false);
+
+    //for a better comprehension of code
+    if (checkForBlock() == true)
+      return true;
+    else
+      return false;
+  }
+  
+  bool robot::followLine(bool searchBlock = false) {
 
     int sxSpeed = _speed;
     int dxSpeed = _speed;
 
+    bool blockFound = false;
+    
     while (true) {
       
       Zumo32U4Motors::setSpeeds(sxSpeed, dxSpeed);
       struct line_readings lineReadings = readLineSensors();
 
+      //proximity check
+      if (searchBlock == true && blockFound == false) {
+        blockFound = checkForBlock();
+      }
+      
       /* The possible scenarios are:
        * - WWW: the robot has just abandoned the path
        * - WWB: we lost the path but we know that we are going left too much
@@ -143,6 +160,8 @@ namespace robotieee {
 
     //stop motors
     Zumo32U4Motors::setSpeeds(0, 0);
+
+    return blockFound;
   }
 
   void robot::fixPath() {
@@ -158,6 +177,31 @@ namespace robotieee {
       i = -(i * 2);
     }
     
+  }
+
+  bool robot::followLineAndCheck() {
+    return followLine(true);
+  }
+
+  bool robot::checkForBlock() {
+    proxSensors.read();
+    byte frontLeft = proxSensors.countsFrontWithLeftLeds();
+    byte frontRight = proxSensors.countsFrontWithRightLeds();
+
+    #ifdef DEBUG
+      //lcd.clear();
+      lcd.gotoXY(0,1);
+      lcd.print(frontLeft);
+      lcd.print(frontRight);
+      //ledYellow(1);
+    #endif
+    
+    if (frontLeft > 5 && frontRight > 5) { //case sensors: 6 6
+    // to considerate the case: 5 6 or 6 5, it can be better: if (frontLeft + frontRight >= 11)
+      return true;
+    }
+
+    return false;
   }
 
   void robot::calibrateLineSensors() {
@@ -197,8 +241,13 @@ namespace robotieee {
   }
 
   void robot::goAhead(unsigned int cells) {
+    bool blockFound = false;
+    
     for (int i = 0; i < cells; i++) {
-      followLine(); 
+      blockFound = followLine(true); 
+      if (blockFound == true) {
+        break;
+      }
     }
   }
 
@@ -234,7 +283,7 @@ namespace robotieee {
     retVal.right = convertValueToLineColor(tmp[2]);
 
 #   ifdef DEBUG
-    lcd.clear();
+    //lcd.clear();
     for (int i = 0; i < 3; i++) {
       lcd.gotoXY(i, 0);
       switch (convertValueToLineColor(tmp[i])){

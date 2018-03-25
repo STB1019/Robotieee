@@ -210,13 +210,13 @@ The agent (robot) won't return in any prefixed cell. The server listen for POST 
 
 In the following we will assume the following problem (made thanks by the website [sokoban-editor](https://deificx.github.io/sokoban-editor/) ):
 
-![sokoban example](https://github.com/STB1019/Robotieee/blob/master/images/explorationProblem.PNG "Exploration example")
+![exploration example](https://github.com/STB1019/Robotieee/blob/master/images/explorationProblem.PNG "Exploration example")
 
-The yellow circle is the robot, the crate is the block which can't be moved. If this is the state of the world, the json to send to the server is:
+The yellow circle is the robot, the crate is the block which can't be moved.
 
 ### JSON request format
 
-For solving a Sokoban problem using *push* actions, use the following json:
+For solving a exploration problem use the following json:
 
 ```
 {
@@ -246,17 +246,31 @@ where in the string field *entities*:
  - *G* stands for *goal*;
  - *U* stands for *untraversable*;
  - *D* stands for *docking station*;
+ - *V* stands for a cell which has already been visited by the robot;
 
 Multiple objects can be within the same cell.
 
 ### JSON reply
 
+The server will reply with a json formatted like this:
+
 ```
 {
   "version": "1.0", 
-  "plan": [
-    {"move": {"player": "PLAYER-01", "from": {"x": 0, "y": 0}, "to": {"x": 0, "y": 1}, "direction": "RIGHT"}},
-    {"move": {"player": "PLAYER-01", "from": {"x": 0, "y": 1}, "to": {"x": 0, "y": 0}, "direction": "LEFT"}}, {"move": {"player": "PLAYER-01", "from": {"x": 0, "y": 0}, "to": {"x": 1, "y": 0}, "direction": "DOWN"}}, {"move": {"player": "PLAYER-01", "from": {"x": 1, "y": 0}, "to": {"x": 2, "y": 0}, "direction": "DOWN"}}, {"move": {"player": "PLAYER-01", "from": {"x": 2, "y": 0}, "to": {"x": 2, "y": 1}, "direction": "RIGHT"}}, {"move": {"player": "PLAYER-01", "from": {"x": 2, "y": 1}, "to": {"x": 2, "y": 2}, "direction": "RIGHT"}}, {"move": {"player": "PLAYER-01", "from": {"x": 2, "y": 2}, "to": {"x": 1, "y": 2}, "direction": "UP"}}]}
+  "actions": [
+    {"action": "move", "player": "player-01", "from": {"x": 0, "y": 0}, "to": {"x": 1, "y": 0}, "direction": "dir-down"}, 
+    {"action": "move", "player": "player-01", "from": {"x": 1, "y": 0}, "to": {"x": 2, "y": 0}, "direction": "dir-down"}, 
+    {"action": "move", "player": "player-01", "from": {"x": 2, "y": 0}, "to": {"x": 2, "y": 1}, "direction": "dir-right"}, 
+    {"action": "move", "player": "player-01", "from": {"x": 2, "y": 1}, "to": {"x": 2, "y": 2}, "direction": "dir-right"}, 
+    {"action": "move", "player": "player-01", "from": {"x": 2, "y": 2}, "to": {"x": 1, "y": 2}, "direction": "dir-up"}, 
+    {"action": "move", "player": "player-01", "from": {"x": 1, "y": 2}, "to": {"x": 2, "y": 2}, "direction": "dir-down"}, 
+    {"action": "move", "player": "player-01", "from": {"x": 2, "y": 2}, "to": {"x": 2, "y": 1}, "direction": "dir-left"}, 
+    {"action": "move", "player": "player-01", "from": {"x": 2, "y": 1}, "to": {"x": 2, "y": 0}, "direction": "dir-left"}, 
+    {"action": "move", "player": "player-01", "from": {"x": 2, "y": 0}, "to": {"x": 1, "y": 0}, "direction": "dir-up"}, 
+    {"action": "move", "player": "player-01", "from": {"x": 1, "y": 0}, "to": {"x": 0, "y": 0}, "direction": "dir-up"}, 
+    {"action": "move", "player": "player-01", "from": {"x": 0, "y": 0}, "to": {"x": 0, "y": 1}, "direction": "dir-right"}
+  ]
+}
 ```
 
 

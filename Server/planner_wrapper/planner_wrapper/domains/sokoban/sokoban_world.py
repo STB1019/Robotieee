@@ -25,6 +25,7 @@ class BaseCellContent(ParsableEnum):
     UNTRAVERSABLE = BaseCellContentTuple(character="U")
     VISITED = BaseCellContentTuple(character="V")
 
+
 class Block:
 
     def __init__(self, theid: int, position: Point):

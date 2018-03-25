@@ -1,5 +1,7 @@
 import typing
 
+from planner_wrapper.domains.exploration.exploration_world import ExplorationWorld
+from planner_wrapper.domains.sokoban.sokoban_world import BaseCellContent
 from planner_wrapper.interfaces import IJsonToWorld
 
 
@@ -9,7 +11,7 @@ class JsonToExplorationWorld_V1(IJsonToWorld):
         world = js['world']
         rows = int(world['rows'])
         cols = int(world['columns'])
-        retval = world.SokobanWorld(rows, cols)
+        retval = ExplorationWorld(rows, cols)
 
         for cell in world['cells']:
             for ch in cell['entities']:

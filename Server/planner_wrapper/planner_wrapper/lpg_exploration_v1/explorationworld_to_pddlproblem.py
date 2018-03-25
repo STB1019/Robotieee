@@ -1,5 +1,6 @@
 import os
 
+from planner_wrapper.domains.exploration.exploration_world import ExplorationWorld
 from planner_wrapper.domains.sokoban.sokoban_actions import Direction
 from planner_wrapper.interfaces import IWorldToPddlProblemConverter
 from planner_wrapper.utils import Point, Clause
@@ -37,7 +38,7 @@ class ExplorationWorldToPddlConverter(IWorldToPddlProblemConverter):
         else:
             raise ValueError(f"invalid point {p_start} and next point {p_end}")
 
-    def generate_problem(self, problem_filename: str, domain_name: str, problem_name: str, world: sokoban_world.SokobanWorld) -> str:
+    def generate_problem(self, problem_filename: str, domain_name: str, problem_name: str, world: ExplorationWorld) -> str:
         with open(problem_filename, "w") as f:
             tf = TabFileWriter(f, start_indent=0, element_per_indent=2, tabs_instead_of_spaces=False)
             with Clause(tf, name="define"):
@@ -97,6 +98,12 @@ class ExplorationWorldToPddlConverter(IWorldToPddlProblemConverter):
                             Clause.write_predicate(tf, name="visited", value=self.cell_predicate(cell))
                             tf.writeln()
 
+                        # check if the cell has been visited (not the one with the robot, that one is visited by default)
+                        # in this way we avoid marking the same cell with 2 visited facts
+                        if world.is_visited(row=cell.y, col=cell.x) and sokoban_world.BaseCellContent.ROBOT not in world[cell]:
+                            Clause.write_predicate(tf, name="visited", value=self.cell_predicate(cell))
+                            tf.writeln()
+
                         # cell contains a block
                         # cell which do not contain a block are clear. Otherwise they are not
                         if sokoban_world.BaseCellContent.BLOCK not in world[cell]:
@@ -149,7 +156,7 @@ class ExplorationWorldToPddlConverter(IWorldToPddlProblemConverter):
                                 # if a cell is not traversable, we can't visit it
                                 continue
                             if sokoban_world.BaseCellContent.BLOCK in world[cell]:
-                                # if a cell contains a block, we can't visited it!
+                                # if a cell contains a block, we can't visited it, so we ignore the cell
                                 continue
                             Clause.write_predicate(tf, name="visited", value=self.cell_predicate(cell))
                             tf.writeln()

@@ -4,6 +4,7 @@ from planner_wrapper import config
 from planner_wrapper.interfaces import IJsonToWorld, IWorldToPddlProblemConverter, IPlanner, \
     IPlanFilenameToPlanConverter, IPlanToJsonConverter, IPlannerFactory
 from planner_wrapper.lpg_exploration_v1.explorationworld_to_pddlproblem import ExplorationWorldToPddlConverter
+from planner_wrapper.lpg_exploration_v1.json_to_world import JsonToExplorationWorld_V1
 from planner_wrapper.lpg_exploration_v1.plan_to_json import LPG_V1_ExplorationPlanToJsonConverter
 from planner_wrapper.lpg_exploration_v1.planneroutput_to_plan import LPG_V1_FilenameToExplorationPlanConverter
 from planner_wrapper.planners.FakePlanner import FakePlanner

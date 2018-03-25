@@ -68,6 +68,7 @@ def json_to_SokobanMove(val: SokobanMove):
         "direction": val.direction
     }
 
+
 @to_serializable.register(SokobanPushToGoal)
 def json_to_SokobanPushToGoal(val: SokobanPushToGoal):
     return {

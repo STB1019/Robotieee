@@ -7,7 +7,7 @@ import re
 from planner_wrapper.exceptions import ActionParseException
 from planner_wrapper.interfaces import IPlanFilenameToPlanConverter, IPlannerAction
 from planner_wrapper.domains.sokoban.sokoban_actions import SokobanMove, SokobanPushToNonGoal, Direction, \
-    SokobanPullToNonGoal, SokobanPullToGoal
+    SokobanPullToNonGoal, SokobanPullToGoal, SokobanPushToGoal
 from planner_wrapper.utils import Point
 
 
@@ -63,7 +63,7 @@ class LPG_V1_FilenameToPlanConverter(IPlanFilenameToPlanConverter):
                 direction=Direction.parse(action_parameters[5]),
             )
         elif action_name == 'PUSH-TO-GOAL':
-            return SokobanPushToNonGoal(action_name,
+            return SokobanPushToGoal(action_name,
                 player=action_parameters[0],
                 stone=action_parameters[1],
                 player_pos=self._convert_pos_into_cell(action_parameters[2]),

@@ -1,5 +1,5 @@
- 
 #define AVR_BUILD
+#define DEBUG
 
 
 #include <Zumo32U4.h>
@@ -52,10 +52,11 @@ void setup() {
 # endif
 
   delay(5000);
-  //zumo_model.zumo_robot.followLine();
-  //zumo_model.zumo_robot.turnBack();
-  //zumo_model.zumo_robot.followLine();
-  zumo_model.zumo_robot.goAhead(2);
+
+  while (true) {
+    zumo_model.zumo_robot.goAhead(1);
+    zumo_model.zumo_robot.turnRight();
+  }
   
   lcd.clear();
   lcd.print(F("DONE!"));

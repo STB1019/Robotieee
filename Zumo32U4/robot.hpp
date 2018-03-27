@@ -131,12 +131,12 @@ public:
 
  
 private:
-  bool _hardwareInitialized;      // Used to avoid multiple hardware initializations.
-  uint16_t _speed;                // The speed to be used by the robot in both rotations and straight movement. This values must be in range [-400, 400]
-  uint16_t _centeringDelay;       // The amount of milliseconds to wait after finding an intersection. This is needed to center the robot on the cross
-  uint8_t _pathSeekCompensation;  // The initial number of degrees to rotate when the robot is searching the lost black line. See fixPath function
-  uint8_t _speedCompensation;     // The speed increase used to make the robot slightly rotate when it arrives at an intersection but it is not parallel to it
-
+  bool _hardwareInitialized;          // Used to avoid multiple hardware initializations.
+  uint16_t _speed;                    // The speed to be used by the robot in both rotations and straight movement. This values must be in range [-400, 400]
+  uint16_t _centeringDelay;           // The amount of milliseconds to wait after finding an intersection. This is needed to center the robot on the cross
+  uint8_t _pathSeekCompensation;      // The initial number of degrees to rotate when the robot is searching the lost black line. See fixPath function
+  uint8_t _speedCompensation;         // The speed increase used to make the robot slightly rotate when it arrives at an intersection but it is not parallel to it
+  //matrix<cell_content>* _gridCells;   // A pointer to the grid of cells. This is used to avoid the need to pass it as a parameter to most movement functions
   /**
    * This function is used internally by the other robot methods to adjust its trajectory
    * when an error is detected.

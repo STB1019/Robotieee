@@ -206,19 +206,36 @@ namespace robotieee {
     _speed = speed;
   }
 
-  static enum line_color convertValueToLineColor(int value) {
-    if (value < 500) {
+  static enum line_color convertValueToLineColor(int value, bool invertWhite) {
+
+    if (invertWhite) {
+      if (value < 500) {
+        return LC_BLACK;
+      }
+      /**
+      if (value < 500) {
+        return LC_LIGHTGRAY;
+      }
+      if (value < 750) {
+        return LC_DARKGRAY;
+      }
+      */
       return LC_WHITE;
     }
-    /**
-    if (value < 500) {
-      return LC_LIGHTGRAY;
+    else {
+      if (value < 500) {
+        return LC_WHITE;
+      }
+      /**
+      if (value < 500) {
+        return LC_DARKGRAY;
+      }
+      if (value < 750) {
+        return LC_LIGHTGRAY;
+      }
+      */
+      return LC_BLACK;
     }
-    if (value < 750) {
-      return LC_DARKGRAY;
-    }
-    */
-    return LC_BLACK;
   }
   /**
    * Read the values of left, center and right line tracking
@@ -229,9 +246,9 @@ namespace robotieee {
     
     lineSensors.readCalibrated(tmp);
   
-    retVal.left = convertValueToLineColor(tmp[0]);
-    retVal.center = convertValueToLineColor(tmp[1]);
-    retVal.right = convertValueToLineColor(tmp[2]);
+    retVal.left = convertValueToLineColor(tmp[0], true);
+    retVal.center = convertValueToLineColor(tmp[1], true);
+    retVal.right = convertValueToLineColor(tmp[2], true);
 
 #   ifdef DEBUG
     lcd.clear();

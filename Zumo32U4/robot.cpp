@@ -347,7 +347,7 @@ namespace robotieee {
   }
   
   void robot::pushBlock(unsigned int cells){
-    goAhead(cells - 1);
+    goAhead(cells, false);
     timeMove(_blockCenteringDelay);
     invertSpeed();
     setCenteringDelay(DEFAULT_BACKWARDS_CENTERING_DELAY);

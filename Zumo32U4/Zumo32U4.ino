@@ -37,9 +37,15 @@ void setup() {
 
   delay(5000);
 
-  zumo_model.zumo_robot.goAhead(3);
-  zumo_model.zumo_robot.pushBlock(3); 
 
+  while(true){
+  zumo_model.zumo_robot.goAhead(3, false);
+  zumo_model.zumo_robot.turnLeft();
+  zumo_model.zumo_robot.goAhead(4, false);
+  zumo_model.zumo_robot.turnLeft();
+  zumo_model.zumo_robot.goAhead(3, false);
+  zumo_model.zumo_robot.turnLeft();
+  }
   
   #ifndef DEBUG
     lcd.clear();

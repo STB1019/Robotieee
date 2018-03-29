@@ -19,7 +19,7 @@ namespace robotieee {
 /**
  * A possible direction the robot ( or a block) can logically move
  */
-enum class object_movement {
+enum object_movement {
     /**
      * something move up in the robotieee::model::workplace
      * 
@@ -39,7 +39,7 @@ enum class object_movement {
     /**
      * something moves to the left
      */
-		LEFT = 31
+		LEFT = 3
 	};
 
 class moveable {

@@ -19,9 +19,9 @@
 namespace robotieee {
 
 enum line_sensors {
-    LEFT = 0,
-    CENTER = 1,
-    RIGHT = 2,
+    LEFT_SENSOR = 0,
+    CENTER_SENSOR = 1,
+    RIGHT_SENSOR = 2,
   };
 
 /**
@@ -145,8 +145,10 @@ public:
    *    \li Before calling this function for the first time, robotieee::robot::harwareInit must have been already run
    * 
    * @param[in] cells The number of cells to go through
+   * @param[in] lookingForBlocks If true, the function will stop early if a block is found
+   * @return The 
    */
-  void goAhead(unsigned int cells);
+  bool goAhead(unsigned int cells, bool lookingForBlocks = false);
 
   /**
    * Make the robot folow a black line while checking for a block in the following cell
@@ -205,7 +207,7 @@ public:
    * 
    * @param[in] time The amount of time for the movement in milliseconds
    */
-  void timeMove(int time);
+  void timeMove(unsigned int time);
 
   /**
    * Pushes the block forwards by a given amount of cells
@@ -222,7 +224,7 @@ private:
   uint8_t _speedCompensation;         // The speed increase used to make the robot slightly rotate when it arrives at an intersection but it is not parallel to it
   uint8_t _blockCenteringDelay;       // The amount of milliseconds do wait after finding an intersection. This is needed to center the block on the cross after pushing it
   matrix<cell_content>* _grid;        // A pointer to the grid of cells. This is used to avoid the need to pass it as a parameter to most movement functions
-  object_movement _orientation;       // The direction that the robot is facing
+  enum object_movement _orientation;       // The direction that the robot is facing
   
   /**
    * This function is used internally by the other robot methods to adjust its trajectory

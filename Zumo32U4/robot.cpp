@@ -255,7 +255,7 @@ namespace robotieee {
   void robot::turnLeft() {
     rotate(90, false);
 
-    _orientation = (_orientation  1) % 4;
+    _orientation = (_orientation + 1) % 4;
   }
 
   void robot::turnBack() {
@@ -266,15 +266,18 @@ namespace robotieee {
     _orientation = (_orientation + 2) % 4;
   }
 
-  void robot::goAhead(unsigned int cells) {
+  bool robot::goAhead(unsigned int cells, bool lookingForBlocks = false) {
     bool blockFound = false;
     
     for (int i = 0; i < cells; i++) {
-      blockFound = followLineAndCheck(); 
-      if (blockFound) {
+      blockFound = followLineAndCheck();
+      move(_orientation, 1);
+      if (blockFound && lookingForBlocks) {
         break;
       }
     }
+
+    return blockFound;
   }
 
   void robot::setSpeed(uint16_t speed) {
@@ -321,9 +324,9 @@ namespace robotieee {
     
     lineSensors.readCalibrated(tmp);
   
-    retVal.left = convertValueToLineColor(tmp[0], true);
-    retVal.center = convertValueToLineColor(tmp[1], true);
-    retVal.right = convertValueToLineColor(tmp[2], true);
+    retVal.left = convertValueToLineColor(tmp[LEFT_SENSOR], true);
+    retVal.center = convertValueToLineColor(tmp[CENTER_SENSOR], true);
+    retVal.right = convertValueToLineColor(tmp[RIGHT_SENSOR], true);
 
 #   ifdef DEBUG
     //lcd.clear();
@@ -347,7 +350,7 @@ namespace robotieee {
     return retVal;
   }
   
-  void robot::timeMove(int time){
+  void robot::timeMove(unsigned int time) {
     Zumo32U4Motors::setSpeeds(_speed, _speed);
     delay(time);
     Zumo32U4Motors::setSpeeds(0,0);

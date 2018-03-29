@@ -10,7 +10,7 @@
 
 namespace robotieee {
 
-void moveable::move(object_movement om, unsigned int n) {
+void moveable::move(enum object_movement om, unsigned int n) {
 	switch (om) {
 	case object_movement::DOWN: {
 		this->position.y -= n;

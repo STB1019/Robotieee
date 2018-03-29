@@ -25,36 +25,40 @@ enum class object_movement {
      * 
      * This means we are approaching to row 0
      */
-		UP = 1,
+		UP = 0,
    /**
     * something moves down in the robotieee::model::workplace
     * 
     * This means we are approaching maximum row
     */
-		DOWN = 2,
+		DOWN = 1,
    /**
     * something moves to the right
     */
-		RIGHT = 3,
+		RIGHT = 2,
     /**
      * something moves to the left
      */
-		LEFT = 4
+		LEFT = 31
 	};
 
 class moveable {
 public:
+
   /**
    * The position this object has within robotieee::model::workplace matrix
    */
 	point position;
+ 
 public:
+
     /**
      * Alter the position of a given object
      * 
      * @param[in] om the direction where the object should move
+     * @param[in] n The number of cells of the movement
      */
-		virtual void move(object_movement om);
+		virtual void move(object_movement om, unsigned int n);
     /**
      * Dispose the instance
      */

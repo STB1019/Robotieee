@@ -9,9 +9,12 @@
 
 #ifndef ROBOT_HPP_
 #define ROBOT_HPP_
+#define AVR_BUILD
 
 #include <Zumo32U4.h>
+#include <matrix.hpp>
 #include "moveable.hpp"
+#include "typedefs.hpp"
 
 namespace robotieee {
 
@@ -47,9 +50,10 @@ public:
   /**
    * Initializes the robot given its starting position in the grid. Default values are used for movement parameters
    * 
-   * @param[in] start_position the position where the robot is in robotieee::model::workplace
+   * @param[in] start_position The initial position of the robot in the grid
+   * @param[in] grid A pointer to the matrix representing the grid
    */
-	robot(const point& start_position);
+	robot(const point start_position, const matrix<cell_content>* grid);
  
  /**
   * dispose the robot
@@ -141,11 +145,8 @@ public:
    *    \li Before calling this function for the first time, robotieee::robot::harwareInit must have been already run
    * 
    * @param[in] cells The number of cells to go through
-   * @param[in] searchBlock Flag to activate the searching block routine while moving
-   * 
-   * @return true: robot stops due to found the block; false: no block found
    */
-  bool goAhead(unsigned int cells, bool searchBlock = false);
+  void goAhead(unsigned int cells);
 
   /**
    * Make the robot folow a black line while checking for a block in the following cell
@@ -220,7 +221,9 @@ private:
   uint8_t _pathSeekCompensation;      // The initial number of degrees to rotate when the robot is searching the lost black line. See fixPath function
   uint8_t _speedCompensation;         // The speed increase used to make the robot slightly rotate when it arrives at an intersection but it is not parallel to it
   uint8_t _blockCenteringDelay;       // The amount of milliseconds do wait after finding an intersection. This is needed to center the block on the cross after pushing it
-  //matrix<cell_content>* _gridCells;   // A pointer to the grid of cells. This is used to avoid the need to pass it as a parameter to most movement functions
+  matrix<cell_content>* _grid;        // A pointer to the grid of cells. This is used to avoid the need to pass it as a parameter to most movement functions
+  object_movement _orientation;       // The direction that the robot is facing
+  
   /**
    * This function is used internally by the other robot methods to adjust its trajectory
    * when an error is detected.
@@ -244,5 +247,3 @@ private:
 }
 
 #endif /* ROBOT_HPP_ */
-
-  bool followLine(bool searchBlock = false);

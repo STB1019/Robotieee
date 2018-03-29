@@ -141,8 +141,11 @@ public:
    *    \li Before calling this function for the first time, robotieee::robot::harwareInit must have been already run
    * 
    * @param[in] cells The number of cells to go through
+   * @param[in] searchBlock Flag to activate the searching block routine while moving
+   * 
+   * @return true: robot stops due to found the block; false: no block found
    */
-  void goAhead(unsigned int cells);
+  bool goAhead(unsigned int cells, bool searchBlock);
 
   /**
    * Make the robot folow a black line while checking for a block in the following cell

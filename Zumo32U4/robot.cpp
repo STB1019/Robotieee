@@ -251,11 +251,11 @@ namespace robotieee {
     rotate(179, false);
   }
 
-  void robot::goAhead(unsigned int cells) {
+  bool robot::goAhead(unsigned int cells, bool searchBlock) {
     bool blockFound = false;
     
     for (int i = 0; i < cells; i++) {
-      blockFound = followLineAndCheck(); 
+      blockFound = followLine(searchBlock);
       if (blockFound == true) {
         break;
       }

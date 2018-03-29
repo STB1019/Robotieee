@@ -145,7 +145,7 @@ public:
    * 
    * @return true: robot stops due to found the block; false: no block found
    */
-  bool goAhead(unsigned int cells, bool searchBlock);
+  bool goAhead(unsigned int cells, bool searchBlock = false);
 
   /**
    * Make the robot folow a black line while checking for a block in the following cell

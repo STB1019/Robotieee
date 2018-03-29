@@ -251,7 +251,7 @@ namespace robotieee {
     rotate(179, false);
   }
 
-  bool robot::goAhead(unsigned int cells, bool searchBlock) {
+  bool robot::goAhead(unsigned int cells, bool searchBlock = false) {
     bool blockFound = false;
     
     for (int i = 0; i < cells; i++) {

@@ -139,7 +139,7 @@ public:
    * @param[in] searchBlock Flag to activate the block searching routine while following the black line
    * @return true: block found; false: no block on the route
    */
-  bool followLine(bool searchBlock = false);
+  void followLine();
 
   /**
    * Initializes, configures and calibrates when needed the hardware of
@@ -187,3 +187,5 @@ private:
 }
 
 #endif /* ROBOT_HPP_ */
+
+  bool followLine(bool searchBlock = false);

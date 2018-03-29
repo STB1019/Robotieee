@@ -44,6 +44,7 @@ namespace robotieee {
     
     //Wire.begin();
     lcd.init();
+    proxSensors.initThreeSensors();
     
     // At the moment, the gyroscope is initialized by TurnSensor.cpp code
     //gyro.init();
@@ -92,8 +93,7 @@ namespace robotieee {
     return retVal;
   }
 
-  bool robot::rotateAndCheck(int16_t degrees) {
-    rotate(degrees, false);
+  void robot::followLine() {
 
     //for a better comprehension of code
     if (checkForBlock() == true)
@@ -106,6 +106,7 @@ namespace robotieee {
 
     int sxSpeed = _speed;
     int dxSpeed = _speed;
+    bool hasBox = false;
 
     bool blockFound = false;
     
@@ -155,13 +156,18 @@ namespace robotieee {
       if (lineReadings.left == LC_WHITE && lineReadings.center == LC_BLACK && lineReadings.right == LC_BLACK) {
         sxSpeed += _speedCompensation;
       }
+
+      if (isSearching && !hasBox){
+        proxSensors.read();
+        if( proxSensors.countsFrontWithLeftLeds() >= 6 || proxSensors.countsFrontWithRightLeds() >= 6){
+          hasBox = true;
+        }
+      }
       
     }
 
     //stop motors
     Zumo32U4Motors::setSpeeds(0, 0);
-
-    return blockFound;
   }
 
   void robot::fixPath() {
@@ -244,10 +250,7 @@ namespace robotieee {
     bool blockFound = false;
     
     for (int i = 0; i < cells; i++) {
-      blockFound = followLine(true); 
-      if (blockFound == true) {
-        break;
-      }
+      followLine(); 
     }
   }
 
@@ -306,3 +309,12 @@ namespace robotieee {
   
 }
 
+
+  bool robot::rotateAndCheck(int16_t degrees) {
+    rotate(degrees, false);
+
+    return blockFound;
+      blockFound = followLine(true); 
+      if (blockFound == true) {
+        break;
+      }

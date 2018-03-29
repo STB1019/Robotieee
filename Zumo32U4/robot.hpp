@@ -189,12 +189,28 @@ public:
    */
   void setSpeed(uint16_t speed);
 
+  /**
+   * Inverts the speed to be used by every future movement-related function
+   */
   void invertSpeed();
 
+  /**
+   * Sets the value of the centering delay needed in future movement-related functions
+   */
   void setCenteringDelay(uint16_t centeringDelay);
 
+  /**
+   * Moves the robot for a given amount of time
+   * 
+   * @param[in] time The amount of time for the movement in milliseconds
+   */
   void timeMove(int time);
 
+  /**
+   * Pushes the block forwards by a given amount of cells
+   * 
+   * @param[in] cells The number of cells to push the block
+   */
   void pushBlock(unsigned int cells);
  
 private:
@@ -203,7 +219,7 @@ private:
   uint16_t _centeringDelay;           // The amount of milliseconds to wait after finding an intersection. This is needed to center the robot on the cross
   uint8_t _pathSeekCompensation;      // The initial number of degrees to rotate when the robot is searching the lost black line. See fixPath function
   uint8_t _speedCompensation;         // The speed increase used to make the robot slightly rotate when it arrives at an intersection but it is not parallel to it
-  uint8_t _blockCenteringDelay;
+  uint8_t _blockCenteringDelay;       // The amount of milliseconds do wait after finding an intersection. This is needed to center the block on the cross after pushing it
   //matrix<cell_content>* _gridCells;   // A pointer to the grid of cells. This is used to avoid the need to pass it as a parameter to most movement functions
   /**
    * This function is used internally by the other robot methods to adjust its trajectory

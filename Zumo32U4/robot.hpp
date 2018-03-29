@@ -205,7 +205,7 @@ public:
   /**
    * Moves the robot for a given amount of time
    * 
-   * @param[in] time The amount of time for the movement in milliseconds
+   * @param[in] delayMillis The amount of time for the movement in milliseconds
    */
   void timeMove(unsigned int time);
 

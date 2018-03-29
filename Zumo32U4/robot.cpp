@@ -10,11 +10,11 @@
 
 #define DEFAULT_ORIENTATION               object_movement::UP
 #define DEFAULT_SPEED                     150
-#define DEFAULT_CENTERING_DELAY           150
+#define DEFAULT_CENTERING_DELAY           167
 #define DEFAULT_PATH_SEEK_COMPENSATION    5
 #define DEFAULT_SPEED_COMPENSATION        5
 #define DEFAULT_BACKWARDS_CENTERING_DELAY 0
-#define BLOCK_CENTERING_DELAY             200
+#define DEFAULT_BLOCK_CENTERING_DELAY     400
 
 extern Zumo32U4LCD lcd;
 extern L3G gyro;
@@ -33,7 +33,7 @@ namespace robotieee {
     _centeringDelay        = DEFAULT_CENTERING_DELAY;
     _pathSeekCompensation  = DEFAULT_PATH_SEEK_COMPENSATION;
     _speedCompensation     = DEFAULT_SPEED_COMPENSATION;
-    _blockCenteringDelay   = BLOCK_CENTERING_DELAY;
+    _blockCenteringDelay   = DEFAULT_BLOCK_CENTERING_DELAY;
     _grid                  = grid;
     _orientation           = DEFAULT_ORIENTATION;
   }
@@ -350,9 +350,9 @@ namespace robotieee {
     return retVal;
   }
   
-  void robot::timeMove(unsigned int time) {
+  void robot::timeMove(unsigned int delayMillis) {
     Zumo32U4Motors::setSpeeds(_speed, _speed);
-    delay(time);
+    delay(delayMillis);
     Zumo32U4Motors::setSpeeds(0,0);
   }
 
@@ -371,7 +371,8 @@ namespace robotieee {
     setCenteringDelay(DEFAULT_BACKWARDS_CENTERING_DELAY);
     followLine(true);
     invertSpeed();
-    setCenteringDelay(DEFAULT_CENTERING_DELAY);
+    setCenteringDelay(DEFAULT_CENTERING_DELAY + 25);
     timeMove(_centeringDelay);
+    setCenteringDelay(DEFAULT_CENTERING_DELAY);
   }
 }

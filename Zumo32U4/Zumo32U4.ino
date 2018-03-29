@@ -26,7 +26,7 @@ void setup() {
 
   delay(1000);
 
-  # ifdef DEBUG
+  # ifdef DEBUG_LINE_CALIBRATION
     for (int i = 0; i < 3; i++) {
       lcd.print(lineSensors.calibratedMinimumOn[i]);
       lcd.gotoXY(0,1);
@@ -43,10 +43,10 @@ void setup() {
     delay(1000);
   }
 
-  zumo_model.zumo_robot.turnRight();
-  zumo_model.zumo_robot.goAhead(2);
+  //zumo_model.zumo_robot.goAhead(1, false);
+  zumo_model.zumo_robot.pushBlock(1);
 
-  #ifdef DEBUG
+  #ifdef DEBUG_POSITION
   lcd.clear();
   lcd.print(zumo_model.zumo_robot.position.x);
   lcd.gotoXY(0, 1);

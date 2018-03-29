@@ -31,11 +31,11 @@ enum object_movement {
     * 
     * This means we are approaching maximum row
     */
-		DOWN = 1,
+		RIGHT = 1,
    /**
     * something moves to the right
     */
-		RIGHT = 2,
+		DOWN = 2,
     /**
      * something moves to the left
      */

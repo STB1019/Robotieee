@@ -324,9 +324,9 @@ namespace robotieee {
     
     lineSensors.readCalibrated(tmp);
   
-    retVal.left = convertValueToLineColor(tmp[LEFT_SENSOR], true);
-    retVal.center = convertValueToLineColor(tmp[CENTER_SENSOR], true);
-    retVal.right = convertValueToLineColor(tmp[RIGHT_SENSOR], true);
+    retVal.left = convertValueToLineColor(tmp[LEFT_SENSOR], false);
+    retVal.center = convertValueToLineColor(tmp[CENTER_SENSOR], false);
+    retVal.right = convertValueToLineColor(tmp[RIGHT_SENSOR], false);
 
 #   ifdef DEBUG
     //lcd.clear();

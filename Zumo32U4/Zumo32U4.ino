@@ -1,4 +1,5 @@
 #define AVR_BUILD
+#define DEBUG
 
 #include <Zumo32U4.h>
 #include <Wire.h>
@@ -35,17 +36,23 @@ void setup() {
     }
   # endif
 
-  delay(5000);
-
-
-  while(true){
-  zumo_model.zumo_robot.goAhead(3, false);
-  zumo_model.zumo_robot.turnLeft();
-  zumo_model.zumo_robot.goAhead(4, false);
-  zumo_model.zumo_robot.turnLeft();
-  zumo_model.zumo_robot.goAhead(3, false);
-  zumo_model.zumo_robot.turnLeft();
+  //Initial delay
+  for (int i = 0; i < 5; i++) {
+    lcd.clear();
+    lcd.print(5 - i);
+    delay(1000);
   }
+
+  zumo_model.zumo_robot.turnRight();
+  zumo_model.zumo_robot.goAhead(2);
+
+  #ifdef DEBUG
+  lcd.clear();
+  lcd.print(zumo_model.zumo_robot.position.x);
+  lcd.gotoXY(0, 1);
+  lcd.print(zumo_model.zumo_robot.position.y);
+  #endif
+
   
   #ifndef DEBUG
     lcd.clear();

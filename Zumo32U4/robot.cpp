@@ -13,7 +13,7 @@
 #define DEFAULT_PATH_SEEK_COMPENSATION    5
 #define DEFAULT_SPEED_COMPENSATION        5
 #define DEFAULT_BACKWARDS_CENTERING_DELAY 0
-#define BLOCK_CENTERING_DELAY             200
+#define BLOCK_CENTERING_DELAY             230
 
 extern Zumo32U4LCD lcd;
 extern L3G gyro;
@@ -306,9 +306,9 @@ namespace robotieee {
     
     lineSensors.readCalibrated(tmp);
   
-    retVal.left = convertValueToLineColor(tmp[0], true);
-    retVal.center = convertValueToLineColor(tmp[1], true);
-    retVal.right = convertValueToLineColor(tmp[2], true);
+    retVal.left = convertValueToLineColor(tmp[0], false);
+    retVal.center = convertValueToLineColor(tmp[1], false);
+    retVal.right = convertValueToLineColor(tmp[2], false);
 
 #   ifdef DEBUG
     //lcd.clear();

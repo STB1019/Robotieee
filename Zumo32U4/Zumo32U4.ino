@@ -1,5 +1,4 @@
 #define AVR_BUILD
-#define DEBUG
 
 #include <Zumo32U4.h>
 #include <Wire.h>
@@ -38,9 +37,9 @@ void setup() {
 
   delay(5000);
 
-  while (true) {
-    zumo_model.zumo_robot.pushBlock(3);
-  }
+  zumo_model.zumo_robot.goAhead(3);
+  zumo_model.zumo_robot.pushBlock(3); 
+
   
   #ifndef DEBUG
     lcd.clear();

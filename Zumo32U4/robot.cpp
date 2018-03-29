@@ -332,7 +332,6 @@ namespace robotieee {
     return retVal;
   }
   
-}
   void robot::timeMove(int time){
     Zumo32U4Motors::setSpeeds(_speed, _speed);
     delay(time);
@@ -357,3 +356,4 @@ namespace robotieee {
     setCenteringDelay(DEFAULT_CENTERING_DELAY);
     timeMove(_centeringDelay);
   }
+}

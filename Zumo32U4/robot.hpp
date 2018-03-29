@@ -85,6 +85,36 @@ public:
    * 
    * \note 
    *    \li Before calling this function for the first time, robotieee::robot::harwareInit must have been already run 
+   * 
+   * @return Result of the check for a block at the end of rotation
+   */
+  bool turnRightAndCheck();
+
+  /**
+   * Rotates the robot 180 degrees
+   * 
+   * \note 
+   *    \li Before calling this function for the first time, robotieee::robot::harwareInit must have been already run
+   * 
+   * @return Result of the check for a block at the end of rotation
+   */
+  bool turnBackAndCheck();
+
+  /**
+   * Rotates the robot 90 degrees counter-clockwise
+   * 
+   * \note 
+   *    \li Before calling this function for the first time, robotieee::robot::harwareInit must have been already run
+   * 
+   * @return Result of the check for a block at the end of rotation
+   */
+  bool turnLeftAndCheck();
+
+  /**
+   * Rotates the robot 90 degrees clockwise
+   * 
+   * \note 
+   *    \li Before calling this function for the first time, robotieee::robot::harwareInit must have been already run 
    */
   void turnRight();
 
@@ -139,7 +169,7 @@ public:
    * @param[in] searchBlock Flag to activate the block searching routine while following the black line
    * @return true: block found; false: no block on the route
    */
-  void followLine();
+  bool followLine(bool searchBlock = false);
 
   /**
    * Initializes, configures and calibrates when needed the hardware of

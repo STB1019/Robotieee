@@ -44,7 +44,6 @@ namespace robotieee {
     
     //Wire.begin();
     lcd.init();
-    proxSensors.initThreeSensors();
     
     // At the moment, the gyroscope is initialized by TurnSensor.cpp code
     //gyro.init();
@@ -93,20 +92,15 @@ namespace robotieee {
     return retVal;
   }
 
-  void robot::followLine() {
-
-    //for a better comprehension of code
-    if (checkForBlock() == true)
-      return true;
-    else
-      return false;
+  bool robot::rotateAndCheck(int16_t degrees) {
+    rotate(degrees, false);
+    return checkForBlock();
   }
   
   bool robot::followLine(bool searchBlock = false) {
 
     int sxSpeed = _speed;
     int dxSpeed = _speed;
-    bool hasBox = false;
 
     bool blockFound = false;
     
@@ -156,13 +150,6 @@ namespace robotieee {
       if (lineReadings.left == LC_WHITE && lineReadings.center == LC_BLACK && lineReadings.right == LC_BLACK) {
         sxSpeed += _speedCompensation;
       }
-
-      if (isSearching && !hasBox){
-        proxSensors.read();
-        if( proxSensors.countsFrontWithLeftLeds() >= 6 || proxSensors.countsFrontWithRightLeds() >= 6){
-          hasBox = true;
-        }
-      }
       
     }
 
@@ -199,11 +186,12 @@ namespace robotieee {
       lcd.gotoXY(0,1);
       lcd.print(frontLeft);
       lcd.print(frontRight);
-      //ledYellow(1);
     #endif
     
-    if (frontLeft > 5 && frontRight > 5) { //case sensors: 6 6
-    // to considerate the case: 5 6 or 6 5, it can be better: if (frontLeft + frontRight >= 11)
+    if (frontLeft + frontRight >= 11) { //case sensors: 6 6; 6 5; 5 6
+      #ifdef DEBUG
+        ledYellow(1);
+      #endif
       return true;
     }
 
@@ -232,25 +220,42 @@ namespace robotieee {
     
   }
 
+  bool robot::turnRightAndCheck() {
+    rotateAndCheck(-90); 
+  }
+
+  bool robot::turnLeftAndCheck() {
+    rotateAndCheck(90);
+  }
+
+  bool robot::turnBackAndCheck() {
+    // A value of 179 degrees is used due to the way TurnSensor.cpp encodes degrees: a value of 180 would overflow and therefore not work
+    // This isn't that bad after all: rotating 179 degrees + error should lead to a almost perfect 180 degrees turn anyway
+    rotateAndCheck(179);
+  }
+
   void robot::turnRight() {
     rotate(-90, false); 
   }
 
   void robot::turnLeft() {
-    rotate(90, false); 
+    rotate(90, false);
   }
 
   void robot::turnBack() {
     // A value of 179 degrees is used due to the way TurnSensor.cpp encodes degrees: a value of 180 would overflow and therefore not work
     // This isn't that bad after all: rotating 179 degrees + error should lead to a almost perfect 180 degrees turn anyway
-    rotate(179, false); 
+    rotate(179, false);
   }
 
   void robot::goAhead(unsigned int cells) {
     bool blockFound = false;
     
     for (int i = 0; i < cells; i++) {
-      followLine(); 
+      blockFound = followLineAndCheck(); 
+      if (blockFound == true) {
+        break;
+      }
     }
   }
 
@@ -325,13 +330,4 @@ namespace robotieee {
   }
   
 }
-
-
-  bool robot::rotateAndCheck(int16_t degrees) {
-    rotate(degrees, false);
-
-    return blockFound;
-      blockFound = followLine(true); 
-      if (blockFound == true) {
-        break;
-      }
+      

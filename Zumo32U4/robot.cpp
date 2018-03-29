@@ -333,21 +333,21 @@ namespace robotieee {
   }
   
 }
-  void timeMove(int time){
+  void robot::timeMove(int time){
     Zumo32U4Motors::setSpeeds(_speed, _speed);
     delay(time);
     Zumo32U4Motors::setSpeeds(0,0);
   }
 
-  void invertSpeed(){
+  void robot::invertSpeed(){
     setSpeed(-_speed);
   }
 
-  void setCenteringDelay(uint16_t centeringDelay){
+  void robot::setCenteringDelay(uint16_t centeringDelay){
     _centeringDelay = centeringDelay;
   }
   
-  void pushBlock(unsigned int cells){
+  void robot::pushBlock(unsigned int cells){
     goAhead(cells - 1);
     timeMove(_blockCenteringDelay);
     invertSpeed();

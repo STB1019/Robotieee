@@ -1,3 +1,5 @@
+#vscode files
+.vscode/
 #eclipse files
 /.metadata/
 /RemoteSystemsTempFiles/

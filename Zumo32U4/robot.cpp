@@ -8,12 +8,13 @@
 #include "TurnSensor.h"
 #include <Wire.h>
 
+#define DEFAULT_ORIENTATION               object_movement::UP
 #define DEFAULT_SPEED                     150
 #define DEFAULT_CENTERING_DELAY           150
 #define DEFAULT_PATH_SEEK_COMPENSATION    5
 #define DEFAULT_SPEED_COMPENSATION        5
 #define DEFAULT_BACKWARDS_CENTERING_DELAY 0
-#define BLOCK_CENTERING_DELAY             230
+#define BLOCK_CENTERING_DELAY             200
 
 extern Zumo32U4LCD lcd;
 extern L3G gyro;
@@ -26,13 +27,15 @@ namespace robotieee {
 
   static struct line_readings readLineSensors();
 
-  robot::robot(const point& start_position) : moveable{start_position} {
+  robot::robot(const point start_position, const matrix<cell_content>* grid) : moveable{start_position} {
     _hardwareInitialized   = false;
     _speed                 = DEFAULT_SPEED;
     _centeringDelay        = DEFAULT_CENTERING_DELAY;
     _pathSeekCompensation  = DEFAULT_PATH_SEEK_COMPENSATION;
     _speedCompensation     = DEFAULT_SPEED_COMPENSATION;
     _blockCenteringDelay   = BLOCK_CENTERING_DELAY;
+    _grid                  = grid;
+    _orientation           = DEFAULT_ORIENTATION;
   }
   
   robot::~robot() {
@@ -224,39 +227,51 @@ namespace robotieee {
   }
 
   bool robot::turnRightAndCheck() {
-    rotateAndCheck(-90); 
+    rotateAndCheck(-90);
+
+    _orientation = (_orientation + 1) % 4;
   }
 
   bool robot::turnLeftAndCheck() {
     rotateAndCheck(90);
+
+    _orientation = (_orientation - 1) % 4;
   }
 
   bool robot::turnBackAndCheck() {
     // A value of 179 degrees is used due to the way TurnSensor.cpp encodes degrees: a value of 180 would overflow and therefore not work
     // This isn't that bad after all: rotating 179 degrees + error should lead to a almost perfect 180 degrees turn anyway
     rotateAndCheck(179);
+
+    _orientation = (_orientation + 2) % 4;
   }
 
   void robot::turnRight() {
-    rotate(-90, false); 
+    rotate(-90, false);
+
+    _orientation = (_orientation + 1) % 4;
   }
 
   void robot::turnLeft() {
     rotate(90, false);
+
+    _orientation = (_orientation  1) % 4;
   }
 
   void robot::turnBack() {
     // A value of 179 degrees is used due to the way TurnSensor.cpp encodes degrees: a value of 180 would overflow and therefore not work
     // This isn't that bad after all: rotating 179 degrees + error should lead to a almost perfect 180 degrees turn anyway
     rotate(179, false);
+
+    _orientation = (_orientation + 2) % 4;
   }
 
-  bool robot::goAhead(unsigned int cells, bool searchBlock) {
+  void robot::goAhead(unsigned int cells) {
     bool blockFound = false;
     
     for (int i = 0; i < cells; i++) {
-      blockFound = followLine(searchBlock);
-      if (blockFound == true) {
+      blockFound = followLineAndCheck(); 
+      if (blockFound) {
         break;
       }
     }
@@ -306,9 +321,9 @@ namespace robotieee {
     
     lineSensors.readCalibrated(tmp);
   
-    retVal.left = convertValueToLineColor(tmp[0], false);
-    retVal.center = convertValueToLineColor(tmp[1], false);
-    retVal.right = convertValueToLineColor(tmp[2], false);
+    retVal.left = convertValueToLineColor(tmp[0], true);
+    retVal.center = convertValueToLineColor(tmp[1], true);
+    retVal.right = convertValueToLineColor(tmp[2], true);
 
 #   ifdef DEBUG
     //lcd.clear();
@@ -339,7 +354,7 @@ namespace robotieee {
   }
 
   void robot::invertSpeed(){
-    setSpeed(-_speed);
+    setSpeed(-(_speed));
   }
 
   void robot::setCenteringDelay(uint16_t centeringDelay){

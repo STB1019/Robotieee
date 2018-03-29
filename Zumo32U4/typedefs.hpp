@@ -15,5 +15,10 @@
  */
 typedef unsigned int id_t;
 
+/**
+ * The type of a cell in robotieee::model::workplace
+ */
+typedef unsigned int cell_content;
+
 
 #endif /* TYPEDEFS_HPP_ */

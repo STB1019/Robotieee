@@ -18,6 +18,7 @@
 #include <point.hpp>
 #include "block.hpp"
 #include "robot.hpp"
+#include "typedefs.hpp"
 
 /**
  * A point used to place something in robiteee::model::workplace in a *I don't care* position
@@ -66,11 +67,6 @@ enum base_cell_content {
   BCC_OBSTRUCTED =    CELL_CONTENT_MAX_SIZE
 };
 
-/**
- * The type of a cell in robotieee::model::workplace
- */
-typedef unsigned int cell_content;
-
 	typedef list<point> point_list;
 
 	class const_base_cell_content_iter;
@@ -99,6 +95,7 @@ typedef unsigned int cell_content;
      * There are as many goals as there are blocks
      */
 		point_list goals;
+   
 	  public:
     /**
      * A variable representing the robot itself
@@ -118,7 +115,6 @@ typedef unsigned int cell_content;
 	  public:
 		model(unsigned int maxRows, unsigned int maxCols);
 		~model();
-	  public:
 		bool is_cell_empty(unsigned int y, unsigned int x) const;
 		bool is_cell_empty(const point& p) const;
 		const_base_cell_content_iter cbegin(const point& p) const;

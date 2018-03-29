@@ -38,8 +38,9 @@ void setup() {
 
   delay(5000);
 
-  zumo_model.zumo_robot.goAhead(2);
-  zumo_model.zumo_robot.turnRight();
+  while (true) {
+    zumo_model.zumo_robot.pushBlock(3);
+  }
   
   #ifndef DEBUG
     lcd.clear();

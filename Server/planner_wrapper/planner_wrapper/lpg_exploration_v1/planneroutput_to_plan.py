@@ -7,12 +7,11 @@ import re
 from planner_wrapper.exceptions import ActionParseException
 from planner_wrapper.interfaces import IPlanFilenameToPlanConverter, IPlannerAction
 from planner_wrapper.domains.sokoban.sokoban_actions import SokobanMove, SokobanPushToNonGoal, Direction, \
-    SokobanPullToNonGoal, SokobanPullToGoal, SokobanPushToGoal
+    SokobanPullToNonGoal, SokobanPullToGoal
 from planner_wrapper.utils import Point
 
 
-
-class LPG_V1_FilenameToPlanConverter(IPlanFilenameToPlanConverter):
+class LPG_V1_FilenameToExplorationPlanConverter(IPlanFilenameToPlanConverter):
 
     def convert_plan_filename_into_plan(self, plan_filename: str) -> typing.List[IPlannerAction]:
         plan_filename = os.path.abspath(plan_filename)
@@ -52,42 +51,6 @@ class LPG_V1_FilenameToPlanConverter(IPlanFilenameToPlanConverter):
                start_pos=self._convert_pos_into_cell(action_parameters[1]),
                end_pos=self._convert_pos_into_cell(action_parameters[2]),
                direction=Direction.parse(action_parameters[3]),
-            )
-        elif action_name == 'PUSH-TO-NONGOAL':
-            return SokobanPushToNonGoal(action_name,
-                player=action_parameters[0],
-                stone=action_parameters[1],
-                player_pos=self._convert_pos_into_cell(action_parameters[2]),
-                start_pos=self._convert_pos_into_cell(action_parameters[3]),
-                end_pos=self._convert_pos_into_cell(action_parameters[4]),
-                direction=Direction.parse(action_parameters[5]),
-            )
-        elif action_name == 'PUSH-TO-GOAL':
-            return SokobanPushToGoal(action_name,
-                player=action_parameters[0],
-                stone=action_parameters[1],
-                player_pos=self._convert_pos_into_cell(action_parameters[2]),
-                start_pos=self._convert_pos_into_cell(action_parameters[3]),
-                end_pos=self._convert_pos_into_cell(action_parameters[4]),
-                direction=Direction.parse(action_parameters[5])
-            )
-        elif action_name == 'PULL-TO-NONGOAL':
-            return SokobanPullToNonGoal(action_name,
-                player=action_parameters[0],
-                stone=action_parameters[1],
-                player_pos=self._convert_pos_into_cell(action_parameters[2]),
-                start_pos=self._convert_pos_into_cell(action_parameters[3]),
-                end_pos=self._convert_pos_into_cell(action_parameters[4]),
-                direction=Direction.parse(action_parameters[5]),
-            )
-        elif action_name == 'PULL-TO-GOAL':
-            return SokobanPullToGoal(action_name,
-                player=action_parameters[0],
-                stone=action_parameters[1],
-                player_pos=self._convert_pos_into_cell(action_parameters[2]),
-                start_pos=self._convert_pos_into_cell(action_parameters[3]),
-                end_pos=self._convert_pos_into_cell(action_parameters[4]),
-                direction=Direction.parse(action_parameters[5])
             )
         else:
             raise ActionParseException(f"Can't decode action {action_name}")

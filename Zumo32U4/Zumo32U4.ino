@@ -1,7 +1,6 @@
 #define AVR_BUILD
 #define DEBUG
 
-
 #include <Zumo32U4.h>
 #include <Wire.h>
 #include "model.hpp"
@@ -16,11 +15,13 @@ Zumo32U4ButtonA buttonA;
 Zumo32U4ButtonB buttonB;
 Zumo32U4ButtonC buttonC;
 Zumo32U4LineSensors lineSensors;
+Zumo32U4ProximitySensors proxSensors;
 
 int function;
 int exit_switch = 0;
 int rotation;
 int distance = 0;
+int count = 0;
 
 model zumo_model = model{10, 10};
 
@@ -182,3 +183,10 @@ void loop() {
 //    }
 //  }while(function == 0);   
 //}
+
+  zumo_model.zumo_robot.goAhead(4);
+
+  #ifndef DEBUG
+    lcd.clear();
+    lcd.print(F("DONE!"));
+  #endif

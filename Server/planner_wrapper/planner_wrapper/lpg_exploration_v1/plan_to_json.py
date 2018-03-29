@@ -10,10 +10,10 @@ from planner_wrapper.domains.sokoban.sokoban_actions import SokobanPushToNonGoal
 from planner_wrapper.utils import Point
 
 
-class LPG_V1_PlanToJsonConverter(IPlanToJsonConverter):
+class LPG_V1_ExplorationPlanToJsonConverter(IPlanToJsonConverter):
 
     def __init__(self):
-        self.parsable_classes = [SokobanMove, SokobanPushToGoal, SokobanPushToNonGoal]
+        self.parsable_classes = [SokobanMove]
 
     def convert_plan(self, actions: typing.List[IPlannerAction]) -> typing.Dict[typing.AnyStr, typing.Any]:
         # now we dump actions within a json
@@ -66,30 +66,4 @@ def json_to_SokobanMove(val: SokobanMove):
         "from": val.start_pos,
         "to": val.end_pos,
         "direction": val.direction
-    }
-
-
-@to_serializable.register(SokobanPushToGoal)
-def json_to_SokobanPushToGoal(val: SokobanPushToGoal):
-    return {
-        "action": "push-to-goal",
-        "player": val.player.lower(),
-        "stone": val.stone.lower(),
-        "player-start-pos": val.player_pos,
-        "start-pos": val.start_pos,
-        "end-pos": val.end_pos,
-        "direction": val.direction,
-    }
-
-
-@to_serializable.register(SokobanPushToNonGoal)
-def json_to_SokobanPushToNonGoal(val: SokobanPushToNonGoal):
-    return {
-        "action": "push-to-nongoal",
-        "player": val.player.lower(),
-        "stone": val.stone.lower(),
-        "player-start-pos": val.player_pos,
-        "start-pos": val.start_pos,
-        "end-pos": val.end_pos,
-        "direction": val.direction,
     }

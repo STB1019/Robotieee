@@ -1,5 +1,6 @@
 import os
 
+from planner_wrapper.domains.exploration.exploration_world import ExplorationWorld
 from planner_wrapper.domains.sokoban.sokoban_actions import Direction
 from planner_wrapper.interfaces import IWorldToPddlProblemConverter
 from planner_wrapper.utils import Point, Clause
@@ -12,7 +13,7 @@ from planner_wrapper.domains.sokoban import sokoban_world
 from planner_wrapper.utils import TabFileWriter
 
 
-class V1_SokobanWorldToPddlConverter(IWorldToPddlProblemConverter):
+class ExplorationWorldToPddlConverter(IWorldToPddlProblemConverter):
 
     def cell_predicate(self, p: Point) -> str:
         return f"cell-{p.y:02d}-{p.x:02d}"
@@ -37,7 +38,7 @@ class V1_SokobanWorldToPddlConverter(IWorldToPddlProblemConverter):
         else:
             raise ValueError(f"invalid point {p_start} and next point {p_end}")
 
-    def generate_problem(self, problem_filename: str, domain_name: str, problem_name: str, world: sokoban_world.SokobanWorld) -> str:
+    def generate_problem(self, problem_filename: str, domain_name: str, problem_name: str, world: ExplorationWorld) -> str:
         with open(problem_filename, "w") as f:
             tf = TabFileWriter(f, start_indent=0, element_per_indent=2, tabs_instead_of_spaces=False)
             with Clause(tf, name="define"):
@@ -74,14 +75,7 @@ class V1_SokobanWorldToPddlConverter(IWorldToPddlProblemConverter):
                         tf.writeln(location)
                     tf.writeln()
 
-                    # blocks
-                    blocks = map(
-                        lambda x: f"stone-{x:02d} - stone",
-                        range(len(world.blocks))
-                    )
-                    for block in blocks:
-                        tf.writeln(block)
-                    tf.writeln()
+                    # there are no stones. Locations occupied by stones are not "clear"
 
                 with Clause(tf, name="init", colon=True):
                     # position of the robot
@@ -90,54 +84,49 @@ class V1_SokobanWorldToPddlConverter(IWorldToPddlProblemConverter):
                         if not world.is_traversable(row=cell.y, col=cell.x):
                             continue
                         tf.writeln(";; *****************************************")
-                        tf.writeln(";; CELL: y={} x={}\n".format(cell.y, cell.x))
+                        tf.writeln(";; CELL: y={} x={}".format(cell.y, cell.x))
                         tf.writeln(";; *****************************************")
 
-                        #cell contains a robot
+                        # cell contains a robot
+                        # we need to mark such cell as "visited"
                         if sokoban_world.BaseCellContent.ROBOT in world[cell]:
                             Clause.write_predicate(tf, name="at", value=[
                                 "player-01",
                                 self.cell_predicate(cell)
                             ])
                             tf.writeln()
+                            Clause.write_predicate(tf, name="visited", value=self.cell_predicate(cell))
+                            tf.writeln()
 
-                        #cell contains a block
-                        if sokoban_world.BaseCellContent.BLOCK in world[cell]:
+                        # check if the cell has been visited (not the one with the robot, that one is visited by default)
+                        # in this way we avoid marking the same cell with 2 visited facts
+                        if world.is_visited(row=cell.y, col=cell.x) and sokoban_world.BaseCellContent.ROBOT not in world[cell]:
+                            Clause.write_predicate(tf, name="visited", value=self.cell_predicate(cell))
+                            tf.writeln()
+
+                        # cell contains a block
+                        # cell which do not contain a block are clear. Otherwise they are not
+                        if sokoban_world.BaseCellContent.BLOCK not in world[cell]:
+                            Clause.write_predicate(tf, name="clear", value=self.cell_predicate(cell))
+                            tf.writeln()
+                        else:
+                            # perform the check but do not do anything
                             blocks = list(filter(lambda x: x.position == cell, world.blocks))
                             if len(blocks) != 1:
                                 raise ValueError(f"problem while looking for block in cell {cell.y}:{cell.x}. It should be only one but instead it's: {blocks}")
-                            block = blocks[0]
-                            Clause.write_predicate(tf, name="at", value=[
-                                block.to_pddl_predicate(),
-                                self.cell_predicate(cell)
-                            ])
-                            tf.writeln()
 
-                        #cell contains a goal
-                        if sokoban_world.BaseCellContent.GOAL in world[cell]:
-                            Clause.write_predicate(tf, name="IS-GOAL", value=self.cell_predicate(cell))
-                            tf.writeln()
+                        # cell contains a goal
+                        # goal are ignored in the exploration domain
 
                         #cell does not contain a goal
-                        if sokoban_world.BaseCellContent.GOAL not in world[cell]:
-                            Clause.write_predicate(tf, name="IS-NONGOAL", value=self.cell_predicate(cell))
-                            tf.writeln()
+                        # non goals are ignored in the exploration domain
 
                         #cell contains both a block and a goal
-                        if sokoban_world.BaseCellContent.GOAL in world[cell] and sokoban_world.BaseCellContent.BLOCK in world[cell]:
-                            blocks = list(filter(lambda x: x.position == cell, world.blocks))
-                            if len(blocks) != 1:
-                                raise ValueError(
-                                    f"problem while looking for block in cell {cell.y}:{cell.x}. It should be only one but instead it's: {blocks}")
-                            block = blocks[0]
-                            Clause.write_predicate(tf, name="at-goal", value=[
-                                block.to_pddl_predicate()
-                            ])
-                            tf.writeln()
+                        #nothing should be doen in this scenario
 
                         #cell contains nothing
                         if world.is_empty(row=cell.y, col=cell.x):
-                            Clause.write_predicate(tf, name="clear", value=[self.cell_predicate(cell)])
+                            Clause.write_predicate(tf, name="clear", value=self.cell_predicate(cell))
                         tf.writeln()
 
                         #adjacent cells
@@ -160,10 +149,16 @@ class V1_SokobanWorldToPddlConverter(IWorldToPddlProblemConverter):
 
                 with Clause(tf, name="goal", colon=True):
                     with Clause(tf, name="and", fake=False):
-                        # player needs to return to the docking station
-                        Clause.write_predicate(tf, name="at", value=["player-01", self.cell_predicate(world.docking_station)])
-                        for b in world.blocks:
-                            Clause.write_predicate(tf, name="at-goal", value=b.to_pddl_predicate())
-                            tf.write("\n")
+                        # player needs to visit every cell
+
+                        for cell in world.cells:
+                            if not world.is_traversable(row=cell.y, col=cell.x):
+                                # if a cell is not traversable, we can't visit it
+                                continue
+                            if sokoban_world.BaseCellContent.BLOCK in world[cell]:
+                                # if a cell contains a block, we can't visited it, so we ignore the cell
+                                continue
+                            Clause.write_predicate(tf, name="visited", value=self.cell_predicate(cell))
+                            tf.writeln()
 
         return os.path.abspath(problem_filename)

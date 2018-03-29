@@ -1,17 +1,17 @@
 import typing
 
-from planner_wrapper.domains.sokoban import sokoban_world
+from planner_wrapper.domains.exploration.exploration_world import ExplorationWorld
 from planner_wrapper.domains.sokoban.sokoban_world import BaseCellContent
 from planner_wrapper.interfaces import IJsonToWorld
 
 
-class JsonToSokobanWorld_V1(IJsonToWorld):
+class JsonToExplorationWorld_V1(IJsonToWorld):
 
     def convert_json_to_model_world(self, js: typing.Dict[str, typing.Any]) -> typing.Any:
         world = js['world']
         rows = int(world['rows'])
         cols = int(world['columns'])
-        retval = sokoban_world.SokobanWorld(rows, cols)
+        retval = ExplorationWorld(rows, cols)
 
         for cell in world['cells']:
             for ch in cell['entities']:

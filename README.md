@@ -70,35 +70,39 @@ The web server uses Python3.6. The web server can be customized with the followi
 cd Server/planner_wrapper/
 virtualenv venv
 pip install -f requirements.txt
-python main.py --planner_location="place/where/the/planner/is" --use_planner="lpg"
+python main.py --planner_location="place/where/the/planner/is" --use_planner="lpg" --ip="0.0.0.0" --port=5000
 ```
 
 Alternatively you can simulate the planner by using:
 
 ```
-python main.py --planner_location="ignored" --use_planner="fake"`
+python main.py --planner_location="ignored" --use_planner="fake" --ip="0.0.0.0" --port=5000`
 ```
 
-In *Server/planner_wrapper* you can find a python program generating a server which execute a classic planner to solve Sokoban problem.
-The server listen for POST requests at the URL `ip:5000/sokoban_problem`. In the payload of the request, a json needs to be provided. Furthermore, be sure to add to the header of the request the "Content-Type" "application/json". The server will reply with a 200 response containing a payload with the plan computed.
+## Sokoban solver
+
+In *Server/planner_wrapper* you can find a python program generating a server which execute a classic planner to solve Sokoban problem. It is the problem of moving all the blocks in some goals in the map and then make the agent return to the docking station.
+The server listen for POST requests at the URL `ip:port/sokoban_problem`. In the payload of the request, a json needs to be provided. Furthermore, be sure to add to the header of the request the "Content-Type" "application/json". The server will reply with a 200 response containing a payload with the plan computed.
 
 In the following we will assume the following problem (made thanks by the website [sokoban-editor](https://deificx.github.io/sokoban-editor/) ):
 
 ![sokoban example](https://github.com/STB1019/Robotieee/blob/master/images/sokobanExample.PNG "Sokoban example")
 
-The yellow circle is the robot, the crate is the block that needs to be put on the red cross. If this is the state of the world, the json to send to the server is:
+The yellow circle is the robot, the crate is the block that needs to be put on the red cross. If this is the state of the world, the following can be applied.
 
-## JSON request format
+### JSON request format
+
+For solving a Sokoban problem using *push* actions, use the following json:
 
 ```
 {
-  "version": "1.1",
+  "version": "1.0",
   "world": {
     "rows": 3,
     "columns": 3,
     "cells": [
       { "y": 0, "x": 0, "entities": "G"},
-      { "y": 0, "x": 1, "entities": "R"},
+      { "y": 0, "x": 1, "entities": "RD"},
       { "y": 0, "x": 2, "entities": "U"},
       { "y": 1, "x": 0, "entities": ""},
       { "y": 1, "x": 1, "entities": "B"},
@@ -121,83 +125,97 @@ where in the string field *entities*:
 
 Multiple objects can be within the same cell.
 
-## JSON reply
+### JSON reply
 
 ```
 {
-    "version": "1.1",
-    "actions": [
-        {
-            "action": "move",
-            "player": "player-01",
-            "start-pos": {"x": "0","y": "0"},
-            "end-pos": {"x": "1","y": "0"},
-            "direction": "dir-down"
-        },
-        {
-            "action": "move",
-            "player": "player-01",
-            "start-pos": {"x": "1","y": "0"},
-            "end-pos": {"x": "2","y": "0"
-            },
-            "direction": "dir-down"
-        },
-        {
-            "action": "move",
-            "player": "player-01",
-            "start-pos": {"x": "2","y": "0"},
-            "end-pos": {"x": "2","y": "1"},
-            "direction": "dir-right"
-        },
-        {
-            "action": "move",
-            "player": "player-01",
-            "start-pos": {"x": "2","y": "1"},
-            "end-pos": {"x": "2","y": "2"},
-            "direction": "dir-right"
-        },
-        {
-            "action": "move",
-            "player": "player-01",
-            "start-pos": {"x": "2","y": "2"},
-            "end-pos": {"x": "1","y": "2"},
-            "direction": "dir-up"
-        },
-        {
-            "action": "push-to-nongoal",
-            "player": "player-01",
-            "stone": "stone-00",
-            "player-start-pos": {"x": "1","y": "2"},
-            "start-pos": {"x": "1","y": "1"},
-            "end-pos": {"x": "1","y": "0"},
-            "direction": "dir-left"
-        },
-        {
-            "action": "move",
-            "player": "player-01",
-            "start-pos": {"x": "1","y": "1"},
-            "end-pos": {"x": "2","y": "1"},
-            "direction": "dir-down"
-        },
-        {
-            "action": "move",
-            "player": "player-01",
-            "start-pos": {"x": "2","y": "1"},
-            "end-pos": {"x": "2","y": "0"},
-            "direction": "dir-left"
-        },
-        {
-            "action": "push-to-goal",
-            "player": "player-01",
-            "stone": "stone-00",
-            "player-start-pos": {"x": "2","y": "0"},
-            "start-pos": {"x": "1","y": "0"},
-            "end-pos": {"x": "0","y": "0"},
-            "direction": "dir-up"
-        }
-    ]
+  "version": "1.0", 
+  "actions": [
+    {"action": "move",            "player": "player-01", "from": {"x": 0, "y": 0}, "to": {"x": 1, "y": 0}, "direction": "dir-down"}, 
+    {"action": "move",            "player": "player-01", "from": {"x": 1, "y": 0}, "to": {"x": 2, "y": 0}, "direction": "dir-down"}, 
+    {"action": "move",            "player": "player-01", "from": {"x": 2, "y": 0}, "to": {"x": 2, "y": 1}, "direction": "dir-right"}, 
+    {"action": "move",            "player": "player-01", "from": {"x": 2, "y": 1}, "to": {"x": 2, "y": 2}, "direction": "dir-right"}, 
+    {"action": "move",            "player": "player-01", "from": {"x": 2, "y": 2}, "to": {"x": 1, "y": 2}, "direction": "dir-up"}, 
+    {"action": "push-to-nongoal", "player": "player-01", "stone": "stone-00", "player-start-pos": {"x": 1, "y": 2}, "start-pos": {"x": 1, "y": 1}, "end-pos": {"x": 1, "y": 0}, "direction": "dir-left"},
+    {"action": "move",            "player": "player-01", "from": {"x": 1, "y": 1}, "to": {"x": 2, "y": 1}, "direction": "dir-down"}, 
+    {"action": "move",            "player": "player-01", "from": {"x": 2, "y": 1}, "to": {"x": 2, "y": 0}, "direction": "dir-left"}, 
+    {"action": "push-to-goal",    "player": "player-01", "stone": "stone-00", "player-start-pos": {"x": 2, "y": 0}, "start-pos": {"x": 1, "y": 0}, "end-pos": {"x": 0, "y": 0}, "direction": "dir-up"}, 
+    {"action": "move",            "player": "player-01", "from": {"x": 1, "y": 0}, "to": {"x": 1, "y": 1}, "direction": "dir-right"}, 
+    {"action": "move",            "player": "player-01", "from": {"x": 1, "y": 1}, "to": {"x": 0, "y": 1}, "direction": "dir-up"}
+  ]
 }
 ```
+
+## Exploration Solver
+
+The python server can also call the planner to solve a new PDDL problem, exploration. Given a map, it is the problem of visiting all the cells within the map.
+The agent (robot) won't return in any prefixed cell. The server listen for POST requests at the URL `ip:port/exploration_problem`. In the payload of the request, a json needs to be provided. Furthermore, be sure to add to the header of the request the "Content-Type" "application/json". The server will reply with a 200 response containing a payload with the plan computed.
+
+In the following we will assume the following problem (made thanks by the website [sokoban-editor](https://deificx.github.io/sokoban-editor/) ):
+
+![exploration example](https://github.com/STB1019/Robotieee/blob/master/images/explorationProblem.png "Exploration example")
+
+The yellow circle is the robot, the crate is the block which can't be moved.
+
+### JSON request format
+
+For solving a exploration problem use the following json:
+
+```
+{
+  "version": "1.0",
+  "world": {
+    "rows": 3,
+    "columns": 3,
+    "cells": [
+      { "y": 0, "x": 0, "entities": "R"},
+      { "y": 0, "x": 1, "entities": ""},
+      { "y": 0, "x": 2, "entities": "U"},
+      { "y": 1, "x": 0, "entities": ""},
+      { "y": 1, "x": 1, "entities": "B"},
+      { "y": 1, "x": 2, "entities": ""},
+      { "y": 2, "x": 0, "entities": ""},
+      { "y": 2, "x": 1, "entities": ""},
+      { "y": 2, "x": 2, "entities": ""}
+    ]
+  }
+}
+```
+
+where in the string field *entities*:
+
+ - *B* stands for *block*;
+ - *R* stands for *robot*;
+ - *G* stands for *goal*;
+ - *U* stands for *untraversable*;
+ - *D* stands for *docking station*;
+ - *V* stands for a cell which has already been visited by the robot;
+
+Multiple objects can be within the same cell.
+
+### JSON reply
+
+The server will reply with a json formatted like this:
+
+```
+{
+  "version": "1.0", 
+  "actions": [
+    {"action": "move", "player": "player-01", "from": {"x": 0, "y": 0}, "to": {"x": 1, "y": 0}, "direction": "dir-down"}, 
+    {"action": "move", "player": "player-01", "from": {"x": 1, "y": 0}, "to": {"x": 2, "y": 0}, "direction": "dir-down"}, 
+    {"action": "move", "player": "player-01", "from": {"x": 2, "y": 0}, "to": {"x": 2, "y": 1}, "direction": "dir-right"}, 
+    {"action": "move", "player": "player-01", "from": {"x": 2, "y": 1}, "to": {"x": 2, "y": 2}, "direction": "dir-right"}, 
+    {"action": "move", "player": "player-01", "from": {"x": 2, "y": 2}, "to": {"x": 1, "y": 2}, "direction": "dir-up"}, 
+    {"action": "move", "player": "player-01", "from": {"x": 1, "y": 2}, "to": {"x": 2, "y": 2}, "direction": "dir-down"}, 
+    {"action": "move", "player": "player-01", "from": {"x": 2, "y": 2}, "to": {"x": 2, "y": 1}, "direction": "dir-left"}, 
+    {"action": "move", "player": "player-01", "from": {"x": 2, "y": 1}, "to": {"x": 2, "y": 0}, "direction": "dir-left"}, 
+    {"action": "move", "player": "player-01", "from": {"x": 2, "y": 0}, "to": {"x": 1, "y": 0}, "direction": "dir-up"}, 
+    {"action": "move", "player": "player-01", "from": {"x": 1, "y": 0}, "to": {"x": 0, "y": 0}, "direction": "dir-up"}, 
+    {"action": "move", "player": "player-01", "from": {"x": 0, "y": 0}, "to": {"x": 0, "y": 1}, "direction": "dir-right"}
+  ]
+}
+```
+
 
 # Middelware Blue
 

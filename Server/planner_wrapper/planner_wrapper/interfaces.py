@@ -13,14 +13,14 @@ class IPlannerAction:
         self.name = name
 
 
-class ISokobanWorldToPddlProblemConverter(metaclass=ABCMeta):
+class IWorldToPddlProblemConverter(metaclass=ABCMeta):
     """
-    Represents a class allowing you to generate a PDDL problem instance for a sokoban world
+    Represents a class allowing you to generate PDDL problem instance from a model of a problem
     """
 
     @abstractmethod
     def generate_problem(self, problem_filename: str, domain_name: str, problem_name: str,
-                         world: sokoban_world.SokobanWorld) -> str:
+                         world) -> str:
         """
         Build a new problem file representing the state in then sokoban world given
         :param problem_filename: the name of the problem file to generate
@@ -119,7 +119,15 @@ class IPlanner(metaclass=ABCMeta):
 class IJsonToWorld(metaclass=ABCMeta):
 
     @abstractmethod
-    def convert_json_to_sokoban_world(self, j: typing.Dict[str, typing.Any]) -> sokoban_world.SokobanWorld:
+    def convert_json_to_model_world(self, j: typing.Dict[str, typing.Any]) -> typing.Any:
+        """
+        Represents a function which, given a json fetched somewhere
+        genereates a model of a world python can understand
+
+
+        :param j:  the json
+        :return: an object representing the worl
+        """
         pass
 
 
@@ -142,7 +150,7 @@ class IPlannerFactory(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def sokoban_world_to_pddl_problem(self) -> ISokobanWorldToPddlProblemConverter:
+    def world_to_pddl_problem(self) -> IWorldToPddlProblemConverter:
         """
 
         :return: a structure converting a wordl representation into a valid PDDL problem file

@@ -14,7 +14,7 @@
 #define DEFAULT_PATH_SEEK_COMPENSATION    5
 #define DEFAULT_SPEED_COMPENSATION        5
 #define DEFAULT_BACKWARDS_CENTERING_DELAY 0
-#define DEFAULT_BLOCK_CENTERING_DELAY     400
+#define DEFAULT_BLOCK_CENTERING_DELAY     220
 
 extern Zumo32U4LCD lcd;
 extern L3G gyro;
@@ -350,7 +350,7 @@ namespace robotieee {
     return retVal;
   }
   
-  void robot::timeMove(unsigned int delayMillis) {
+  void robot::timeMove(uint16_t delayMillis) {
     Zumo32U4Motors::setSpeeds(_speed, _speed);
     delay(delayMillis);
     Zumo32U4Motors::setSpeeds(0,0);
@@ -369,7 +369,7 @@ namespace robotieee {
     timeMove(_blockCenteringDelay);
     invertSpeed();
     setCenteringDelay(DEFAULT_BACKWARDS_CENTERING_DELAY);
-    followLine(true);
+    followLine(false);
     invertSpeed();
     setCenteringDelay(DEFAULT_CENTERING_DELAY + 25);
     timeMove(_centeringDelay);

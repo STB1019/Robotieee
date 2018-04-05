@@ -1,5 +1,7 @@
 #include <SoftwareSerial.h>
 String message = "";
+char *raw;
+int c;
 int switchState = LOW;
 const int SWITCH = 7;
 const int LED_RED = 6;
@@ -18,30 +20,37 @@ void setup() {
 void loop() {
   switchState = digitalRead(SWITCH);
   while ((bluetooth.available()) && (switchState == LOW)) {
-    message += char(bluetooth.read());
+    raw += bluetooth.read();
     switchState = digitalRead(SWITCH);
-    if (Serial.available()) {
-      bluetooth.write(Serial.read());
-    }
   }
 
   if (!bluetooth.available()) {
-    if (message != "") {
-      digitalWrite(LED_GREEN, HIGH);
-      Serial.println(message);
-      delay(500);
-      digitalWrite(LED_GREEN, LOW);
+    if (raw != "") {
+      blinkLED(LED_GREEN, HIGH, 500, LOW);
+      move(raw);
+      raw = "";
+      blinkLED(LED_GREEN, HIGH, 500, LOW);
     }
-    message = "";
   }
   if (Serial.available()) {
     bluetooth.write(Serial.read());
   }
   if (switchState == HIGH) {
-    digitalWrite(LED_RED, HIGH);
+    blinkLED(LED_RED, HIGH, 500, LOW);
+    Serial.write("ROGER");
     bluetooth.write("ROGER");
-    delay(500);
-    digitalWrite(LED_RED, LOW);
+    blinkLED(LED_RED, HIGH, 500, LOW);
   }
 }
 
+void blinkLED(int led, int one, int sec, int two) {
+  digitalWrite(led, one);
+  delay(sec);
+  digitalWrite(led, two);
+}
+
+void move(char raw) {
+  Serial.println(raw);
+  Serial.println(raw, DEC);
+  Serial.println(raw, HEX);
+}

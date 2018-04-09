@@ -5,12 +5,12 @@
             "action": "move",
             "player": "player-01",
             "start-pos": {
-                "x": "5",
-                "y": "8"
+                "y": "5",
+                "x": "8"
             },
             "end-pos": {
-                "x": "4",
-                "y": "8"
+                "y": "4",
+                "x": "8"
             },
             "direction": "dir-left"
         },
@@ -18,12 +18,12 @@
             "action": "move",
             "player": "player-01",
             "start-pos": {
-                "x": "4",
-                "y": "8"
+                "y": "4",
+                "x": "8"
             },
             "end-pos": {
-                "x": "3",
-                "y": "8"
+                "y": "3",
+                "x": "8"
             },
             "direction": "dir-left"
         },
@@ -31,12 +31,12 @@
             "action": "move",
             "player": "player-01",
             "start-pos": {
-                "x": "3",
-                "y": "8"
+                "y": "3",
+                "x": "8"
             },
             "end-pos": {
-                "x": "2",
-                "y": "8"
+                "y": "2",
+                "x": "8"
             },
             "direction": "dir-left"
         },
@@ -44,12 +44,12 @@
             "action": "move",
             "player": "player-01",
             "start-pos": {
-                "x": "2",
-                "y": "8"
+                "y": "2",
+                "x": "8"
             },
             "end-pos": {
-                "x": "2",
-                "y": "7"
+                "y": "2",
+                "x": "7"
             },
             "direction": "dir-up"
         },
@@ -57,12 +57,12 @@
             "action": "move",
             "player": "player-01",
             "start-pos": {
-                "x": "2",
-                "y": "7"
+                "y": "2",
+                "x": "7"
             },
             "end-pos": {
-                "x": "2",
-                "y": "6"
+                "y": "2",
+                "x": "6"
             },
             "direction": "dir-up"
         },
@@ -70,12 +70,12 @@
             "action": "move",
             "player": "player-01",
             "start-pos": {
-                "x": "2",
-                "y": "6"
+                "y": "2",
+                "x": "6"
             },
             "end-pos": {
-                "x": "3",
-                "y": "6"
+                "y": "3",
+                "x": "6"
             },
             "direction": "dir-right"
         },
@@ -83,12 +83,12 @@
             "action": "move",
             "player": "player-01",
             "start-pos": {
-                "x": "3",
-                "y": "6"
+                "y": "3",
+                "x": "6"
             },
             "end-pos": {
-                "x": "4",
-                "y": "6"
+                "y": "4",
+                "x": "6"
             },
             "direction": "dir-right"
         },
@@ -96,12 +96,12 @@
             "action": "move",
             "player": "player-01",
             "start-pos": {
-                "x": "4",
-                "y": "6"
+                "y": "4",
+                "x": "6"
             },
             "end-pos": {
-                "x": "5",
-                "y": "6"
+                "y": "5",
+                "x": "6"
             },
             "direction": "dir-right"
         },
@@ -109,12 +109,12 @@
             "action": "move",
             "player": "player-01",
             "start-pos": {
-                "x": "5",
-                "y": "6"
+                "y": "5",
+                "x": "6"
             },
             "end-pos": {
-                "x": "6",
-                "y": "6"
+                "y": "6",
+                "x": "6"
             },
             "direction": "dir-right"
         },
@@ -122,12 +122,12 @@
             "action": "move",
             "player": "player-01",
             "start-pos": {
-                "x": "6",
-                "y": "6"
+                "y": "6",
+                "x": "6"
             },
             "end-pos": {
-                "x": "7",
-                "y": "6"
+                "y": "7",
+                "x": "6"
             },
             "direction": "dir-right"
         },
@@ -135,12 +135,12 @@
             "action": "move",
             "player": "player-01",
             "start-pos": {
-                "x": "7",
-                "y": "6"
+                "y": "7",
+                "x": "6"
             },
             "end-pos": {
-                "x": "7",
-                "y": "7"
+                "y": "7",
+                "x": "7"
             },
             "direction": "dir-down"
         },
@@ -148,12 +148,12 @@
             "action": "move",
             "player": "player-01",
             "start-pos": {
-                "x": "7",
-                "y": "7"
+                "y": "7",
+                "x": "7"
             },
             "end-pos": {
-                "x": "7",
-                "y": "8"
+                "y": "7",
+                "x": "8"
             },
             "direction": "dir-down"
         },
@@ -161,12 +161,12 @@
             "action": "move",
             "player": "player-01",
             "start-pos": {
-                "x": "7",
-                "y": "8"
+                "y": "7",
+                "x": "8"
             },
             "end-pos": {
-                "x": "8",
-                "y": "8"
+                "y": "8",
+                "x": "8"
             },
             "direction": "dir-right"
         },
@@ -174,12 +174,12 @@
             "action": "move",
             "player": "player-01",
             "start-pos": {
-                "x": "8",
-                "y": "8"
+                "y": "8",
+                "x": "8"
             },
             "end-pos": {
-                "x": "9",
-                "y": "8"
+                "y": "9",
+                "x": "8"
             },
             "direction": "dir-right"
         },
@@ -187,12 +187,12 @@
             "action": "move",
             "player": "player-01",
             "start-pos": {
-                "x": "9",
-                "y": "8"
+                "y": "9",
+                "x": "8"
             },
             "end-pos": {
-                "x": "9",
-                "y": "7"
+                "y": "9",
+                "x": "7"
             },
             "direction": "dir-up"
         },
@@ -200,30 +200,30 @@
             "action": "move",
             "player": "player-01",
             "start-pos": {
-                "x": "9",
-                "y": "7"
+                "y": "9",
+                "x": "7"
             },
             "end-pos": {
-                "x": "9",
-                "y": "6"
+                "y": "9",
+                "x": "6"
             },
             "direction": "dir-up"
         },
         {
-            "action": "push-to-nongoal",
+            "action": "pull-to-nongoal",
             "player": "player-01",
             "stone": "stone-04",
             "player-start-pos": {
-                "x": "9",
-                "y": "6"
+                "y": "9",
+                "x": "6"
             },
             "start-pos": {
-                "x": "8",
-                "y": "6"
+                "y": "8",
+                "x": "6"
             },
             "end-pos": {
-                "x": "7",
-                "y": "6"
+                "y": "7",
+                "x": "6"
             },
             "direction": "dir-left"
         },
@@ -231,12 +231,12 @@
             "action": "move",
             "player": "player-01",
             "start-pos": {
-                "x": "8",
-                "y": "6"
+                "y": "8",
+                "x": "6"
             },
             "end-pos": {
-                "x": "9",
-                "y": "6"
+                "y": "9",
+                "x": "6"
             },
             "direction": "dir-right"
         },
@@ -244,30 +244,30 @@
             "action": "move",
             "player": "player-01",
             "start-pos": {
-                "x": "9",
-                "y": "6"
+                "y": "9",
+                "x": "6"
             },
             "end-pos": {
-                "x": "9",
-                "y": "7"
+                "y": "9",
+                "x": "7"
             },
             "direction": "dir-down"
         },
         {
-            "action": "push-to-nongoal",
+            "action": "pull-to-nongoal",
             "player": "player-01",
             "stone": "stone-06",
             "player-start-pos": {
-                "x": "9",
-                "y": "7"
+                "y": "9",
+                "x": "7"
             },
             "start-pos": {
-                "x": "8",
-                "y": "7"
+                "y": "8",
+                "x": "7"
             },
             "end-pos": {
-                "x": "7",
-                "y": "7"
+                "y": "7",
+                "x": "7"
             },
             "direction": "dir-left"
         },
@@ -275,12 +275,12 @@
             "action": "move",
             "player": "player-01",
             "start-pos": {
-                "x": "8",
-                "y": "7"
+                "y": "8",
+                "x": "7"
             },
             "end-pos": {
-                "x": "8",
-                "y": "6"
+                "y": "8",
+                "x": "6"
             },
             "direction": "dir-up"
         }

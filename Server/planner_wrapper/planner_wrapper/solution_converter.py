@@ -4,9 +4,9 @@ import re
 import collections
 
 action_tags = {
-    'move': ('action','player','start-pos','end-pos','direction'),
-    'pull-to-goal': ('action','player','stone','player-start-pos','start-pos','end-pos','direction'),
-    'pull-to-nongoal': ('action','player','stone','player-start-pos','start-pos','end-pos','direction')
+	'move': ('action', 'player', 'start-pos', 'end-pos', 'direction'),
+	'pull-to-goal': ('action', 'player', 'stone', 'player-start-pos', 'start-pos', 'end-pos', 'direction'),
+	'pull-to-nongoal': ('action', 'player', 'stone', 'player-start-pos', 'start-pos', 'end-pos', 'direction')
 }
 
 
@@ -29,18 +29,17 @@ def convert_instruction(tags, invoker_label):
 
 
 def convert_positions_tag(positions):
-    res = []
-    coords = ('x', 'y')
-    for pos in positions:
-        values = re.sub(r'^cell|-0|-', ' ', pos).lstrip().split()
-        res.append(dict(zip(coords, values)))
-    return res
+	res = []
+	# swapped here!
+	coords = ('y', 'x')
+	for pos in positions:
+		values = re.sub(r'^pos|-0|-', ' ', pos).lstrip().split()
+		res.append(dict(zip(coords, values)))
+	return res
 
 
 def plan_to_dict(file_in):
-	plan = {}
-	plan['version'] = "1.0"
-	plan['actions'] = []
+	plan = {'version': "1.0", 'actions': []}
 
 	# parse the entire file
 	with open(file_in, 'r') as f:
@@ -60,5 +59,7 @@ def dict_to_json(d, file_out):
 	with open(file_out, 'w') as f:
 		json.dump(d, f, indent=4)
 
-# p = plan_to_dict(r"C:\Users\Nicola\Desktop\ZUMOrobot\Robotieee\Server\planner_wrapper\tests\test-instance.sol")
-# dict_to_json(p, r"C:\Users\Nicola\Desktop\ZUMOrobot\Robotieee\Server\planner_wrapper\tests\plan.json")
+
+# if __name__ == '__main__':
+# 	p = plan_to_dict(r"C:\Users\Nicola\Desktop\ZUMOrobot\Robotieee\Server\planner_wrapper\tests\test-instance-pull.sol")
+# 	dict_to_json(p, r"C:\Users\Nicola\Desktop\ZUMOrobot\Robotieee\Server\planner_wrapper\tests\plan.json")

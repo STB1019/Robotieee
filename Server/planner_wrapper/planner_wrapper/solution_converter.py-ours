@@ -4,9 +4,9 @@ import re
 import collections
 
 action_tags = {
-    'move': ('action','player','start-pos','end-pos','direction'),
-    'pull-to-goal': ('action','player','stone','player-start-pos','start-pos','end-pos','direction'),
-    'pull-to-nongoal': ('action','player','stone','player-start-pos','start-pos','end-pos','direction')
+	'move': ('action', 'player', 'start-pos', 'end-pos', 'direction'),
+	'push-to-goal': ('action', 'player', 'stone', 'player-start-pos', 'start-pos', 'end-pos', 'direction'),
+	'push-to-nongoal': ('action', 'player', 'stone', 'player-start-pos', 'start-pos', 'end-pos', 'direction')
 }
 
 
@@ -29,12 +29,12 @@ def convert_instruction(tags, invoker_label):
 
 
 def convert_positions_tag(positions):
-    res = []
-    coords = ('x', 'y')
-    for pos in positions:
-        values = re.sub(r'^cell|-0|-', ' ', pos).lstrip().split()
-        res.append(dict(zip(coords, values)))
-    return res
+	res = []
+	coords = ('x', 'y')
+	for pos in positions:
+		values = re.sub(r'^pos|-0|-', ' ', pos).lstrip().split()
+		res.append(dict(zip(coords, values)))
+	return res
 
 
 def plan_to_dict(file_in):

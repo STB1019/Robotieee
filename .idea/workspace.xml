@@ -2,11 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="dc9eb111-f30a-4c45-a3bc-efa1b8097fe3" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/Server/planner_wrapper/tests/sokoban_example.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Server/planner_wrapper/tests/sokoban_example2.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Server/planner_wrapper/tests/sokoban_out.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server/planner_wrapper/planner_wrapper/instance_converter.py" beforeDir="false" afterPath="$PROJECT_DIR$/Server/planner_wrapper/planner_wrapper/instance_converter.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -29,11 +25,20 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="instance_converter.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="instance_converter.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Server/planner_wrapper/planner_wrapper/instance_converter.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="263">
-              <caret line="63" column="38" lean-forward="true" selection-start-line="63" selection-start-column="38" selection-end-line="63" selection-end-column="38" />
+            <state relative-caret-position="295">
+              <caret line="65" column="33" lean-forward="true" selection-start-line="65" selection-start-column="33" selection-end-line="65" selection-end-column="33" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name=".gitignore" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/.gitignore">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="368">
+              <caret line="23" column="38" selection-start-line="23" selection-start-column="38" selection-end-line="23" selection-end-column="38" />
             </state>
           </provider>
         </entry>
@@ -67,6 +72,7 @@
       <list>
         <option value="$PROJECT_DIR$/Server/planner_wrapper/planner_wrapper/solution_converter.py" />
         <option value="$PROJECT_DIR$/Server/planner_wrapper/planner_wrapper/instance_converter.py" />
+        <option value="$PROJECT_DIR$/.gitignore" />
       </list>
     </option>
   </component>
@@ -645,8 +651,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Server/planner_wrapper/planner_wrapper/instance_converter.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="263">
-          <caret line="63" column="38" lean-forward="true" selection-start-line="63" selection-start-column="38" selection-end-line="63" selection-end-column="38" />
+        <state relative-caret-position="295">
+          <caret line="65" column="33" lean-forward="true" selection-start-line="65" selection-start-column="33" selection-end-line="65" selection-end-column="33" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="368">
+          <caret line="23" column="38" selection-start-line="23" selection-start-column="38" selection-end-line="23" selection-end-column="38" />
         </state>
       </provider>
     </entry>

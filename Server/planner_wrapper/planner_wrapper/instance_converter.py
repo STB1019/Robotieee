@@ -50,7 +50,8 @@ def parse_ASCII(file_in):
 				else:
 					formatted_line = l[1:len(l) - 1]  # remove walls in the line
 					line2cells = convert_line(line=formatted_line, line_counter=line_counter)
-					cell_list.append(cell for cell in line2cells)
+					for cell in line2cells:
+						cell_list.append(cell)
 		line_counter += 1
 
 	world_instance = {'rows': rows, 'columns': columns, 'cells': cell_list}
@@ -65,7 +66,7 @@ def dict_2_json(d, file_out):
 		json.dump(d, f, indent=4)
 
 
-# main
-if __name__ == '__main__':
-	instance = parse_ASCII(file_in=r'C:\Users\Nicola\Desktop\sokoban_example2.txt')
-# dict_2_json(d=instance, file_out=r'C:\Users\Nicola\Desktop\sokoban_out.json')
+# main for quick testing
+# if __name__ == '__main__':
+# 	instance = parse_ASCII(file_in=r'C:\Users\Nicola\Desktop\ZUMOrobot\Robotieee\Server\planner_wrapper\tests\sokoban_example2.txt')
+# 	dict_2_json(d=instance, file_out=r'C:\Users\Nicola\Desktop\ZUMOrobot\Robotieee\Server\planner_wrapper\tests\sokoban_out.json')

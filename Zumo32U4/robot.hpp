@@ -146,7 +146,7 @@ public:
    * 
    * @param[in] cells The number of cells to go through
    * @param[in] lookingForBlocks If true, the function will stop early if a block is found
-   * @return The 
+   * @return True if the robot stopped after finding a block, false otherwise
    */
   bool goAhead(unsigned int cells, bool lookingForBlocks = false);
 
@@ -222,7 +222,7 @@ private:
   uint16_t _centeringDelay;           // The amount of milliseconds to wait after finding an intersection. This is needed to center the robot on the cross
   uint8_t _pathSeekCompensation;      // The initial number of degrees to rotate when the robot is searching the lost black line. See fixPath function
   uint8_t _speedCompensation;         // The speed increase used to make the robot slightly rotate when it arrives at an intersection but it is not parallel to it
-  uint16_t _blockCenteringDelay;       // The amount of milliseconds do wait after finding an intersection. This is needed to center the block on the cross after pushing it
+  uint16_t _blockCenteringDelay;      // The amount of milliseconds do wait after finding an intersection. This is needed to center the block on the cross after pushing it
   matrix<cell_content>* _grid;        // A pointer to the grid of cells. This is used to avoid the need to pass it as a parameter to most movement functions
   enum object_movement _orientation;  // The direction that the robot is facing
   

@@ -365,12 +365,22 @@ namespace robotieee {
   }
   
   void robot::pushBlock(unsigned int cells){
+
+    // Push the block on the desired location
     goAhead(cells, false);
     timeMove(_blockCenteringDelay);
+
+    // Invert the speed used for consequent movements, in order to move backwards
     invertSpeed();
+
+    // Modify the centering delay to the one needed for centering while going backwards and go to the previous line in the grid
     setCenteringDelay(DEFAULT_BACKWARDS_CENTERING_DELAY);
     followLine(false);
+
+    // Invert speed again: we need to start going forward again as we are not centered on an intersection
     invertSpeed();
+
+    // Center the robot in the intersection and reset the initial centering delay
     setCenteringDelay(DEFAULT_CENTERING_DELAY + 25);
     timeMove(_centeringDelay);
     setCenteringDelay(DEFAULT_CENTERING_DELAY);

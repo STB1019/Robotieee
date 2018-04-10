@@ -42,17 +42,18 @@ void setup() {
     lcd.print(2 - i);
     delay(1000);
   }
-do{
-  zumo_model.zumo_robot.pushBlock(1);
-   zumo_model.zumo_robot.turnRight();
+
+  do {
+    
+    zumo_model.zumo_robot.pushBlock(1);
+    zumo_model.zumo_robot.turnRight();
     zumo_model.zumo_robot.goAhead(1, false);
-     zumo_model.zumo_robot.turnLeft();
-      zumo_model.zumo_robot.goAhead(1, false);
-           zumo_model.zumo_robot.turnLeft();}while(true);
-  
-  
-  
-  
+    zumo_model.zumo_robot.turnLeft();
+    zumo_model.zumo_robot.goAhead(1, false);
+    zumo_model.zumo_robot.turnLeft();
+    
+  } while(true);
+
   
   #ifdef DEBUG_POSITION
   lcd.clear();

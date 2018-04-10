@@ -59,10 +59,12 @@ public:
      * @param[in] n The number of cells of the movement
      */
 		virtual void move(object_movement om, unsigned int n);
+    
     /**
      * Dispose the instance
      */
 		virtual ~moveable() = 0;
+    
     /**
      * Setup the instance
      * 

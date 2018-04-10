@@ -131,17 +131,17 @@ Multiple objects can be within the same cell.
 {
   "version": "1.0", 
   "actions": [
-    {"action": "move",            "player": "player-01", "from": {"x": 0, "y": 0}, "to": {"x": 1, "y": 0}, "direction": "dir-down"}, 
-    {"action": "move",            "player": "player-01", "from": {"x": 1, "y": 0}, "to": {"x": 2, "y": 0}, "direction": "dir-down"}, 
-    {"action": "move",            "player": "player-01", "from": {"x": 2, "y": 0}, "to": {"x": 2, "y": 1}, "direction": "dir-right"}, 
-    {"action": "move",            "player": "player-01", "from": {"x": 2, "y": 1}, "to": {"x": 2, "y": 2}, "direction": "dir-right"}, 
-    {"action": "move",            "player": "player-01", "from": {"x": 2, "y": 2}, "to": {"x": 1, "y": 2}, "direction": "dir-up"}, 
-    {"action": "push-to-nongoal", "player": "player-01", "stone": "stone-00", "player-start-pos": {"x": 1, "y": 2}, "start-pos": {"x": 1, "y": 1}, "end-pos": {"x": 1, "y": 0}, "direction": "dir-left"},
-    {"action": "move",            "player": "player-01", "from": {"x": 1, "y": 1}, "to": {"x": 2, "y": 1}, "direction": "dir-down"}, 
-    {"action": "move",            "player": "player-01", "from": {"x": 2, "y": 1}, "to": {"x": 2, "y": 0}, "direction": "dir-left"}, 
-    {"action": "push-to-goal",    "player": "player-01", "stone": "stone-00", "player-start-pos": {"x": 2, "y": 0}, "start-pos": {"x": 1, "y": 0}, "end-pos": {"x": 0, "y": 0}, "direction": "dir-up"}, 
-    {"action": "move",            "player": "player-01", "from": {"x": 1, "y": 0}, "to": {"x": 1, "y": 1}, "direction": "dir-right"}, 
-    {"action": "move",            "player": "player-01", "from": {"x": 1, "y": 1}, "to": {"x": 0, "y": 1}, "direction": "dir-up"}
+    {"action": "move",            "player": "player-01", "from": {"y": 0, "x": 0}, "to": {"y": 1, "x": 0}, "direction": "dir-down"}, 
+    {"action": "move",            "player": "player-01", "from": {"y": 1, "x": 0}, "to": {"y": 2, "x": 0}, "direction": "dir-down"}, 
+    {"action": "move",            "player": "player-01", "from": {"y": 2, "x": 0}, "to": {"y": 2, "x": 1}, "direction": "dir-right"}, 
+    {"action": "move",            "player": "player-01", "from": {"y": 2, "x": 1}, "to": {"y": 2, "x": 2}, "direction": "dir-right"}, 
+    {"action": "move",            "player": "player-01", "from": {"y": 2, "x": 2}, "to": {"y": 1, "x": 2}, "direction": "dir-up"}, 
+    {"action": "push-to-nongoal", "player": "player-01", "stone": "stone-00", "player-start-pos": {"y": 1, "x": 2}, "start-pos": {"y": 1, "x": 1}, "end-pos": {"y": 1, "x": 0}, "direction": "dir-left"},
+    {"action": "move",            "player": "player-01", "from": {"y": 1, "x": 1}, "to": {"y": 2, "x": 1}, "direction": "dir-down"}, 
+    {"action": "move",            "player": "player-01", "from": {"y": 2, "y": 1}, "to": {"y": 2, "x": 0}, "direction": "dir-left"}, 
+    {"action": "push-to-goal",    "player": "player-01", "stone": "stone-00", "player-start-pos": {"y": 2, "x": 0}, "start-pos": {"y": 1, "x": 0}, "end-pos": {"y": 0, "x": 0}, "direction": "dir-up"}, 
+    {"action": "move",            "player": "player-01", "from": {"y": 1, "x": 0}, "to": {"y": 1, "x": 1}, "direction": "dir-right"}, 
+    {"action": "move",            "player": "player-01", "from": {"y": 1, "x": 1}, "to": {"y": 0, "x": 1}, "direction": "dir-up"}
   ]
 }
 ```
@@ -201,17 +201,17 @@ The server will reply with a json formatted like this:
 {
   "version": "1.0", 
   "actions": [
-    {"action": "move", "player": "player-01", "from": {"x": 0, "y": 0}, "to": {"x": 1, "y": 0}, "direction": "dir-down"}, 
-    {"action": "move", "player": "player-01", "from": {"x": 1, "y": 0}, "to": {"x": 2, "y": 0}, "direction": "dir-down"}, 
-    {"action": "move", "player": "player-01", "from": {"x": 2, "y": 0}, "to": {"x": 2, "y": 1}, "direction": "dir-right"}, 
-    {"action": "move", "player": "player-01", "from": {"x": 2, "y": 1}, "to": {"x": 2, "y": 2}, "direction": "dir-right"}, 
-    {"action": "move", "player": "player-01", "from": {"x": 2, "y": 2}, "to": {"x": 1, "y": 2}, "direction": "dir-up"}, 
-    {"action": "move", "player": "player-01", "from": {"x": 1, "y": 2}, "to": {"x": 2, "y": 2}, "direction": "dir-down"}, 
-    {"action": "move", "player": "player-01", "from": {"x": 2, "y": 2}, "to": {"x": 2, "y": 1}, "direction": "dir-left"}, 
-    {"action": "move", "player": "player-01", "from": {"x": 2, "y": 1}, "to": {"x": 2, "y": 0}, "direction": "dir-left"}, 
-    {"action": "move", "player": "player-01", "from": {"x": 2, "y": 0}, "to": {"x": 1, "y": 0}, "direction": "dir-up"}, 
-    {"action": "move", "player": "player-01", "from": {"x": 1, "y": 0}, "to": {"x": 0, "y": 0}, "direction": "dir-up"}, 
-    {"action": "move", "player": "player-01", "from": {"x": 0, "y": 0}, "to": {"x": 0, "y": 1}, "direction": "dir-right"}
+    {"action": "move", "player": "player-01", "from": {"y": 0, "x": 0}, "to": {"y": 1, "x": 0}, "direction": "dir-down"}, 
+    {"action": "move", "player": "player-01", "from": {"y": 1, "x": 0}, "to": {"y": 2, "x": 0}, "direction": "dir-down"}, 
+    {"action": "move", "player": "player-01", "from": {"y": 2, "x": 0}, "to": {"y": 2, "x": 1}, "direction": "dir-right"}, 
+    {"action": "move", "player": "player-01", "from": {"y": 2, "x": 1}, "to": {"y": 2, "x": 2}, "direction": "dir-right"}, 
+    {"action": "move", "player": "player-01", "from": {"y": 2, "x": 2}, "to": {"y": 1, "x": 2}, "direction": "dir-up"}, 
+    {"action": "move", "player": "player-01", "from": {"y": 1, "x": 2}, "to": {"y": 2, "x": 2}, "direction": "dir-down"}, 
+    {"action": "move", "player": "player-01", "from": {"y": 2, "x": 2}, "to": {"y": 2, "x": 1}, "direction": "dir-left"}, 
+    {"action": "move", "player": "player-01", "from": {"y": 2, "x": 1}, "to": {"y": 2, "x": 0}, "direction": "dir-left"}, 
+    {"action": "move", "player": "player-01", "from": {"y": 2, "x": 0}, "to": {"y": 1, "x": 0}, "direction": "dir-up"}, 
+    {"action": "move", "player": "player-01", "from": {"y": 1, "x": 0}, "to": {"y": 0, "x": 0}, "direction": "dir-up"}, 
+    {"action": "move", "player": "player-01", "from": {"y": 0, "x": 0}, "to": {"y": 0, "x": 1}, "direction": "dir-right"}
   ]
 }
 ```

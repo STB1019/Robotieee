@@ -37,24 +37,20 @@ void setup() {
   # endif
 
   //Initial delay
-  for (int i = 0; i < 2; i++) {
+  for (int i = 0; i < 4; i++) {
     lcd.clear();
-    lcd.print(2 - i);
+    lcd.print(4 - i);
     delay(1000);
   }
 
-  do {
-    
-    zumo_model.zumo_robot.pushBlock(1);
-    zumo_model.zumo_robot.turnRight();
-    zumo_model.zumo_robot.goAhead(1, false);
-    zumo_model.zumo_robot.turnLeft();
-    zumo_model.zumo_robot.goAhead(1, false);
-    zumo_model.zumo_robot.turnLeft();
-    
-  } while(true);
+  zumo_model.zumo_robot.pushBlock(1);
+  zumo_model.zumo_robot.turnLeft();
+  zumo_model.zumo_robot.goAhead(1,false);
+  zumo_model.zumo_robot.turnRight();
+  zumo_model.zumo_robot.goAhead(1,false);
+  zumo_model.zumo_robot.turnRight();
+  zumo_model.zumo_robot.pushBlock(1);
 
-  
   #ifdef DEBUG_POSITION
   lcd.clear();
   lcd.print(zumo_model.zumo_robot.position.x);

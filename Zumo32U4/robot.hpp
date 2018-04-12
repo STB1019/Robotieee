@@ -190,7 +190,14 @@ public:
    * 
    * @param[in] speed The speed to be used for robot movement
    */
-  void setSpeed(uint16_t speed);
+  void setSpeed(int16_t speed);
+
+  /**
+   * Sets the speed compensation to be used by the movement-related function.
+   * 
+   * @param[in] speedCompensation The speed to be used for robot movement compensation
+   */
+  void setSpeedCompensation(int16_t speedCompensation);
 
   /**
    * Inverts the speed to be used by every future movement-related function
@@ -221,7 +228,7 @@ private:
   int16_t _speed;                     // The speed to be used by the robot in both rotations and straight movement. This values must be in range [-400, 400]
   uint16_t _centeringDelay;           // The amount of milliseconds to wait after finding an intersection. This is needed to center the robot on the cross
   uint8_t _pathSeekCompensation;      // The initial number of degrees to rotate when the robot is searching the lost black line. See fixPath function
-  uint8_t _speedCompensation;         // The speed increase used to make the robot slightly rotate when it arrives at an intersection but it is not parallel to it
+  int8_t _speedCompensation;          // The speed increase used to make the robot slightly rotate when it arrives at an intersection but it is not parallel to it
   uint16_t _blockCenteringDelay;      // The amount of milliseconds do wait after finding an intersection. This is needed to center the block on the cross after pushing it
   matrix<cell_content>* _grid;        // A pointer to the grid of cells. This is used to avoid the need to pass it as a parameter to most movement functions
   enum object_movement _orientation;  // The direction that the robot is facing

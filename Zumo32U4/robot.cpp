@@ -161,6 +161,8 @@ namespace robotieee {
 
     //stop motors
     Zumo32U4Motors::setSpeeds(0, 0);
+
+    return blockFound;
   }
 
   void robot::fixPath() {
@@ -280,8 +282,12 @@ namespace robotieee {
     return blockFound;
   }
 
-  void robot::setSpeed(uint16_t speed) {
+  void robot::setSpeed(int16_t speed) {
     _speed = speed;
+  }
+
+  void robot::setSpeedCompensation(int16_t speedCompensation) {
+    _speedCompensation = speedCompensation;
   }
 
   static enum line_color convertValueToLineColor(int value, bool invertWhite) {
@@ -332,7 +338,7 @@ namespace robotieee {
     //lcd.clear();
     for (int i = 0; i < 3; i++) {
       lcd.gotoXY(i, 0);
-      switch (convertValueToLineColor(tmp[i])){
+      switch (convertValueToLineColor(tmp[i], false)){
         case LC_WHITE: lcd.print(F("W"));
                        break;
         case LC_LIGHTGRAY: lcd.print(F("g"));
@@ -346,7 +352,6 @@ namespace robotieee {
     }
 #   endif
 
-  
     return retVal;
   }
   
@@ -358,6 +363,7 @@ namespace robotieee {
 
   void robot::invertSpeed(){
     setSpeed(-(_speed));
+    setSpeedCompensation(-(_speedCompensation));
   }
 
   void robot::setCenteringDelay(uint16_t centeringDelay){
@@ -373,16 +379,10 @@ namespace robotieee {
     // Invert the speed used for consequent movements, in order to move backwards
     invertSpeed();
 
-    // Modify the centering delay to the one needed for centering while going backwards and go to the previous line in the grid
-    setCenteringDelay(DEFAULT_BACKWARDS_CENTERING_DELAY);
-    followLine(false);
+    //It goes back the same time as the robot push the block for centering
+    timeMove(_blockCenteringDelay);
 
     // Invert speed again: we need to start going forward again as we are not centered on an intersection
     invertSpeed();
-
-    // Center the robot in the intersection and reset the initial centering delay
-    setCenteringDelay(DEFAULT_CENTERING_DELAY + 25);
-    timeMove(_centeringDelay);
-    setCenteringDelay(DEFAULT_CENTERING_DELAY);
   }
 }

@@ -1,5 +1,8 @@
 #include <SoftwareSerial.h>
 String message = "";
+String raw;
+char c;
+int unsigned counter;
 int switchState = LOW;
 const int SWITCH = 7;
 const int LED_RED = 6;
@@ -13,35 +16,47 @@ void setup() {
   pinMode(LED_GREEN, OUTPUT);
   Serial.begin(9600); //set baud rate
   bluetooth.begin(9600); //set baud rate
+  counter=0;
 }
 
 void loop() {
   switchState = digitalRead(SWITCH);
   while ((bluetooth.available()) && (switchState == LOW)) {
-    message += char(bluetooth.read());
+    c = bluetooth.read();
+    raw += c;
     switchState = digitalRead(SWITCH);
-    if (Serial.available()) {
-      bluetooth.write(Serial.read());
-    }
   }
 
   if (!bluetooth.available()) {
-    if (message != "") {
-      digitalWrite(LED_GREEN, HIGH);
-      Serial.println(message);
-      delay(500);
-      digitalWrite(LED_GREEN, LOW);
+    if (raw != "") {
+      mngLED(LED_GREEN, HIGH);
+      move(raw);
+      raw = "";
+      mngLED(LED_GREEN, LOW);
     }
-    message = "";
   }
   if (Serial.available()) {
     bluetooth.write(Serial.read());
   }
   if (switchState == HIGH) {
-    digitalWrite(LED_RED, HIGH);
-    bluetooth.write("ROGER");
-    delay(500);
-    digitalWrite(LED_RED, LOW);
+    mngLED(LED_RED, HIGH);
+    Serial.write("ROGER[%u]\n",counter);
+    bluetooth.write("ROGER[%u]\n",counter);
+    mngLED(LED_RED,LOW);
+    counter++;
   }
 }
 
+void mngLED(int led,int state){
+  digitalWrite(led,state);
+}
+void blinkLED(int led, int one, int sec, int two) {
+  digitalWrite(led, one);
+  delay(sec);
+  digitalWrite(led, two);
+}
+
+void move(String raw) {
+  Serial.println("[RAW]");
+  Serial.print(raw);
+}

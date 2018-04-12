@@ -1,3 +1,5 @@
+#vscode files
+.vscode/
 #eclipse files
 /.metadata/
 /RemoteSystemsTempFiles/
@@ -20,3 +22,8 @@ build/
 
 #ignore log files
 *.log*
+
+#ignore user specific stuff in PyCharm
+.idea/**/workspace.xml
+.idea/**/tasks.xml
+.idea/dictionaries

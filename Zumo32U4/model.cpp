@@ -5,7 +5,7 @@ namespace robotieee {
 
 #define CELL_CONTENT_ITER_FINISHED -2
 
-model::model(unsigned int maxRows, unsigned int maxCols) : workplace{maxRows, maxCols, EMPTY_CELL}, zumo_robot{DEFAULT_POINT}, docking_station{0, 0}, blocks{DEFAULT_POINT, false}, goals{DEFAULT_POINT, false} {
+model::model(unsigned int maxRows, unsigned int maxCols) : workplace{maxRows, maxCols, EMPTY_CELL}, zumo_robot{DEFAULT_POINT, &workplace}, docking_station{0, 0}, blocks{DEFAULT_POINT, false}, goals{DEFAULT_POINT, false} {
 
 }
 

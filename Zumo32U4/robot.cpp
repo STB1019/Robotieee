@@ -8,28 +8,37 @@
 #include "TurnSensor.h"
 #include <Wire.h>
 
-#define DEFAULT_SPEED                   150
-#define DEFAULT_CENTERING_DELAY         150
-#define DEFAULT_PATH_SEEK_COMPENSATION  5
-#define DEFAULT_SPEED_COMPENSATION      5
+#define DEFAULT_ORIENTATION               object_movement::UP
+#define DEFAULT_SPEED                     150
+#define DEFAULT_CENTERING_DELAY           167
+#define DEFAULT_PATH_SEEK_COMPENSATION    5
+#define DEFAULT_SPEED_COMPENSATION        5
+#define DEFAULT_BACKWARDS_CENTERING_DELAY 0
+#define DEFAULT_BLOCK_CENTERING_DELAY     220
 
-extern Zumo32U4LCD lcd;
 extern L3G gyro;
 extern LSM303 accel;
 extern Zumo32U4Encoders encoders;
 extern Zumo32U4LineSensors lineSensors;
 extern Zumo32U4ProximitySensors proxSensors;
 
+#ifdef DEBUG_LCD
+extern Zumo32U4LCD lcd;
+#endif
+
 namespace robotieee {
 
   static struct line_readings readLineSensors();
 
-  robot::robot(const point& start_position) : moveable{start_position} {
+  robot::robot(const point start_position, const matrix<cell_content>* grid) : moveable{start_position} {
     _hardwareInitialized   = false;
     _speed                 = DEFAULT_SPEED;
     _centeringDelay        = DEFAULT_CENTERING_DELAY;
     _pathSeekCompensation  = DEFAULT_PATH_SEEK_COMPENSATION;
     _speedCompensation     = DEFAULT_SPEED_COMPENSATION;
+    _blockCenteringDelay   = DEFAULT_BLOCK_CENTERING_DELAY;
+    _grid                  = grid;
+    _orientation           = DEFAULT_ORIENTATION;
   }
   
   robot::~robot() {
@@ -41,9 +50,10 @@ namespace robotieee {
     if (_hardwareInitialized) {
       return;
     }
-    
-    //Wire.begin();
+
+#ifdef DEBUG_LCD
     lcd.init();
+#endif
     
     // At the moment, the gyroscope is initialized by TurnSensor.cpp code
     //gyro.init();
@@ -94,12 +104,7 @@ namespace robotieee {
 
   bool robot::rotateAndCheck(int16_t degrees) {
     rotate(degrees, false);
-
-    //for a better comprehension of code
-    if (checkForBlock() == true)
-      return true;
-    else
-      return false;
+    return checkForBlock();
   }
   
   bool robot::followLine(bool searchBlock = false) {
@@ -188,16 +193,14 @@ namespace robotieee {
     byte frontLeft = proxSensors.countsFrontWithLeftLeds();
     byte frontRight = proxSensors.countsFrontWithRightLeds();
 
-    #ifdef DEBUG
+#   if defined DEBUG_LCD && defined DEBUG_PROXIMITY
       //lcd.clear();
       lcd.gotoXY(0,1);
       lcd.print(frontLeft);
       lcd.print(frontRight);
-      //ledYellow(1);
-    #endif
+#   endif
     
-    if (frontLeft > 5 && frontRight > 5) { //case sensors: 6 6
-    // to considerate the case: 5 6 or 6 5, it can be better: if (frontLeft + frontRight >= 11)
+    if (frontLeft + frontRight >= 11) { //case sensors: 6 6; 6 5; 5 6
       return true;
     }
 
@@ -206,68 +209,128 @@ namespace robotieee {
 
   void robot::calibrateLineSensors() {
 
+#   ifdef DEBUG_LCD
     lcd.clear();
     lcd.print(F("White"));
     lcd.gotoXY(0,1);
     lcd.print(F("A for ok"));
+#   endif
 
+    ledGreen(true);
     buttonA.waitForButton();
     lineSensors.calibrate();
+    ledGreen(false);
 
+#   ifdef DEBUG_LCD
     lcd.clear();
     lcd.print(F("Black"));
     lcd.gotoXY(0,1);
     lcd.print(F("A for ok"));
+#   endif
 
+    ledYellow(true);
     buttonA.waitForButton();
     lineSensors.calibrate();
+    ledYellow(false);
 
+#   ifdef DEBUG_LCD
     lcd.clear();
+#   endif
     
   }
 
+  bool robot::turnRightAndCheck() {
+    rotateAndCheck(-90);
+
+    _orientation = (_orientation + 1) % 4;
+  }
+
+  bool robot::turnLeftAndCheck() {
+    rotateAndCheck(90);
+
+    _orientation = (_orientation - 1) % 4;
+  }
+
+  bool robot::turnBackAndCheck() {
+    // A value of 179 degrees is used due to the way TurnSensor.cpp encodes degrees: a value of 180 would overflow and therefore not work
+    // This isn't that bad after all: rotating 179 degrees + error should lead to a almost perfect 180 degrees turn anyway
+    rotateAndCheck(179);
+
+    _orientation = (_orientation + 2) % 4;
+  }
+
   void robot::turnRight() {
-    rotate(-90, false); 
+    rotate(-90, false);
+
+    _orientation = (_orientation + 1) % 4;
   }
 
   void robot::turnLeft() {
-    rotate(90, false); 
+    rotate(90, false);
+
+    _orientation = (_orientation + 1) % 4;
   }
 
   void robot::turnBack() {
     // A value of 179 degrees is used due to the way TurnSensor.cpp encodes degrees: a value of 180 would overflow and therefore not work
     // This isn't that bad after all: rotating 179 degrees + error should lead to a almost perfect 180 degrees turn anyway
-    rotate(179, false); 
+    rotate(179, false);
+
+    _orientation = (_orientation + 2) % 4;
   }
 
-  void robot::goAhead(unsigned int cells) {
+  bool robot::goAhead(unsigned int cells, bool lookingForBlocks = false) {
     bool blockFound = false;
     
     for (int i = 0; i < cells; i++) {
-      blockFound = followLine(true); 
-      if (blockFound == true) {
+      blockFound = followLineAndCheck();
+      move(_orientation, 1);
+      if (blockFound && lookingForBlocks) {
         break;
       }
     }
+
+    return blockFound;
   }
 
-  void robot::setSpeed(uint16_t speed) {
+  void robot::setSpeed(int16_t speed) {
     _speed = speed;
   }
 
-  static enum line_color convertValueToLineColor(int value) {
-    if (value < 500) {
+  void robot::setSpeedCompensation(int16_t speedCompensation) {
+    _speedCompensation = speedCompensation;
+  }
+
+  static enum line_color convertValueToLineColor(int value, bool invertWhite) {
+
+    if (invertWhite) {
+      if (value < 500) {
+        return LC_BLACK;
+      }
+      /**
+      if (value < 500) {
+        return LC_LIGHTGRAY;
+      }
+      if (value < 750) {
+        return LC_DARKGRAY;
+      }
+      */
       return LC_WHITE;
     }
-    /**
-    if (value < 500) {
-      return LC_LIGHTGRAY;
+    else {
+      if (value < 500) {
+        return LC_WHITE;
+      }
+      /**
+      if (value < 500) {
+        return LC_DARKGRAY;
+      }
+      if (value < 750) {
+        return LC_LIGHTGRAY;
+      }
+      */
+      return LC_BLACK;
     }
-    if (value < 750) {
-      return LC_DARKGRAY;
-    }
-    */
-    return LC_BLACK;
   }
   /**
    * Read the values of left, center and right line tracking
@@ -278,15 +341,15 @@ namespace robotieee {
     
     lineSensors.readCalibrated(tmp);
   
-    retVal.left = convertValueToLineColor(tmp[0]);
-    retVal.center = convertValueToLineColor(tmp[1]);
-    retVal.right = convertValueToLineColor(tmp[2]);
+    retVal.left = convertValueToLineColor(tmp[LEFT_SENSOR], false);
+    retVal.center = convertValueToLineColor(tmp[CENTER_SENSOR], false);
+    retVal.right = convertValueToLineColor(tmp[RIGHT_SENSOR], false);
 
-#   ifdef DEBUG
+#   if defined DEBUG_LCD && defined DEBUG_LINE
     //lcd.clear();
     for (int i = 0; i < 3; i++) {
       lcd.gotoXY(i, 0);
-      switch (convertValueToLineColor(tmp[i])){
+      switch (convertValueToLineColor(tmp[i], false)){
         case LC_WHITE: lcd.print(F("W"));
                        break;
         case LC_LIGHTGRAY: lcd.print(F("g"));
@@ -300,9 +363,37 @@ namespace robotieee {
     }
 #   endif
 
-  
     return retVal;
   }
   
-}
+  void robot::timeMove(uint16_t delayMillis) {
+    Zumo32U4Motors::setSpeeds(_speed, _speed);
+    delay(delayMillis);
+    Zumo32U4Motors::setSpeeds(0,0);
+  }
 
+  void robot::invertSpeed(){
+    setSpeed(-(_speed));
+    setSpeedCompensation(-(_speedCompensation)); // Not useful at the moment
+  }
+
+  void robot::setCenteringDelay(uint16_t centeringDelay){
+    _centeringDelay = centeringDelay;
+  }
+  
+  void robot::pushBlock(unsigned int cells){
+
+    // Push the block on the desired location
+    goAhead(cells, false);
+    timeMove(_blockCenteringDelay);
+
+    // Invert the speed used for consequent movements, in order to move backwards
+    invertSpeed();
+
+    //It goes back the same time as the robot push the block for centering
+    timeMove(_blockCenteringDelay);
+
+    // Invert speed again: we need to start going forward again as we are not centered on an intersection
+    invertSpeed();
+  }
+}

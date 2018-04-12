@@ -9,16 +9,19 @@
 
 #ifndef ROBOT_HPP_
 #define ROBOT_HPP_
+#define AVR_BUILD
 
 #include <Zumo32U4.h>
+#include <matrix.hpp>
 #include "moveable.hpp"
+#include "typedefs.hpp"
 
 namespace robotieee {
 
 enum line_sensors {
-    LEFT = 0,
-    CENTER = 1,
-    RIGHT = 2,
+    LEFT_SENSOR = 0,
+    CENTER_SENSOR = 1,
+    RIGHT_SENSOR = 2,
   };
 
 /**
@@ -47,9 +50,10 @@ public:
   /**
    * Initializes the robot given its starting position in the grid. Default values are used for movement parameters
    * 
-   * @param[in] start_position the position where the robot is in robotieee::model::workplace
+   * @param[in] start_position The initial position of the robot in the grid
+   * @param[in] grid A pointer to the matrix representing the grid
    */
-	robot(const point& start_position);
+	robot(const point start_position, const matrix<cell_content>* grid);
  
  /**
   * dispose the robot
@@ -85,6 +89,36 @@ public:
    * 
    * \note 
    *    \li Before calling this function for the first time, robotieee::robot::harwareInit must have been already run 
+   * 
+   * @return Result of the check for a block at the end of rotation
+   */
+  bool turnRightAndCheck();
+
+  /**
+   * Rotates the robot 180 degrees
+   * 
+   * \note 
+   *    \li Before calling this function for the first time, robotieee::robot::harwareInit must have been already run
+   * 
+   * @return Result of the check for a block at the end of rotation
+   */
+  bool turnBackAndCheck();
+
+  /**
+   * Rotates the robot 90 degrees counter-clockwise
+   * 
+   * \note 
+   *    \li Before calling this function for the first time, robotieee::robot::harwareInit must have been already run
+   * 
+   * @return Result of the check for a block at the end of rotation
+   */
+  bool turnLeftAndCheck();
+
+  /**
+   * Rotates the robot 90 degrees clockwise
+   * 
+   * \note 
+   *    \li Before calling this function for the first time, robotieee::robot::harwareInit must have been already run 
    */
   void turnRight();
 
@@ -111,8 +145,10 @@ public:
    *    \li Before calling this function for the first time, robotieee::robot::harwareInit must have been already run
    * 
    * @param[in] cells The number of cells to go through
+   * @param[in] lookingForBlocks If true, the function will stop early if a block is found
+   * @return True if the robot stopped after finding a block, false otherwise
    */
-  void goAhead(unsigned int cells);
+  bool goAhead(unsigned int cells, bool lookingForBlocks = false);
 
   /**
    * Make the robot folow a black line while checking for a block in the following cell
@@ -154,16 +190,49 @@ public:
    * 
    * @param[in] speed The speed to be used for robot movement
    */
-  void setSpeed(uint16_t speed);
+  void setSpeed(int16_t speed);
 
+  /**
+   * Sets the speed compensation to be used by the movement-related function.
+   * 
+   * @param[in] speedCompensation The speed to be used for robot movement compensation
+   */
+  void setSpeedCompensation(int16_t speedCompensation);
+
+  /**
+   * Inverts the speed to be used by every future movement-related function
+   */
+  void invertSpeed();
+
+  /**
+   * Sets the value of the centering delay needed in future movement-related functions
+   */
+  void setCenteringDelay(uint16_t centeringDelay);
+
+  /**
+   * Moves the robot for a given amount of time
+   * 
+   * @param[in] delayMillis The amount of time for the movement in milliseconds
+   */
+  void timeMove(uint16_t time);
+
+  /**
+   * Pushes the block forwards by a given amount of cells
+   * 
+   * @param[in] cells The number of cells to push the block
+   */
+  void pushBlock(unsigned int cells);
  
 private:
-  bool _hardwareInitialized;      // Used to avoid multiple hardware initializations.
-  uint16_t _speed;                // The speed to be used by the robot in both rotations and straight movement. This values must be in range [-400, 400]
-  uint16_t _centeringDelay;       // The amount of milliseconds to wait after finding an intersection. This is needed to center the robot on the cross
-  uint8_t _pathSeekCompensation;  // The initial number of degrees to rotate when the robot is searching the lost black line. See fixPath function
-  uint8_t _speedCompensation;     // The speed increase used to make the robot slightly rotate when it arrives at an intersection but it is not parallel to it
-
+  bool _hardwareInitialized;          // Used to avoid multiple hardware initializations.
+  int16_t _speed;                     // The speed to be used by the robot in both rotations and straight movement. This values must be in range [-400, 400]
+  uint16_t _centeringDelay;           // The amount of milliseconds to wait after finding an intersection. This is needed to center the robot on the cross
+  uint8_t _pathSeekCompensation;      // The initial number of degrees to rotate when the robot is searching the lost black line. See fixPath function
+  int8_t _speedCompensation;          // The speed increase used to make the robot slightly rotate when it arrives at an intersection but it is not parallel to it
+  uint16_t _blockCenteringDelay;      // The amount of milliseconds do wait after finding an intersection. This is needed to center the block on the cross after pushing it
+  matrix<cell_content>* _grid;        // A pointer to the grid of cells. This is used to avoid the need to pass it as a parameter to most movement functions
+  enum object_movement _orientation;  // The direction that the robot is facing
+  
   /**
    * This function is used internally by the other robot methods to adjust its trajectory
    * when an error is detected.

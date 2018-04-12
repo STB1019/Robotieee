@@ -16,12 +16,15 @@
 #define DEFAULT_BACKWARDS_CENTERING_DELAY 0
 #define DEFAULT_BLOCK_CENTERING_DELAY     220
 
-extern Zumo32U4LCD lcd;
 extern L3G gyro;
 extern LSM303 accel;
 extern Zumo32U4Encoders encoders;
 extern Zumo32U4LineSensors lineSensors;
 extern Zumo32U4ProximitySensors proxSensors;
+
+#ifdef DEBUG_LCD
+extern Zumo32U4LCD lcd;
+#endif
 
 namespace robotieee {
 
@@ -47,9 +50,10 @@ namespace robotieee {
     if (_hardwareInitialized) {
       return;
     }
-    
-    //Wire.begin();
+
+#ifdef DEBUG_LCD
     lcd.init();
+#endif
     
     // At the moment, the gyroscope is initialized by TurnSensor.cpp code
     //gyro.init();
@@ -189,17 +193,14 @@ namespace robotieee {
     byte frontLeft = proxSensors.countsFrontWithLeftLeds();
     byte frontRight = proxSensors.countsFrontWithRightLeds();
 
-    #ifdef DEBUG
+#   if defined DEBUG_LCD && defined DEBUG_PROXIMITY
       //lcd.clear();
       lcd.gotoXY(0,1);
       lcd.print(frontLeft);
       lcd.print(frontRight);
-    #endif
+#   endif
     
     if (frontLeft + frontRight >= 11) { //case sensors: 6 6; 6 5; 5 6
-      #ifdef DEBUG
-        ledYellow(1);
-      #endif
       return true;
     }
 
@@ -208,23 +209,33 @@ namespace robotieee {
 
   void robot::calibrateLineSensors() {
 
+#   ifdef DEBUG_LCD
     lcd.clear();
     lcd.print(F("White"));
     lcd.gotoXY(0,1);
     lcd.print(F("A for ok"));
+#   endif
 
+    ledGreen(true);
     buttonA.waitForButton();
     lineSensors.calibrate();
+    ledGreen(false);
 
+#   ifdef DEBUG_LCD
     lcd.clear();
     lcd.print(F("Black"));
     lcd.gotoXY(0,1);
     lcd.print(F("A for ok"));
+#   endif
 
+    ledYellow(true);
     buttonA.waitForButton();
     lineSensors.calibrate();
+    ledYellow(false);
 
+#   ifdef DEBUG_LCD
     lcd.clear();
+#   endif
     
   }
 
@@ -334,7 +345,7 @@ namespace robotieee {
     retVal.center = convertValueToLineColor(tmp[CENTER_SENSOR], false);
     retVal.right = convertValueToLineColor(tmp[RIGHT_SENSOR], false);
 
-#   ifdef DEBUG
+#   if defined DEBUG_LCD && defined DEBUG_LINE
     //lcd.clear();
     for (int i = 0; i < 3; i++) {
       lcd.gotoXY(i, 0);
@@ -363,7 +374,7 @@ namespace robotieee {
 
   void robot::invertSpeed(){
     setSpeed(-(_speed));
-    setSpeedCompensation(-(_speedCompensation));
+    setSpeedCompensation(-(_speedCompensation)); // Not useful at the moment
   }
 
   void robot::setCenteringDelay(uint16_t centeringDelay){

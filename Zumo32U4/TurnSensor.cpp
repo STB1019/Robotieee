@@ -54,8 +54,10 @@ void turnSensorSetup()
   // High-pass filter disabled
   gyro.writeReg(L3G::CTRL5, 0b00000000);
 
+# ifdef DEBUG_LCD
   lcd.clear();
   lcd.print(F("Gyro cal"));
+# endif
 
   // Turn on the yellow LED in case the LCD is not available.
   ledYellow(1);
@@ -79,7 +81,10 @@ void turnSensorSetup()
 
   // Display the angle (in degrees from -180 to 180) until the
   // user presses A.
+# ifdef DEBUG_LCD
   lcd.clear();
+# endif
+
   turnSensorReset();
 }
 

@@ -107,6 +107,10 @@ class string {
 		 */
 		bool append(char c);
 		/**
+		 * Clear the content of the string
+		 */
+		void clear();
+		/**
 		 * return the number of characters (null terminator excluded) of this string
 		 *
 		 * @return the number of characters of the string
@@ -172,7 +176,6 @@ bool string<N>::append(char c) {
 	return true;
 }
 
-
 template <int N>
 int string<N>::getSize() const {
 	return size;
@@ -186,6 +189,12 @@ int string<N>::getCapacity() const {
 template <int N>
 bool string<N>::isEmpty() const {
 	return size == 0;
+}
+
+template <int N>
+void string<N>::clear() {
+	size = 0;
+	buffer[size] = '\0';
 }
 
 template <int N>

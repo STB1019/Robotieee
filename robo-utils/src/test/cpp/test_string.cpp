@@ -70,6 +70,22 @@ SCENARIO("string", "") {
 				REQUIRE(s.getCapacity() == 15);
 			}
 		}
+
+		WHEN("clear empty string") {
+			string<10> s2 = string<10>{};
+
+			s2.clear();
+
+			REQUIRE(s2.isEmpty());
+			REQUIRE(strcmp(s2.getBuffer(), "") == 0);
+		}
+
+		WHEN("clear non empty string") {
+			s.clear();
+
+			REQUIRE(s.isEmpty());
+			REQUIRE(strcmp(s.getBuffer(), "") == 0);
+		}
 	}
 
 }

@@ -20,7 +20,11 @@ namespace robo_utils {
  * s.append("hello");
  * s.append(" ");
  * s.append("world");
+ * s.isEmpty(); //return false
+ * s.getSize(); //return 11
+ * s.getCapacity(); //return 15
  * s.getBuffer(); //retrieve the underlying buffer
+ * s.clear(); //clear the whole string
  * @endcode
  *
  */

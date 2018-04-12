@@ -10,6 +10,20 @@
 
 namespace robo_utils {
 
+/**
+ * Represents a easy wrapper for an underlying buffer
+ *
+ * \c N represents the number of character allowed to be within
+ *
+ * @code
+ * string<15> s = string<15>{};
+ * s.append("hello");
+ * s.append(" ");
+ * s.append("world");
+ * s.getBuffer(); //retrieve the underlying buffer
+ * @endcode
+ *
+ */
 template <int N>
 class string {
 	private:
@@ -21,21 +35,98 @@ class string {
 		 * The index, in ::string::buffer where the first 0 character is located
 		 */
 		int size;
+		/**
+		 * The actual buffer itself
+		 */
 		char buffer[N];
 	public:
+		/**
+		 * get the number of characters within the string
+		 *
+		 * \note
+		 * the terminal character '\0' is not counted
+		 *
+		 * @param[in] str the string to analyze
+		 * @return the number of characters in the string
+		 */
 		static int _getLengthOfString(const char* str);
+		/**
+		 * copy the string \c src into \dst by value
+		 *
+		 * \note
+		 * We assume src terminates with a '\0'. \c dst will contain on its tail the '\0' character
+		 *
+		 * @param[inout] dst the pointer where we start put the data from \c src to;
+		 * @param[in] src the pointer where we fetch characters from
+		 */
 		static void _copyStringInBuffer(char* __restrict__ dst, const char* __restrict__ src);
 	public:
+		/**
+		 * Creates a new string
+		 *
+		 * @param[in] init the string to hold
+		 */
 		string(const char* init);
+		/**
+		 * Creates an empty string
+		 */
 		string();
+		/**
+		 * Destroy a string
+		 */
 		~string();
 	public:
+		/**
+		 * Append some characters to the current string
+		 *
+		 * @param[in] other the other string
+		 * @return
+		 * 	\li true if \c other has been fully copied to this
+		 * 	\li false if \c this didn't have enough space in its buffer. In this case the string
+		 * 		won't be altered **at all**;
+		 */
 		bool append(const char* other);
+		/**
+		 * Append some characters to the current string
+		 *
+		 * @param[in] other the other string
+		 * @return
+		 * 	\li true if \c other has been fully copied to this
+		 * 	\li false if \c this didn't have enough space in its buffer. In this case the string
+		 * 		won't be altered **at all**;
+		 */
 		bool append(const string& s);
+		/**
+		 * Append a single character to the string
+		 *
+		 * @param[in] c the character to append
+		 * @return
+		 * 	\li true if \c other has been fully copied to this
+		 * 	\li false if \c this didn't have enough space in its buffer. In this case the string
+		 * 		won't be altered **at all**;
+		 */
 		bool append(char c);
+		/**
+		 * return the number of characters (null terminator excluded) of this string
+		 *
+		 * @return the number of characters of the string
+		 */
 		int getSize() const;
+		/**
+		 * capacity
+		 *
+		 * @return the maximum number of characters this string can contain
+		 */
 		int getCapacity() const;
+		/**
+		 * @return
+		 * 	\li true if the string has no character within it (except for the null terminator);
+		 * 	\li false otherwise
+		 */
 		bool isEmpty() const;
+		/**
+		 * @return the pointer to the first character of the underlying buffer of the string
+		 */
 		const char* getBuffer() const;
 };
 

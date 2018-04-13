@@ -65,10 +65,10 @@ namespace robotieee {
         void flush();
 
         /**
-         * Reads from host buffer and create a cluster of 10 action.
+         * Reads from host buffer and create a cluster of action.
          * This actions are consolidated: the equal actions on series are write as one action with n repetitions.
          * 
-         * @return true: all 10 actions have been rececived.
+         * @return true: all actions have been rececived.
          */
         bool receiveCluster();
 
@@ -93,9 +93,10 @@ namespace robotieee {
         /**
          * Send a WARNING message.
          * 
+         * @param[in]   index   index of the last action executed (counting the repetition) with a numeration like: 0123456789abcdefghil...
          * @return success of sending
          */
-        bool sendWarning();
+        bool sendWarning(uint8_t index);
 
         /**
          * Send a DONE message.

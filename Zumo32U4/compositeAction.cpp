@@ -11,7 +11,7 @@ namespace robotieee {
         _type = '\0';
         for(uint8_t i = 0; i < ARGS_LENGHT+1; i++)
             _args[i] = '\0';
-        _repetition = 1;
+        _repetition = 0;
     }
 
     void compositeAction::setType(char pType) {

@@ -156,6 +156,7 @@ namespace robotieee {
                     //if (!consolidated){
                         _cluster[_actionsOnCluster].setType(type);
                         _cluster[_actionsOnCluster].setArgs(args);
+                        _cluster[_actionsOnCluster].addRepetition();
                         _actionsOnCluster+=1;
                         
                         #ifdef DEBUG_SERIAL
@@ -225,9 +226,11 @@ namespace robotieee {
         return sendMessage(HEADER_TYPE_LOCATION, args.getBuffer());
     }
 
-    bool actionComunicator::sendWarning() {
+    bool actionComunicator::sendWarning(uint8_t index) {
         string<5> args = string<5>{};
-        args.append((char)('0' + _clusterIndex));
+        //0123456789abcdefghil...
+        args.append(index > 9 ? (char)('a' + index-10) : (char)('0' + index));
+        
         return sendMessage(HEADER_TYPE_WARNING, args.getBuffer());
     }
 

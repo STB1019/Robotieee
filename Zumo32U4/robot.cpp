@@ -30,14 +30,14 @@ namespace robotieee {
 
   static struct line_readings readLineSensors();
 
-  robot::robot(const point start_position, const matrix<cell_content>* grid) : moveable{start_position} {
+  robot::robot(const point start_position) : moveable{start_position} {
     _hardwareInitialized   = false;
+    _scanning              = true;
     _speed                 = DEFAULT_SPEED;
     _centeringDelay        = DEFAULT_CENTERING_DELAY;
     _pathSeekCompensation  = DEFAULT_PATH_SEEK_COMPENSATION;
     _speedCompensation     = DEFAULT_SPEED_COMPENSATION;
     _blockCenteringDelay   = DEFAULT_BLOCK_CENTERING_DELAY;
-    _grid                  = grid;
     _orientation           = DEFAULT_ORIENTATION;
   }
   
@@ -105,6 +105,26 @@ namespace robotieee {
   bool robot::rotateAndCheck(int16_t degrees) {
     rotate(degrees, false);
     return checkForBlock();
+  }
+
+  void robot::faceDirection(object_movement targetDirection) {
+
+    // First of all we rotate the reference system so that we are sure that the initial orientation of the robot becomes UP
+    object_movement rotatedTargetOrientation = (targetDirection - _orientation) % 4;
+
+    // After this rotation it is trivial to determine how to turn the robot by checking rotated target direction
+    switch (rotatedTargetOrientation) {
+
+      case 1: turnRight();
+              break;
+              
+      case 2: turnBack();
+              break;
+              
+      case 3: turnLeft();
+              break;
+              
+    }
   }
   
   bool robot::followLine(bool searchBlock = false) {
@@ -248,7 +268,7 @@ namespace robotieee {
   bool robot::turnLeftAndCheck() {
     rotateAndCheck(90);
 
-    _orientation = (_orientation - 1) % 4;
+    _orientation = (_orientation + 3) % 4;
   }
 
   bool robot::turnBackAndCheck() {
@@ -260,34 +280,55 @@ namespace robotieee {
   }
 
   void robot::turnRight() {
-    rotate(-90, false);
-
+    
+    rotate(-90);
     _orientation = (_orientation + 1) % 4;
+    
   }
 
   void robot::turnLeft() {
-    rotate(90, false);
+    
+    rotate(90);
+    _orientation = (_orientation + 3) % 4;
+    
+  }
 
-    _orientation = (_orientation + 1) % 4;
+  bool robot::isScanning() {
+    return _scanning;
+  }
+  
+  void robot::setScanMode() {
+    _scanning = true;
+  }
+
+  void robot::setExecuteMode() {
+    _scanning = false;
   }
 
   void robot::turnBack() {
+    
     // A value of 179 degrees is used due to the way TurnSensor.cpp encodes degrees: a value of 180 would overflow and therefore not work
     // This isn't that bad after all: rotating 179 degrees + error should lead to a almost perfect 180 degrees turn anyway
-    rotate(179, false);
-
+    rotate(179);
     _orientation = (_orientation + 2) % 4;
+    
   }
 
   bool robot::goAhead(unsigned int cells, bool lookingForBlocks = false) {
     bool blockFound = false;
+
+    // Before starting we check if the block is immediately in front of us to avoid colliding
+    if (lookingForBlocks) {
+      
+      blockFound = checkForBlock();
+      
+    }
     
-    for (int i = 0; i < cells; i++) {
-      blockFound = followLineAndCheck();
+    for (int i = 0; i < cells && !blockFound; i++) {
+      
+      blockFound = followLine(lookingForBlocks);
       move(_orientation, 1);
-      if (blockFound && lookingForBlocks) {
-        break;
-      }
+      
     }
 
     return blockFound;
@@ -341,9 +382,9 @@ namespace robotieee {
     
     lineSensors.readCalibrated(tmp);
   
-    retVal.left = convertValueToLineColor(tmp[LEFT_SENSOR], false);
-    retVal.center = convertValueToLineColor(tmp[CENTER_SENSOR], false);
-    retVal.right = convertValueToLineColor(tmp[RIGHT_SENSOR], false);
+    retVal.left = convertValueToLineColor(tmp[LEFT_SENSOR], true);
+    retVal.center = convertValueToLineColor(tmp[CENTER_SENSOR], true);
+    retVal.right = convertValueToLineColor(tmp[RIGHT_SENSOR], true);
 
 #   if defined DEBUG_LCD && defined DEBUG_LINE
     //lcd.clear();
@@ -393,7 +434,7 @@ namespace robotieee {
     //It goes back the same time as the robot push the block for centering
     timeMove(_blockCenteringDelay);
 
-    // Invert speed again: we need to start going forward again as we are not centered on an intersection
+    // Invert speed again to reset forward movement
     invertSpeed();
   }
 }

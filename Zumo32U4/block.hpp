@@ -45,8 +45,6 @@ public:
    * dispose the current block
    */
 	~block();
-public:
-	void move(object_movement om);
 };
 
 }

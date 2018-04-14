@@ -51,9 +51,8 @@ public:
    * Initializes the robot given its starting position in the grid. Default values are used for movement parameters
    * 
    * @param[in] start_position The initial position of the robot in the grid
-   * @param[in] grid A pointer to the matrix representing the grid
    */
-	robot(const point start_position, const matrix<cell_content>* grid);
+	robot(const point start_position);
  
  /**
   * dispose the robot
@@ -139,6 +138,13 @@ public:
   void turnLeft();
 
   /**
+   * Makes the robot face the desired direction
+   * 
+   * @param[in] targetDirection The direction that the robot needs to face
+   */
+  void faceDirection(object_movement targetDirection);
+
+  /**
    * Makes the robot go through a given number of cells.
    * 
    * \note 
@@ -205,6 +211,23 @@ public:
   void invertSpeed();
 
   /**
+   * Tells us wheter the robot is in SCAN mode or not
+   */
+  bool isScanning();
+
+  /**
+   * Brings the robot into SCAN mode. This simply means that it will use its proximity sensors
+   * when moving in order to locate the blocks.
+   */
+   void setScanMode();
+
+  /**
+   * Brings the robot into EXECUTE mode. This simply means that it will NOT use its sensors to
+   * locate the blocks on the grid.
+   */
+   void setExecuteMode();
+
+  /**
    * Sets the value of the centering delay needed in future movement-related functions
    */
   void setCenteringDelay(uint16_t centeringDelay);
@@ -219,6 +242,8 @@ public:
   /**
    * Pushes the block forwards by a given amount of cells
    * 
+   * \note The functions assumes that the robot is already facing the block, which is one cell ahead
+   * 
    * @param[in] cells The number of cells to push the block
    */
   void pushBlock(unsigned int cells);
@@ -230,8 +255,8 @@ private:
   uint8_t _pathSeekCompensation;      // The initial number of degrees to rotate when the robot is searching the lost black line. See fixPath function
   int8_t _speedCompensation;          // The speed increase used to make the robot slightly rotate when it arrives at an intersection but it is not parallel to it
   uint16_t _blockCenteringDelay;      // The amount of milliseconds do wait after finding an intersection. This is needed to center the block on the cross after pushing it
-  matrix<cell_content>* _grid;        // A pointer to the grid of cells. This is used to avoid the need to pass it as a parameter to most movement functions
   enum object_movement _orientation;  // The direction that the robot is facing
+  bool _scanning;                     // A boolean switch representing whether the robot is in SCAN or EXECUTE mode;
   
   /**
    * This function is used internally by the other robot methods to adjust its trajectory

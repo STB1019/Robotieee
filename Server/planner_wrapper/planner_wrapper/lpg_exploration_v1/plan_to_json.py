@@ -44,7 +44,7 @@ def to_serializable(val):
 
 @to_serializable.register(Point)
 def json_to_Point(val: Point):
-    return {"x": val.x, "y": val.y}
+    return {"x": val.y, "y": val.x}
 
 
 @to_serializable.register(Direction)

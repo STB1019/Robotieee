@@ -24,6 +24,7 @@ namespace robotieee {
 
     /**
      * Represents an action that the robot has to do.
+     * Composite means an action with repetitions: the equal actions on series are write as one action with n repetitions.
      */
     class compositeAction {
 

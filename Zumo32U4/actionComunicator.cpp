@@ -10,7 +10,7 @@
 using namespace robo_utils;
 
 #define BAUD_RATE           9600
-#define TIMEOUT_RECEIVING   5
+#define TIMEOUT_RECEIVING   50
 #define NO_DATA             '\0'
 
 namespace robotieee {
@@ -156,7 +156,7 @@ namespace robotieee {
                     //if (!consolidated){
                         _cluster[_actionsOnCluster].setType(type);
                         _cluster[_actionsOnCluster].setArgs(args);
-                        _cluster[_actionsOnCluster].addRepetition();
+                        _cluster[_actionsOnCluster].setRepetition(1);
                         _actionsOnCluster+=1;
                         
                         #ifdef DEBUG_SERIAL
@@ -212,6 +212,10 @@ namespace robotieee {
         }
     }
 
+    bool actionComunicator::isClusterEmpty() {
+      return _actionsOnCluster <= 0;
+    }
+    
     bool actionComunicator::sendLocation(const point blockPosition, const point robotPosition) {
         string<10> args = string<10>{};
         //0123456789abcdefghil...

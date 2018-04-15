@@ -70,6 +70,13 @@ namespace robotieee {
         void addRepetition(uint8_t num = 1);
 
         /**
+         * Set a number of repetition on the action.
+         * 
+         * @param[in] num number of repetition to set
+         */
+        void setRepetition(uint8_t num = 1);
+        
+        /**
          * Get the repetition of the action
          * 
          * @return  action's repetition

@@ -8,7 +8,7 @@
 #include "TurnSensor.h"
 #include <Wire.h>
 
-#define DEFAULT_ORIENTATION               object_movement::UP
+#define DEFAULT_ORIENTATION               object_movement::DOWN
 #define DEFAULT_SPEED                     150
 #define DEFAULT_CENTERING_DELAY           167
 #define DEFAULT_PATH_SEEK_COMPENSATION    5
@@ -18,7 +18,7 @@
 
 extern L3G gyro;
 extern LSM303 accel;
-extern Zumo32U4Encoders encoders;
+extern Zumo32U4Buzzer buzzer;
 extern Zumo32U4LineSensors lineSensors;
 extern Zumo32U4ProximitySensors proxSensors;
 
@@ -110,7 +110,7 @@ namespace robotieee {
   void robot::faceDirection(object_movement targetDirection) {
 
     // First of all we rotate the reference system so that we are sure that the initial orientation of the robot becomes UP
-    object_movement rotatedTargetOrientation = (targetDirection - _orientation) % 4;
+    object_movement rotatedTargetOrientation = (targetDirection - _orientation + 4) % 4;
 
     // After this rotation it is trivial to determine how to turn the robot by checking rotated target direction
     switch (rotatedTargetOrientation) {
@@ -331,6 +331,12 @@ namespace robotieee {
       
     }
 
+    if (blockFound) {
+      
+      Zumo32U4Buzzer::playNote(NOTE_A(4), 500, 15);
+      
+    }
+    
     return blockFound;
   }
 
@@ -382,9 +388,9 @@ namespace robotieee {
     
     lineSensors.readCalibrated(tmp);
   
-    retVal.left = convertValueToLineColor(tmp[LEFT_SENSOR], true);
-    retVal.center = convertValueToLineColor(tmp[CENTER_SENSOR], true);
-    retVal.right = convertValueToLineColor(tmp[RIGHT_SENSOR], true);
+    retVal.left = convertValueToLineColor(tmp[LEFT_SENSOR], false);
+    retVal.center = convertValueToLineColor(tmp[CENTER_SENSOR], false);
+    retVal.right = convertValueToLineColor(tmp[RIGHT_SENSOR], false);
 
 #   if defined DEBUG_LCD && defined DEBUG_LINE
     //lcd.clear();
@@ -425,7 +431,7 @@ namespace robotieee {
   void robot::pushBlock(unsigned int cells){
 
     // Push the block on the desired location
-    goAhead(cells, false);
+    goAhead(cells);
     timeMove(_blockCenteringDelay);
 
     // Invert the speed used for consequent movements, in order to move backwards

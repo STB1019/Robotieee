@@ -81,6 +81,13 @@ namespace robotieee {
         compositeAction getNextAction();
 
         /**
+         * Returns if the last cluster read is empty or not.
+         * 
+         * @return true: last cluster read is empty
+         */
+         bool isClusterEmpty();
+        
+        /**
          * Send a LOCATION message.
          * Arguments are <x block><y block><x robot><y robot> with a numeration like: 0123456789abcdefghil...
          * 

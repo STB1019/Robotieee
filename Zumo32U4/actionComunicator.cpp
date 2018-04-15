@@ -54,6 +54,10 @@ namespace robotieee {
             Serial1.println(_actionsOnCluster);
         #endif
 
+        // Wait until the buffer has received something
+        while (Serial1.available() != 0) ;
+        delay(2000);
+
         //stops if max number of message reads or no more message (timeout error)
         for (uint8_t i = 0; i < _clusterLength && type != NO_DATA; i++) {
             bool consolidated = false;
@@ -252,15 +256,8 @@ namespace robotieee {
         // reply only when you receive data:
         if (Serial1.available() > 0) {
             // read the incoming byte:
-            incomingByte = (char)Serial1.read();
-        }
-        else {
-            //security check: if it's reading while receiving the data, it waits for the data in the buffer
-            delay(TIMEOUT_RECEIVING);
-            if (Serial1.available() > 0) {
-                // read the incoming byte:
-                incomingByte = (char)Serial1.read();
-            }
+            char readByte = (char) Serial1.read();
+            incomingByte = readByte > 0 ? readByte : '\0';
         }
 
         return incomingByte;

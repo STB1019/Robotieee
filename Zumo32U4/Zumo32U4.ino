@@ -107,9 +107,6 @@ void loop() {
 
   bool foundBlock = false;
   uint16_t executedInstructions = 0;
-
-  // Wait to see if anything is received
-  delay(250);
   boolean clusterOk = bluetooth.receiveCluster();
 
   do {
@@ -143,7 +140,6 @@ void loop() {
     // We doesn't send anything until the robot is contacted by the app first
     if (!bluetooth.isClusterEmpty()) {
       bluetooth.sendWarning(executedInstructions);
-      delay(750);
     }
     
   }

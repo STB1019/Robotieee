@@ -2,6 +2,7 @@ import os
 from flask import Blueprint, request
 from flask import current_app
 from werkzeug.local import LocalProxy
+import logging
 
 from planner_wrapper import solution_converter
 from planner_wrapper.lpg_sokoban_v1.factory import LPG_V1_Factory
@@ -10,14 +11,14 @@ from web.static.flask_exceptions import SolutionNotFoundException, MalformedRequ
 
 simple_page = Blueprint('sokoban', __name__)
 
-# logger
-logger = LocalProxy(lambda: current_app.logger)
-
 
 @simple_page.route("/sokoban_problem", methods=['POST'])
 def sokoban_problem():
     """
     Example:
+
+    curl -i http://localhost:5000/sokoban_problem -X POST -d '{"version": "1.0","world": {"rows": 3,"columns": 3,"cells": [{ "y": 0, "x": 0, "entities": "RD"},{ "y": 0, "x": 1, "entities": "U"},{ "y": 0, "x": 2, "entities": ""},{ "y": 1, "x": 0, "entities": ""},{ "y": 1, "x": 1, "entities": "B"},{ "y": 1, "x": 2, "entities": ""},{ "y": 2, "x": 0, "entities": ""},{ "y": 2, "x": 1, "entities": ""},{ "y": 2, "x": 2, "entities": ""}]}}' -H "Content-Type: application/json"
+
 
     PUSH
     curl -i http://localhost:5000/sokoban_problem -X POST -d '{"version": "1.0","world": {"rows": 3,"columns": 3,"cells": [{ "y": 0, "x": 0, "entities": "RG"},{ "y": 0, "x": 1, "entities": "D"},{ "y": 0, "x": 2, "entities": "U"},{ "y": 1, "x": 0, "entities": ""},{ "y": 1, "x": 1, "entities": "B"},{ "y": 1, "x": 2, "entities": ""},{ "y": 2, "x": 0, "entities": ""},{ "y": 2, "x": 1, "entities": ""},{ "y": 2, "x": 2, "entities": ""}]}}' -H "Content-Type: application/json"
@@ -47,9 +48,9 @@ def sokoban_problem():
     else:
         raise MalformedRequestException("unsupported version number!")
 
-    logger.info('generating sokoban world from received json...')
+    logging.info('generating sokoban world from received json...')
     sokoban_world = factory.json_to_world().convert_json_to_model_world(content)
-    logger.info('generating pddl problem file from sokoban world...')
+    logging.info('generating pddl problem file from sokoban world...')
     problem_filename = factory.world_to_pddl_problem().generate_problem(
         problem_filename="sokoban_problem_instance",
         domain_name="sokobanSequential",
@@ -57,21 +58,29 @@ def sokoban_problem():
         world=sokoban_world,
     )
 
-    logger.info('generating planner instance manager...')
+    logging.info('generating planner instance manager...')
     planner = factory.planner
 
-    logger.info('invoking planner (this may take quite time!)...')
+    if "solution_number" not in content:
+        logging.info("solution number not found in json. using 1 by default")
+        solution_number = 1
+    else:
+        solution_number = int(content["solution_number"])
+
+    planner.solutions_to_find = solution_number
+
+    logging.info('invoking planner (this may take quite time!)...')
     ret = planner.invoke(
         domain_filename=factory.domain_filename,
         problem_filename=problem_filename,
         working_directory="."
     )
     if ret is False:
-        logger.info("planner didn't find any solutions!")
+        logging.info("planner didn't find any solutions!")
         # the planner didn't generate anything
         raise SolutionNotFoundException(f"Couldn't find solution for problem!")
 
-    logger.info('Solution found! computing the json of it!')
+        logging.info('Solution found! computing the json of it!')
 
     #################################
     # NICOLA implementation (slick) #
@@ -87,7 +96,9 @@ def sokoban_problem():
     # MAX implementation (more structured) #
     ########################################
 
+    logging.info("converting plan into a inmemory representation...")
     actions = factory.plan_filename_to_plan().convert_plan_filename_into_plan(planner.output_filename)
+    logging.info("converting plan from planner into a JSON...")
     json_string = factory.plan_to_json().convert_plan(actions)
-    logger.info('Returning json...')
+    logging.info('Returning json...')
     return json_string

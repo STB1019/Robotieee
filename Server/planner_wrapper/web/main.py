@@ -7,16 +7,19 @@ from web.static import sokoban_route, exploration_route
 from web.static.flask_exceptions import FlaskException
 from planner_wrapper import config
 
+#log file
+logging.basicConfig(filename='flask.log', format='%(asctime)s:%(levelname)s:%(message)s', level=logging.INFO)
+
 # main application
 app = Flask(__name__)
 # log file
-handler = RotatingFileHandler('flask.log', maxBytes=10000, backupCount=1)
-handler.setLevel(logging.INFO)
-app.logger.addHandler(handler)
+#rotating_file_handler = RotatingFileHandler('flask.log', maxBytes=10000, backupCount=1)
+#rotating_file_handler.setLevel(logging.DEBUG)
+#app.logger.addHandler(rotating_file_handler)
 # setup werkzeug log file (in order to have everything in the logfile
-log = logging.getLogger('werkzeug')
-log.setLevel(logging.INFO)
-log.addHandler(handler)
+#wekzeug_log = logging.getLogger('werkzeug')
+#wekzeug_log.setLevel(logging.INFO)
+#wekzeug_log.addHandler(rotating_file_handler)
 # blueprint registration
 app.register_blueprint(sokoban_route.simple_page)
 app.register_blueprint(exploration_route.simple_page)

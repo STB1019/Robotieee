@@ -234,6 +234,16 @@ namespace robotieee {
         return sendMessage(HEADER_TYPE_LOCATION, args.getBuffer());
     }
 
+    bool actionComunicator::sendLocationRobotOnly(const point robotPosition) {
+      string<10> args = string<10>{};
+      args.append("??"); // Unknown block position
+      args.append(robotPosition.x > 9 ? (char)('a' + robotPosition.x-10) : (char)('0' + robotPosition.x));
+      args.append(robotPosition.y > 9 ? (char)('a' + robotPosition.y-10) : (char)('0' + robotPosition.y));
+
+      return sendMessage(HEADER_TYPE_LOCATION, args.getBuffer());
+      
+    }
+
     bool actionComunicator::sendWarning(uint8_t index) {
         string<5> args = string<5>{};
         //0123456789abcdefghil...

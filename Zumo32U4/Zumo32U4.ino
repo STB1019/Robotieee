@@ -58,6 +58,11 @@ bool handleMoveAction(compositeAction* action) {
       bluetooth.sendLocation(block.position, zumo_robot.position);
 
     }
+    #ifdef ALWAYS_SEND_ROBOT_LOCATION
+    else {
+      bluetooth.sendLocationRobotOnly(zumo_robot.position);
+    }
+    #endif
 
     return foundBlock;
     
@@ -139,6 +144,10 @@ void loop() {
 
     // We doesn't send anything until the robot is contacted by the app first
     if (!bluetooth.isClusterEmpty()) {
+
+      //Flushes the bluetooth buffer to discard remaining data
+      delay(2000);
+      while (Serial1.read() != -1) ;
       bluetooth.sendWarning(executedInstructions);
     }
     

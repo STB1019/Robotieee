@@ -2,7 +2,7 @@ import enum
 import typing
 
 import os
-
+import logging
 import subprocess
 
 
@@ -145,21 +145,24 @@ def call_program(program: typing.List[str], working_directory: str = os.path.abs
     :return: a structure containing the output of the program executed
     """
     working_directory = os.path.abspath(working_directory)
-    print('CWD is "{}"'.format(working_directory))
-    print('Executing "{}"'.format(' '.join(program)))
+    logging.info('CWD is "{}"'.format(working_directory))
+    logging.info('Executing "{}"'.format(' '.join(program)))
     if len(' '.join(program)) > 0:
         with subprocess.Popen(program, cwd=working_directory, stdout=subprocess.PIPE) as proc:
-            return CallProgram(
+            ret_val = CallProgram(
                 exit_status=proc.returncode,
                 stdout=str(proc.stdout.read(), 'utf8') if proc.stdout is not None else "",
                 stderr=str(proc.stderr.read(), 'utf8') if proc.stderr is not None else ""
             )
     else:
-        return CallProgram(
+        ret_val =  CallProgram(
             exit_status=0,
             stdout="",
             stderr="",
         )
+
+    logging.info("DONE")
+    return ret_val
 
 
 class Clause:

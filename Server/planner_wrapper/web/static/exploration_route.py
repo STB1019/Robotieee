@@ -2,6 +2,7 @@ import os
 from flask import Blueprint, request
 from flask import current_app
 from werkzeug.local import LocalProxy
+import logging
 
 from planner_wrapper import solution_converter
 from planner_wrapper.lpg_exploration_v1.factory import LPG_Exploration_V1_Factory
@@ -10,9 +11,6 @@ from planner_wrapper.lpg_sokoban_v2.factory import LPG_V2_Factory
 from web.static.flask_exceptions import SolutionNotFoundException, MalformedRequestException
 
 simple_page = Blueprint('exploration', __name__)
-
-# logger
-logger = LocalProxy(lambda: current_app.logger)
 
 @simple_page.route("/exploration_problem", methods=['POST'])
 def sokoban_problem():
@@ -38,9 +36,9 @@ def sokoban_problem():
     else:
         raise MalformedRequestException("unsupported version number!")
 
-    logger.info('generating exploration world from received json...')
+    logging.info('generating exploration world from received json...')
     exploration_world = factory.json_to_world().convert_json_to_model_world(content)
-    logger.info('generating pddl problem file from exploration world...')
+    logging.info('generating pddl problem file from exploration world...')
     problem_filename = factory.world_to_pddl_problem().generate_problem(
         problem_filename="problem_exploration_instance",
         domain_name="exploration",
@@ -48,29 +46,29 @@ def sokoban_problem():
         world=exploration_world,
     )
 
-    logger.info('generating planner instance manager...')
+    logging.info('generating planner instance manager...')
     planner = factory.planner
 
     if "solution_number" not in content:
-        logger.info("solution number not found in json. using 1 by default")
+        logging.info("solution number not found in json. using 1 by default")
         solution_number = 1
     else:
         solution_number = int(content["solution_number"])
 
     planner.solutions_to_find = solution_number
 
-    logger.info('invoking planner (this may take quite time!)...')
+    logging.info('invoking planner (this may take quite time!)...')
     ret = planner.invoke(
         domain_filename=factory.domain_filename,
         problem_filename=problem_filename,
         working_directory="."
     )
     if ret is False:
-        logger.info("planner didn't find any solutions!")
+        logging.info("planner didn't find any solutions!")
         # the planner didn't generate anything
         raise SolutionNotFoundException(f"Couldn't find solution for problem!")
 
-    logger.info('Solution found! computing the json of it!')
+    logging.info('Solution found! computing the json of it!')
 
     ###############################
     #NICOLA implementation (slick)#
@@ -86,7 +84,9 @@ def sokoban_problem():
     # MAX implementation (more structured)#
     #######################################
 
+    logging.info("converting plan into a inmemory representation...")
     actions = factory.plan_filename_to_plan().convert_plan_filename_into_plan(planner.output_filename)
+    logging.info("converting plan from planner into a JSON...")
     json_string = factory.plan_to_json().convert_plan(actions)
-    logger.info('Returning json...')
+    logging.info('Returning json...')
     return json_string

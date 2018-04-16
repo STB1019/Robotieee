@@ -67,7 +67,7 @@ def sokoban_problem():
         logger.info("solution number not found in json. using 1 by default")
         solution_number = 1
     else:
-        solution_number = content["solution_number"]
+        solution_number = int(content["solution_number"])
 
     planner.solutions_to_find = solution_number
 

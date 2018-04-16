@@ -22,7 +22,6 @@ def sokoban_problem():
     PUSH
     curl -i http://localhost:5000/exploration_problem -X POST -d '{"version": "1.0","world": {"rows": 3,"columns": 3,"cells": [{ "y": 0, "x": 0, "entities": "DRG"},{ "y": 0, "x": 1, "entities": ""},{ "y": 0, "x": 2, "entities": "U"},{ "y": 1, "x": 0, "entities": ""},{ "y": 1, "x": 1, "entities": "B"},{ "y": 1, "x": 2, "entities": ""},{ "y": 2, "x": 0, "entities": ""},{ "y": 2, "x": 1, "entities": ""},{ "y": 2, "x": 2, "entities": ""}]}}' -H "Content-Type: application/json"
 
-
     :return:
     """
     content = request.get_json(silent=True)
@@ -51,6 +50,14 @@ def sokoban_problem():
 
     logger.info('generating planner instance manager...')
     planner = factory.planner
+
+    if "solution_number" not in content:
+        logger.info("solution number not found in json. using 1 by default")
+        solution_number = 1
+    else:
+        solution_number = content["solution_number"]
+
+    planner.solutions_to_find = solution_number
 
     logger.info('invoking planner (this may take quite time!)...')
     ret = planner.invoke(

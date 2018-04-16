@@ -1,5 +1,4 @@
 #define AVR_BUILD
-#define DEBUG
 #define DEFAULT_ID 0 // Used as we do not care about blocks ids in this version of the code
 
 #include <Zumo32U4.h>
@@ -13,13 +12,16 @@ using namespace robotieee;
 
 L3G gyro;
 LSM303 accel;
-Zumo32U4LCD lcd;
 Zumo32U4ButtonA buttonA;
 Zumo32U4ButtonB buttonB;
 Zumo32U4ButtonC buttonC;
 Zumo32U4LineSensors lineSensors;
 Zumo32U4ProximitySensors proxSensors;
 actionComunicator bluetooth;
+
+#ifdef DEBUG_LCD
+Zumo32U4LCD lcd;
+#endif
 
 // CARE: The robot needs to be placed in the upper-left corner of the grid and facing towards the bottom of the grid
 // !!!!!! CARE !!!!!!
@@ -56,16 +58,21 @@ bool handleMoveAction(compositeAction* action) {
       bluetooth.sendLocation(block.position, zumo_robot.position);
 
     }
+    #ifdef ALWAYS_SEND_ROBOT_LOCATION
+    else {
+      bluetooth.sendLocationRobotOnly(zumo_robot.position);
+    }
+    #endif
 
     return foundBlock;
     
   }
   else {
 
-    if (actionArgs[1] == 0) {
+    if (actionArgs[1] == '0') {
       zumo_robot.goAhead(action->getRepetition());
     }
-    else if (actionArgs[1] == 1) {
+    else if (actionArgs[1] == '1') {
       zumo_robot.pushBlock(action->getRepetition());
     }
     return false;
@@ -94,6 +101,8 @@ void setup() {
   lcd.gotoXY(0, 1);
   lcd.print(zumo_robot.position.y);
 # endif
+
+  ledYellow(true);  // The led yellow indicates that we are in scan mode
 
 }
 
@@ -135,9 +144,19 @@ void loop() {
   // If we haven't received a full cluster but we found the block we don't send any warning as we would have discarded the rest of the cluster anyway
   if (executedInstructions != bluetooth.getClusterLength() && !foundBlock) {
 
-    bluetooth.sendWarning();
-    delay(750);
+    // We doesn't send anything until the robot is contacted by the app first
+    if (!bluetooth.isClusterEmpty()) {
+
+      //Flushes the bluetooth buffer to discard remaining data
+      delay(2000);
+      while (Serial1.read() != -1) ;
+      bluetooth.sendWarning(executedInstructions);
+    }
     
+  }
+  // When the block is found we don't need to send DONE: it is sent only when a FULL cluster is executed 
+  else if (!foundBlock) {
+    bluetooth.sendDone();
   }
   
 }

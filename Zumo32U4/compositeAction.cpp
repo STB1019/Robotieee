@@ -34,6 +34,10 @@ namespace robotieee {
     void compositeAction::addRepetition(uint8_t num = 1) {
         _repetition += num;
     }
+
+    void compositeAction::setRepetition(uint8_t num = 1) {
+        _repetition = num;
+    }
     
     uint8_t compositeAction::getRepetition() {
         return _repetition;

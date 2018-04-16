@@ -81,7 +81,14 @@ namespace robotieee {
         compositeAction getNextAction();
 
         /**
-         * Send a LOCATION message.
+         * Returns if the last cluster read is empty or not.
+         * 
+         * @return true: last cluster read is empty
+         */
+         bool isClusterEmpty();
+        
+        /**
+         * Send a LOCATION message with block position known.
          * Arguments are <x block><y block><x robot><y robot> with a numeration like: 0123456789abcdefghil...
          * 
          * @param[in]   blockPosition   the block position to send as argument
@@ -89,6 +96,18 @@ namespace robotieee {
          * @return success of sending
          */
         bool sendLocation(const point blockPosition, const point robotPosition);
+
+        /**
+         * Send a LOCATION message with block position unknown.
+         * Arguments are "??<robot_x><robot_y>". The "?" chars are used to indicate that
+         * the block was not found yet. The purpose of this message is to merely let the
+         * middleware know which cells we visited, in order to be able to tell it to the planner
+         * and generate right plans when re-planification of the grid exploration is needed.
+         * 
+         * @param[in] robotPosition the position of the robot whitin the grid
+         * @return success of sending
+         */
+        bool sendLocationRobotOnly(const point robotPosition);
 
         /**
          * Send a WARNING message.

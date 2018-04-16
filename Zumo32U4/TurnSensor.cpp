@@ -60,10 +60,10 @@ void turnSensorSetup()
 # endif
 
   // Turn on the yellow LED in case the LCD is not available.
-  ledYellow(1);
+  ledRed(true);
 
   // Delay to give the user time to remove their finger.
-  delay(500);
+  delay(750);
 
   // Calibrate the gyro.
   int32_t total = 0;
@@ -76,7 +76,8 @@ void turnSensorSetup()
     // Add the Z axis reading to the total.
     total += gyro.g.z;
   }
-  ledYellow(0);
+  ledRed(false);
+  delay(750);
   gyroOffset = total / 1024;
 
   // Display the angle (in degrees from -180 to 180) until the

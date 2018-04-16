@@ -10,7 +10,7 @@
 using namespace robo_utils;
 
 #define BAUD_RATE           9600
-#define TIMEOUT_RECEIVING   5
+#define TIMEOUT_RECEIVING   50
 #define NO_DATA             '\0'
 
 namespace robotieee {
@@ -53,6 +53,10 @@ namespace robotieee {
             Serial1.print(" ");
             Serial1.println(_actionsOnCluster);
         #endif
+
+        // Wait until the buffer has received something
+        while (Serial1.available() != 0) ;
+        delay(2000);
 
         //stops if max number of message reads or no more message (timeout error)
         for (uint8_t i = 0; i < _clusterLength && type != NO_DATA; i++) {
@@ -156,7 +160,7 @@ namespace robotieee {
                     //if (!consolidated){
                         _cluster[_actionsOnCluster].setType(type);
                         _cluster[_actionsOnCluster].setArgs(args);
-                        _cluster[_actionsOnCluster].addRepetition();
+                        _cluster[_actionsOnCluster].setRepetition(1);
                         _actionsOnCluster+=1;
                         
                         #ifdef DEBUG_SERIAL
@@ -212,6 +216,10 @@ namespace robotieee {
         }
     }
 
+    bool actionComunicator::isClusterEmpty() {
+      return _actionsOnCluster <= 0;
+    }
+    
     bool actionComunicator::sendLocation(const point blockPosition, const point robotPosition) {
         string<10> args = string<10>{};
         //0123456789abcdefghil...
@@ -224,6 +232,16 @@ namespace robotieee {
         args.append(robotPosition.y > 9 ? (char)('a' + robotPosition.y-10) : (char)('0' + robotPosition.y));
         
         return sendMessage(HEADER_TYPE_LOCATION, args.getBuffer());
+    }
+
+    bool actionComunicator::sendLocationRobotOnly(const point robotPosition) {
+      string<10> args = string<10>{};
+      args.append("??"); // Unknown block position
+      args.append(robotPosition.x > 9 ? (char)('a' + robotPosition.x-10) : (char)('0' + robotPosition.x));
+      args.append(robotPosition.y > 9 ? (char)('a' + robotPosition.y-10) : (char)('0' + robotPosition.y));
+
+      return sendMessage(HEADER_TYPE_LOCATION, args.getBuffer());
+      
     }
 
     bool actionComunicator::sendWarning(uint8_t index) {
@@ -248,15 +266,8 @@ namespace robotieee {
         // reply only when you receive data:
         if (Serial1.available() > 0) {
             // read the incoming byte:
-            incomingByte = (char)Serial1.read();
-        }
-        else {
-            //security check: if it's reading while receiving the data, it waits for the data in the buffer
-            delay(TIMEOUT_RECEIVING);
-            if (Serial1.available() > 0) {
-                // read the incoming byte:
-                incomingByte = (char)Serial1.read();
-            }
+            char readByte = (char) Serial1.read();
+            incomingByte = readByte > 0 ? readByte : '\0';
         }
 
         return incomingByte;

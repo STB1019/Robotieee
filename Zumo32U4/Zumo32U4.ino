@@ -1,5 +1,6 @@
 #define AVR_BUILD
 #define DEFAULT_ID 0 // Used as we do not care about blocks ids in this version of the code
+#define ALWAYS_SEND_ROBOT_LOCATION
 
 #include <Zumo32U4.h>
 #include "robot.hpp"
@@ -148,9 +149,12 @@ void loop() {
     if (!bluetooth.isClusterEmpty()) {
 
       //Flushes the bluetooth buffer to discard remaining data
-      delay(2000);
-      while (Serial1.read() != -1) ;
+      //delay(2000);
+      //while (Serial1.read() != -1) ;
       bluetooth.sendWarning(executedInstructions);
+      ledRed(true);
+      Zumo32U4Buzzer::playNote(NOTE_D(2), 500, 15);
+      while(true) ;
     }
     
   }

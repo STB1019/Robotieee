@@ -257,6 +257,7 @@ private:
   uint16_t _blockCenteringDelay;      // The amount of milliseconds do wait after finding an intersection. This is needed to center the block on the cross after pushing it
   enum object_movement _orientation;  // The direction that the robot is facing
   bool _scanning;                     // A boolean switch representing whether the robot is in SCAN or EXECUTE mode;
+  bool _lookLineRight;                // fixPath() optimization: the robot searches for the line alternating between starting turning clockwise and counter-clockwise
   
   /**
    * This function is used internally by the other robot methods to adjust its trajectory

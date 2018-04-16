@@ -56,7 +56,7 @@ namespace robotieee {
 
         // Wait until the buffer has received something
         while (Serial1.available() != 0) ;
-        delay(2000);
+        delay(2500);
 
         //stops if max number of message reads or no more message (timeout error)
         for (uint8_t i = 0; i < _clusterLength && type != NO_DATA; i++) {

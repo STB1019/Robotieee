@@ -10,11 +10,11 @@
 
 #define DEFAULT_ORIENTATION               object_movement::DOWN
 #define DEFAULT_SPEED                     150
-#define DEFAULT_CENTERING_DELAY           167
+#define DEFAULT_CENTERING_DELAY           200
 #define DEFAULT_PATH_SEEK_COMPENSATION    5
 #define DEFAULT_SPEED_COMPENSATION        5
 #define DEFAULT_BACKWARDS_CENTERING_DELAY 0
-#define DEFAULT_BLOCK_CENTERING_DELAY     220
+#define DEFAULT_BLOCK_CENTERING_DELAY     325
 
 extern L3G gyro;
 extern LSM303 accel;
@@ -39,6 +39,7 @@ namespace robotieee {
     _speedCompensation     = DEFAULT_SPEED_COMPENSATION;
     _blockCenteringDelay   = DEFAULT_BLOCK_CENTERING_DELAY;
     _orientation           = DEFAULT_ORIENTATION;
+    _lookLineRight         = false;
   }
   
   robot::~robot() {
@@ -191,7 +192,8 @@ namespace robotieee {
 
   void robot::fixPath() {
 
-    int i = 1;
+    int i = _lookLineRight ? (-1) : 1;
+    _lookLineRight = _lookLineRight ? false : true; // Invert _lookLineRight value: from true to false and viceversa
 
     while (true) {
       bool foundBlack = rotate(i * _pathSeekCompensation, true);
@@ -342,7 +344,7 @@ namespace robotieee {
 
     if (blockFound) {
       
-      Zumo32U4Buzzer::playNote(NOTE_A(4), 300, 8);
+      Zumo32U4Buzzer::playNote(NOTE_A(4), 300, 15);
       
     }
     

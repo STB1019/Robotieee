@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Robotieee</string>
+
+    <string name="title_activity_start">start</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+</resources>

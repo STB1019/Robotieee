@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.simone.robotieee.SetMap">
+
+    <EditText
+        android:id="@+id/Rows"
+        android:layout_width="160dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="128dp"
+        android:ems="10"
+        android:hint="Rows"
+        android:inputType="number"
+        app:layout_constraintEnd_toStartOf="@+id/Columns"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/Columns"
+        android:layout_width="160dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="128dp"
+        android:ems="10"
+        android:hint="Columns"
+        android:inputType="number"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/Rows"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/SetMap"
+        android:layout_width="250dp"
+        android:layout_height="143dp"
+        android:background="@drawable/startscan"
+        android:backgroundTint="@color/colorPrimary"
+        android:text="Set Dimension"
+        android:textColor="@android:color/background_light"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Rows" />
+
+    <EditText
+        android:id="@+id/Block"
+        android:layout_width="160dp"
+        android:layout_height="50dp"
+        android:ems="10"
+        android:hint="Blocks"
+        android:inputType="number"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toTopOf="@+id/SetMap"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/Rows" />
+
+    <EditText
+        android:id="@+id/Solution"
+        android:layout_width="160dp"
+        android:layout_height="50dp"
+        android:ems="10"
+        android:hint="Solution quality"
+        android:textAlignment="center"
+        android:inputType="number"
+        app:layout_constraintBottom_toTopOf="@+id/Rows"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</android.support.constraint.ConstraintLayout>

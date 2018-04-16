@@ -102,6 +102,8 @@ void setup() {
   lcd.print(zumo_robot.position.y);
 # endif
 
+  ledYellow(true);  // The led yellow indicates that we are in scan mode
+
 }
 
 void loop() {

@@ -236,10 +236,12 @@ namespace robotieee {
     lcd.print(F("A for ok"));
 #   endif
 
-    ledGreen(true);
+    ledRed(true);
     buttonA.waitForButton();
     lineSensors.calibrate();
-    ledGreen(false);
+    ledRed(false);
+
+    delay(750);
 
 #   ifdef DEBUG_LCD
     lcd.clear();
@@ -248,10 +250,12 @@ namespace robotieee {
     lcd.print(F("A for ok"));
 #   endif
 
-    ledYellow(true);
+    ledRed(true);
     buttonA.waitForButton();
     lineSensors.calibrate();
-    ledYellow(false);
+    ledRed(false);
+
+    delay(750);
 
 #   ifdef DEBUG_LCD
     lcd.clear();
@@ -299,10 +303,15 @@ namespace robotieee {
   
   void robot::setScanMode() {
     _scanning = true;
+    ledGreen(false);
+    ledYellow(true);
+    
   }
 
   void robot::setExecuteMode() {
     _scanning = false;
+    ledGreen(true);
+    ledYellow(false);
   }
 
   void robot::turnBack() {
@@ -333,7 +342,7 @@ namespace robotieee {
 
     if (blockFound) {
       
-      Zumo32U4Buzzer::playNote(NOTE_A(4), 500, 15);
+      Zumo32U4Buzzer::playNote(NOTE_A(4), 300, 8);
       
     }
     

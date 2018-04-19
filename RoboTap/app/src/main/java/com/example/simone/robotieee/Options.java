@@ -22,6 +22,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
+import android.widget.Toast;
 
 import java.io.Serializable;
 
@@ -31,7 +32,7 @@ public class Options extends AppCompatActivity implements View.OnClickListener, 
 
     Button startScan;
     TableLayout table;
-    int rows, columns, buttonNumber, block;
+    int rows, columns, buttonNumber, block, goalNumber;
     public int w,h;
     int solutionNumber;
     TableRow row[];
@@ -48,6 +49,7 @@ public class Options extends AppCompatActivity implements View.OnClickListener, 
         int width = size.x;
         int height = size.y;
 
+        goalNumber = 0;
         Intent r = getIntent();
         rows = r.getIntExtra("rows", rows);
         columns = r.getIntExtra("columns", columns);
@@ -118,7 +120,23 @@ public class Options extends AppCompatActivity implements View.OnClickListener, 
         }
 
         if (view.getId() == R.id.startScan){
-            showAlert();
+
+            goalNumber = 0;
+
+            for (int m = 0; m < rows; m++){
+                for (int l = 0; l < columns; l++){
+                    if (map.botton[m][l].attr.equals("G")){
+                        goalNumber++;
+                    }
+                }
+            }
+
+            if (goalNumber >= block){
+                showAlert();
+            } else {
+                Toast.makeText(this, "You need more goal", Toast.LENGTH_SHORT).show();
+            }
+
         } else {
 
             botton.changeStatus(botton);

@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">KroboTapp</string>
+    <string name="tutorial_text">
+        Setup the demo as follows:
+        1) choose a grid size (e.g. 7x6). Everytime we use the term of "grid", we will refer to this grid you\'ve chosen;
+        2) setup the grid and the blocks as you wish: be sure that it exists a path starting from the top left corner to reach every block;
+        3) put the robot in the top left corner of the grid;
+    </string>
+    <string name="minusText">-</string>
+    <string name="plusText">+</string>
+    <string name="rows">Rows</string>
+    <string name="columns">Columns</string>
+    <string name="ok">OK</string>
+    <string name="robot">Robot</string>
+    <string name="crate">Crate</string>
+    <string name="goal">Goal</string>
+    <string name="blocked">Blocked</string>
+    <string name="connect_to_robot_bluetooth">Connect to robot bluetooth</string>
+</resources>

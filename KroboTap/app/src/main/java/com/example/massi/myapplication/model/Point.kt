@@ -62,7 +62,7 @@ public class Point(y:Int, x:Int) {
      * @return a new point where each coordinate (y,x) has been clamped w.r.t. min and max
      */
     fun clamp(min:Point, max:Point) : Point {
-        var p = Point(this.y, this.x)
+        val p = Point(this.y, this.x)
 
         p.x = this.clamp(min.x, p.x, max.x)
         p.y = this.clamp(min.y, p.y, max.y)

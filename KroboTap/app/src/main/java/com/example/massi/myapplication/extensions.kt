@@ -33,10 +33,10 @@ fun Int.clamp(min: Int, max: Int) : Int{
     return this
 }
 
-fun Logger.info(format: String, vararg objs: Any) {
-    this.info(String.format(format, objs))
+fun Logger.info(str: String, vararg objs: Any) {
+    this.info(str.format(*objs))
 }
 
-fun Logger.fine(format: String, vararg objs: Any) {
-    this.fine(String.format(format, objs))
+fun Logger.fine(str: String, vararg objs: Any) {
+    this.fine(str.format(*objs))
 }

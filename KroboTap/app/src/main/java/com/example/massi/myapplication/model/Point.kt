@@ -1,5 +1,7 @@
 package com.example.massi.myapplication.model
 
+import javax.sql.PooledConnection
+
 public class Point(y:Int, x:Int) {
 
     var x = x
@@ -8,6 +10,11 @@ public class Point(y:Int, x:Int) {
     var y = y
         public get
         public set
+
+    /**
+     * Copy constructor of a point
+     */
+    constructor(p: Point) : this(y=p.y, x=p.x)
 
     /**
      * Sums the current point with another one
@@ -61,6 +68,17 @@ public class Point(y:Int, x:Int) {
         p.y = this.clamp(min.y, p.y, max.y)
 
         return p
+    }
+
+    /**
+     * Check equality between 2 points
+     *
+     * @param other somethins else. May or may not be a point. May also be null
+     */
+    override fun equals(other: Any?): Boolean {
+        other?.let {
+            return it is Point && it.x == this.x && it.y == this.y
+        } ?: return false
     }
 
     override fun toString(): String {

@@ -43,7 +43,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        this.changeMainPanel(this.currentMainFragment ?: throw KroboTappException("invalid scenario"))
+        this.changeMainPanel(this.currentMainFragment)
     }
 
     /**

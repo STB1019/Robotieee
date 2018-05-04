@@ -6,12 +6,17 @@
     android:layout_height="match_parent"
     android:gravity="top">
 
-    <FrameLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/buttonArea">
 
-    </FrameLayout>
+        <TableLayout
+            android:id="@+id/tableLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </TableLayout>
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/buttonArea"
@@ -27,13 +32,6 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="@string/robot" />
-
-        <Button
-            android:id="@+id/chooseBlock"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/crate" />
 
         <Button
             android:id="@+id/chooseGoal"

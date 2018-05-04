@@ -4,6 +4,7 @@ import android.support.v7.app.AppCompatActivity
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subjects.Subject
+import com.example.massi.myapplication.model.Point
 
 public open abstract class KrobotAppEvent(source: Any, t: Type) {
 
@@ -14,8 +15,13 @@ public open abstract class KrobotAppEvent(source: Any, t: Type) {
         BUTTON_PRESSED,
         BLUETOOTH_EVENT,
         WAITING_EVENT,
+        POINT_EVENT
     }
 
+}
+
+public class KrobotAppPointEvent(source: Any, p: Point) : KrobotAppEvent(source, Type.POINT_EVENT) {
+    val point = p
 }
 
 public class KrobotAppButtonPressed(source: Any) : KrobotAppEvent(source, Type.BUTTON_PRESSED) {

@@ -14,6 +14,8 @@ import android.widget.TableRow
 import com.example.massi.myapplication.*
 import com.example.massi.myapplication.model.ExplorationCellStatus
 import com.example.massi.myapplication.model.ExplorationGrid
+import com.example.massi.myapplication.model.Point
+import com.example.massi.myapplication.model.WorldCellStatus
 import kotlinx.android.synthetic.main.setup_grid_fragment_layout.*
 import kotlinx.android.synthetic.main.setup_grid_fragment_layout.view.*
 import kotlinx.android.synthetic.main.setup_grid_options_fragment_layout.*
@@ -21,6 +23,11 @@ import kotlinx.android.synthetic.main.start_fragment_layout.*
 import kotlinx.android.synthetic.main.start_fragment_layout.view.*
 import java.util.logging.Logger
 
+/**
+ * Represents the fragment specifying the view used to create the world of the robot
+ *
+ * In particular in this view the user can set robot, goals and untraversables positions
+ */
 class SetupGridFragment : Fragment() {
 
     private enum class MapStatus {
@@ -42,14 +49,23 @@ class SetupGridFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.setup_grid_fragment_layout, container, false)
 
-        this.createTable(view, this.krobot.explorationMap.rows, this.krobot.explorationMap.columns)
+        this.createTable(view, this.krobot.builingMap.rows, this.krobot.builingMap.columns)
 
+        view.chooseRobot.setOnClickListener({ e -> this.krobot.writeStream.onNext(KrobotAppButtonPressed(view.chooseRobot)) })
         this.krobot.readStream
                 .filter({e -> e is KrobotAppButtonPressed && e.source == this.chooseRobot })
-                .subscribe({e -> this.state = if (this.state == MapStatus.ROBOT_SET) MapStatus.START else MapStatus.ROBOT_SET })
+                .subscribe({e ->
+                    LOG.info("robot is pressed")
+                    this.chooseRobot.isPressed = !this.chooseRobot.isPressed
+                    this.state = if (this.state == MapStatus.ROBOT_SET) MapStatus.START else MapStatus.ROBOT_SET
+                })
+
+        view.chooseGoal.setOnClickListener({ e -> this.krobot.writeStream.onNext(KrobotAppButtonPressed(view.chooseGoal)) })
         this.krobot.readStream
                 .filter({e -> e is KrobotAppButtonPressed && e.source == this.chooseGoal })
                 .subscribe({e -> this.state = if (this.state == MapStatus.GOAL_SET) MapStatus.START else MapStatus.GOAL_SET })
+
+        view.chooseUntraversable.setOnClickListener({ e -> this.krobot.writeStream.onNext(KrobotAppButtonPressed(view.chooseUntraversable)) })
         this.krobot.readStream
                 .filter({e -> e is KrobotAppButtonPressed && e.source == this.chooseUntraversable })
                 .subscribe({e -> this.state = if (this.state == MapStatus.BLOCKED_SET) MapStatus.START else MapStatus.BLOCKED_SET })
@@ -69,13 +85,13 @@ class SetupGridFragment : Fragment() {
 
         var nextId = 10
         for (row in 0..(rows-1)) {
-            LOG.info(String.format("Building row %d in table", row))
+            LOG.info("Building row %d in table", row)
             val tableRow = TableRow(this.activity)
             tableRow.id = nextId++
             tableRow.layoutParams = TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.MATCH_PARENT)
 
             for (col in 0..(columns-1)) {
-                LOG.info(String.format("Building cell y=%d x=%d", row, col))
+                LOG.info("Building cell y=%d x=%d", row, col)
                 val cell = ColorView(this.context, row, col, Color.BLACK)
                 cell.id = nextId++
                 cell.layoutParams = TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT)
@@ -83,52 +99,60 @@ class SetupGridFragment : Fragment() {
                 this.krobot.readStream
                         .filter({ e -> e is KrobotAppButtonPressed && e.source == cell })
                         .subscribe({e ->
+                            LOG.info("cell is %s and state is %s", cell.point, this.state)
+                            //represents all the cell which we need to redraw
+                            val cellsToChange = ArrayList<Point>()
                             when (this.state) {
                                 MapStatus.START -> {
                                 }
                                 MapStatus.ROBOT_SET -> {
                                     //we set the robot only fi the cell selected is not untraversable
-                                    if (ExplorationCellStatus.UNTRAVERSABLE !in this.krobot.explorationMap[cell.row, cell.column]) {
-                                        if (isRobotPresent) {
-                                            //the robot is inside the map, hence we need to move it to the cell pointeed by the user
-                                            val robotPosition = this.krobot.explorationMap.robot
-                                            this.krobot.explorationMap[robotPosition!!.x, robotPosition.y].remove(ExplorationCellStatus.ROBOT)
-                                            this.krobot.explorationMap[row, col].add(ExplorationCellStatus.ROBOT)
-                                        } else {
-                                            //the robot is not inside the map, hence we need to manually put it!
-                                            this.krobot.explorationMap[row, col].add(ExplorationCellStatus.ROBOT)
-                                            isRobotPresent = true
+                                    if (this.krobot.builingMap.isTraversable(cell.point)) {
+                                        //move the robot to the pointed cell (and removes it from the previous one)
+                                        this.krobot.builingMap.robot?.let {
+                                            cellsToChange.add(it)
                                         }
+                                        cellsToChange.add(cell.point)
+                                        this.krobot.builingMap.moveRobot(cell.point)
                                     }
-
                                 }
                                 MapStatus.GOAL_SET -> {
                                     //we set the goal only fi the cell selected is not untraversable
-                                    if (ExplorationCellStatus.UNTRAVERSABLE !in this.krobot.explorationMap[cell.row, cell.column]) {
-                                        if (ExplorationCellStatus.GOAL in this.krobot.explorationMap[cell.row, cell.column]) {
-                                            this.krobot.explorationMap[cell.row, cell.column].remove(ExplorationCellStatus.GOAL)
+                                    if (this.krobot.builingMap.isTraversable(cell.point)) {
+                                        if (WorldCellStatus.GOAL in this.krobot.builingMap[cell.row, cell.column]) {
+                                            this.krobot.builingMap.removeContent(cell.point, WorldCellStatus.GOAL)
                                         } else {
-                                            this.krobot.explorationMap[cell.row, cell.column].add(ExplorationCellStatus.GOAL)
+                                            this.krobot.builingMap.addContent(cell.point, WorldCellStatus.GOAL)
                                         }
+                                        cellsToChange.add(cell.point)
                                     }
                                 }
                                 MapStatus.BLOCKED_SET -> {
                                     //set the untraversable
-                                    if (ExplorationCellStatus.UNTRAVERSABLE in this.krobot.explorationMap[cell.row, cell.column]) {
-                                        this.krobot.explorationMap[cell.row, cell.column].remove(ExplorationCellStatus.UNTRAVERSABLE)
+                                    if (this.krobot.builingMap.isTraversable(cell.point)) {
+                                        this.krobot.builingMap.removeContent(cell.point, WorldCellStatus.UNTRAVERSABLE)
                                     } else {
                                         //if we need to add untraverasble, we remove everything else from the cell
-                                        if (ExplorationCellStatus.ROBOT in this.krobot.explorationMap[cell.row, cell.column]) {
-                                            this.isRobotPresent = false
-                                        }
-                                        this.krobot.explorationMap[cell.row, cell.column].clear()
-                                        this.krobot.explorationMap[cell.row, cell.column].add(ExplorationCellStatus.UNTRAVERSABLE)
+                                        this.krobot.builingMap.clearContent(cell.point)
+                                        this.krobot.builingMap.addContent(cell.point, WorldCellStatus.UNTRAVERSABLE)
                                     }
-
+                                    cellsToChange.add(cell.point)
                                 }
                             }
 
-                            cell.redraw( this.krobot.explorationMap[cell.row, cell.column])
+                            //we need to notify the cells which needs to be redrawn
+                            LOG.info("cells to change are %s", cellsToChange)
+                            for (cellToChange in cellsToChange) {
+                                this.krobot.writeStream.onNext(KrobotAppPointEvent(cell, cellToChange))
+                            }
+
+                        })
+
+                this.krobot.readStream
+                        .filter({ e -> e is KrobotAppPointEvent && e.point == cell.point})
+                        .map({e -> e as KrobotAppPointEvent})
+                        .subscribe({ e ->
+                            cell.redraw(this.krobot.builingMap, cell.point)
                         })
 
                 cell.setOnClickListener({ e -> this.krobot.writeStream.onNext(KrobotAppButtonPressed(cell)) })
@@ -138,6 +162,7 @@ class SetupGridFragment : Fragment() {
                 //cell.layoutParams = params
                 tableRow.addView(cell)
             }
+
 
             view.tableLayout.addView(tableRow)
         }

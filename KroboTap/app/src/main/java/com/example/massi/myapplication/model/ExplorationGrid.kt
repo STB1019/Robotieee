@@ -19,7 +19,6 @@ public class ExplorationGrid(rows: Int, columns: Int) : AbstractItemGrid<Explora
 
     companion object {
 
-
         inline fun getDefaultSet() : MutableSet<ExplorationCellStatus> {
             val result  = HashSet<ExplorationCellStatus>()
             return result

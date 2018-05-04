@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.massi.myapplication.*
 import com.example.massi.myapplication.model.ExplorationGrid
+import com.example.massi.myapplication.model.WorldGrid
 import kotlinx.android.synthetic.main.setup_grid_options_fragment_layout.*
 import kotlinx.android.synthetic.main.setup_grid_options_fragment_layout.view.*
 import java.util.logging.Logger
@@ -44,7 +45,7 @@ class SetupGridOptionsFragment : Fragment() {
         this.krobot.readStream
                 .filter({e -> e is KrobotAppButtonPressed && e.source == this.confirm})
                 .subscribe({e ->
-                    this.krobot.explorationMap = ExplorationGrid(rows = this.currentRows, columns = this.currentColumns)
+                    this.krobot.builingMap = WorldGrid(rows = this.currentRows, columns = this.currentColumns)
                     (this.activity as MainActivity).changeMainPanel(SetupGridFragment())
                 })
 

@@ -7,6 +7,7 @@ import io.reactivex.subjects.Subject
 
 class KrobotappModel() {
 
+    lateinit var builingMap: WorldGrid
     lateinit var explorationMap : ExplorationGrid
     lateinit var sokobanMap : SokobanGrid
 

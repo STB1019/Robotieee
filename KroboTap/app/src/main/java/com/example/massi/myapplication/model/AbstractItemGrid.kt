@@ -9,12 +9,16 @@ public open class AbstractItemGrid<T>(rows: Int, columns: Int, cellPopulator: (P
         return t in this[p]
     }
 
-    public fun addContent(p: Point, t: T) {
+    public open fun addContent(p: Point, t: T) {
         this[p].add(t)
     }
 
-    public fun removeContent(p: Point, t: T) {
+    public open fun removeContent(p: Point, t: T) {
         this[p].remove(t)
+    }
+
+    public open fun clearContent(p: Point) {
+        this[p].clear()
     }
 
     public fun size(p: Point) : Int {

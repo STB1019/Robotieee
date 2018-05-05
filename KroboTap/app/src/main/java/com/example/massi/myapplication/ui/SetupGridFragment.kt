@@ -80,17 +80,20 @@ class SetupGridFragment : Fragment() {
         //LOG.info("rows are %d while columns are %d", rows, columns)
 
         view.tableLayout.isShrinkAllColumns = true
+        //view.tableLayout.layoutParams = TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.MATCH_PARENT)
 
         var nextId = 10
         for (row in 0..(rows-1)) {
             LOG.info("Building row %d in table", row)
             val tableRow = TableRow(this.activity)
             tableRow.id = nextId++
-            tableRow.layoutParams = TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT)
+            tableRow.layoutParams = TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT)
+
 
             for (col in 0..(columns-1)) {
                 LOG.info("Building cell y=%d x=%d", row, col)
-                val cell = ColorView(this.context, row, col, Color.BLACK)
+                //val cell = ColorView(this.context, row, col, Color.BLACK)
+                val cell = CellImageView(this.activity, row, col, R.drawable.world_traversable)
                 cell.id = nextId++
                 cell.layoutParams = TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT)
 
@@ -162,7 +165,7 @@ class SetupGridFragment : Fragment() {
             }
 
 
-            view.tableLayout.addView(tableRow)
+            view.tableLayout.addView(tableRow, row)
         }
 
     }

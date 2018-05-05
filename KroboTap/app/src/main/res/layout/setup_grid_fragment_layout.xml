@@ -11,11 +11,11 @@
         android:layout_height="match_parent"
         android:layout_above="@+id/buttonArea">
 
-        <TableLayout
-            android:id="@+id/tableLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-        </TableLayout>
+            <TableLayout
+                android:id="@+id/tableLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+            </TableLayout>
     </LinearLayout>
 
     <LinearLayout

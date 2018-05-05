@@ -56,7 +56,6 @@ class SetupGridFragment : Fragment() {
                 .filter({e -> e is KrobotAppButtonPressed && e.source == this.chooseRobot })
                 .subscribe({e ->
                     LOG.info("robot is pressed")
-                    this.chooseRobot.isPressed = !this.chooseRobot.isPressed
                     this.state = if (this.state == MapStatus.ROBOT_SET) MapStatus.START else MapStatus.ROBOT_SET
                 })
 
@@ -81,14 +80,13 @@ class SetupGridFragment : Fragment() {
         //LOG.info("rows are %d while columns are %d", rows, columns)
 
         view.tableLayout.isShrinkAllColumns = true
-        //view.tableLayout.isStretchAllColumns = true
 
         var nextId = 10
         for (row in 0..(rows-1)) {
             LOG.info("Building row %d in table", row)
             val tableRow = TableRow(this.activity)
             tableRow.id = nextId++
-            tableRow.layoutParams = TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.MATCH_PARENT)
+            tableRow.layoutParams = TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT, TableLayout.LayoutParams.WRAP_CONTENT)
 
             for (col in 0..(columns-1)) {
                 LOG.info("Building cell y=%d x=%d", row, col)
@@ -130,11 +128,11 @@ class SetupGridFragment : Fragment() {
                                 MapStatus.BLOCKED_SET -> {
                                     //set the untraversable
                                     if (this.krobot.builingMap.isTraversable(cell.point)) {
-                                        this.krobot.builingMap.removeContent(cell.point, WorldCellStatus.UNTRAVERSABLE)
-                                    } else {
                                         //if we need to add untraverasble, we remove everything else from the cell
                                         this.krobot.builingMap.clearContent(cell.point)
                                         this.krobot.builingMap.addContent(cell.point, WorldCellStatus.UNTRAVERSABLE)
+                                    } else {
+                                        this.krobot.builingMap.removeContent(cell.point, WorldCellStatus.UNTRAVERSABLE)
                                     }
                                     cellsToChange.add(cell.point)
                                 }

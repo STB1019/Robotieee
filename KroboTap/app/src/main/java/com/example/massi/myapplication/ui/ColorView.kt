@@ -4,8 +4,12 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.view.View
+import android.widget.ImageView
 import com.example.massi.myapplication.WhenClauseException
 import com.example.massi.myapplication.model.ExplorationCellStatus
+import com.example.massi.myapplication.model.Point
+import com.example.massi.myapplication.model.WorldCellStatus
+import com.example.massi.myapplication.model.WorldGrid
 import java.util.logging.Logger
 
 /**
@@ -24,22 +28,30 @@ class ColorView(context: Context, row: Int, column: Int, acolor: Int): View(cont
     public val row = row
     public val column = column
 
+    public val point
+        get() = Point(y=row, x=column)
+
     public var color : Int = acolor
         set(value) {
             field = value
             this.setBackgroundColor(color)
         }
 
-    public fun redraw(content: Set<ExplorationCellStatus>) {
+    /**
+     * update the view redendering depending on the content of buildingMap in the point p
+     */
+    public fun redraw(buildingMap: WorldGrid, p: Point) {
+        val content = buildingMap[p]
+
         if (content.isEmpty()) {
             color = Color.WHITE
-        } else if (ExplorationCellStatus.UNTRAVERSABLE in content) {
+        } else if (!buildingMap.isTraversable(p)) {
             color = Color.RED
-        } else if (ExplorationCellStatus.ROBOT in content && ExplorationCellStatus.GOAL in content) {
+        } else if (WorldCellStatus.ROBOT in content && WorldCellStatus.GOAL in content) {
             color = Color.YELLOW
-        } else if (ExplorationCellStatus.ROBOT in content) {
+        } else if (WorldCellStatus.ROBOT in content) {
             color = Color.GREEN
-        } else if (ExplorationCellStatus.GOAL in content) {
+        } else if (WorldCellStatus.GOAL in content) {
             color = Color.BLUE
         } else {
             LOG.info(String.format("set is %s", content))

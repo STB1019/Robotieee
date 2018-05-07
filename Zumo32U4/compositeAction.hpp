@@ -10,23 +10,15 @@
 #define C_ACTION_HPP_
 
 #include <Zumo32U4.h>
+#include "IMessage.hpp"
 
 namespace robotieee {
-
-    #define HEADER_TYPE_MOVE        'M'
-    #define HEADER_TYPE_STATE       'S'
-    #define HEADER_TYPE_END         'E'
-    #define HEADER_TYPE_LOCATION    'L'
-    #define HEADER_TYPE_WARNING     'W'
-    #define HEADER_TYPE_DONE        'D'
-
-    #define ARGS_LENGHT             5
 
     /**
      * Represents an action that the robot has to do.
      * Composite means an action with repetitions: the equal actions on series are write as one action with n repetitions.
      */
-    class compositeAction {
+    class compositeAction : public IMessage {
 
     public:
         /**
@@ -39,28 +31,28 @@ namespace robotieee {
          * 
          * @param[in]   pType   action's type
          */
-        void setType(char pType);
+        virtual void setType(char pType);
 
         /**
          * Get the type of the action.
          * 
          * @return action's type
          */
-        char getType();
+        virtual char getType();
 
         /**
          * Set the args of the action.
          * 
          * @param[in]   pArgs   action's args
          */
-        void setArgs(char* pArgs);
+        virtual void setArgs(char* pArgs);
 
         /**
          * Get the args of the action.
          * 
          * @return  action's args
          */
-        char* getArgs();
+        virtual char* getArgs();
 
         /**
          * Add a repetition on the action.
@@ -83,18 +75,25 @@ namespace robotieee {
          */
         uint8_t getRepetition();
 
+        
+        /**
+         * Returns the message data coded into a string.
+         * NB: the string has to be deallocated after the use.
+         * 
+         * @return  the message data in string form
+         */
+        virtual string<MAX_MESSAGE_LENGTH>* toString();
+
         /**
          * dispose the action
          */
         ~compositeAction();
 
     private:
-        char _type;
-        char _args[ARGS_LENGHT+1];
         uint8_t _repetition;
 
     };
 
 }
 
-#endif
+#endif /* C_ACTION_HPP_ */

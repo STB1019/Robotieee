@@ -1,7 +1,8 @@
  /**
  * @file
  * 
- * API specifying a class to manage the comunication of the robot
+ * API specifying a class to manage the communication of the robot
+ * Version 1 of communication protocol.
  *
  * @date Apr 11, 2018
  */
@@ -23,6 +24,13 @@ namespace robotieee {
 
     #define HEADER_SEPARATOR        '#'
 
+    #define HEADER_TYPE_MOVE        'M'
+    #define HEADER_TYPE_STATE       'S'
+    #define HEADER_TYPE_END         'E'
+    #define HEADER_TYPE_LOCATION    'L'
+    #define HEADER_TYPE_WARNING     'W'
+    #define HEADER_TYPE_DONE        'D'
+
     #define SEND_MESSAGE_LENGTH     20
 
     #define ARGS_LENGTH_MOVE        2
@@ -34,8 +42,9 @@ namespace robotieee {
 
 
     /**
-     * Represents the action comunication manager
+     * Represents the action comunication manager for version 1 of protocol
      */
+    [[deprecated("Replaced by ICommunicator, which interface the communication protocol")]]
     class actionComunicator {
 
     public:
@@ -168,4 +177,4 @@ namespace robotieee {
 
 }
 
-#endif
+#endif /* COMUNICATOR_HPP_ */

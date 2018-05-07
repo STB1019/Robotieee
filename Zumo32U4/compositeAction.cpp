@@ -43,6 +43,15 @@ namespace robotieee {
         return _repetition;
     }
 
+    string<MAX_MESSAGE_LENGTH>* compositeAction::toString() {
+        string<MAX_MESSAGE_LENGTH>* data = new string<MAX_MESSAGE_LENGTH>{};
+        
+        data->append(_type);
+        data->append(_args);
+
+        return data;
+    }
+
     compositeAction::~compositeAction() {
 
     }

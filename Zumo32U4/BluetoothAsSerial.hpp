@@ -102,6 +102,17 @@ namespace robotieee {
         static IPackage* initFoundAck(const IPackage* package, point robotPos, point blockPos);
         
         /**
+         * Prepares an acknowledge package with more than one block found message.
+         * 
+         * @param[in]   package     package to send the acknowledge for
+         * @param[in]   robotPos    robot position
+         * @param[in]   blocksNum   number of block to append
+         * @param[in]   blocksPos   blocks position
+         * @return  the acknowledge package
+         */
+        static IPackage* initFoundAck(const IPackage* package, point robotPos, int blocksNum, point* blocksPos);
+
+        /**
          * Prepares an acknowledge package with block not found.
          * 
          * @param[in]   package     package to send the acknowledge for

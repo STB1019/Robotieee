@@ -25,7 +25,7 @@ namespace robotieee {
     class ICommunicator {
     public:
 
-        virtual ICommunicator() {}
+        ICommunicator() {}
         virtual ~ICommunicator() {}
 
         /**
@@ -59,7 +59,7 @@ namespace robotieee {
          * @param[in]   package package to send
          * @return  true: the package sent correctly; false: otherwise
          */
-        virtual bool sendPackage(const IPackage* package) = 0;
+        virtual bool sendPackage(IPackage* package) = 0;
 
     private:
 

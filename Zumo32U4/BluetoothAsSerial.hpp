@@ -40,21 +40,17 @@ namespace robotieee {
      * Represents the communication manager between Host and Robot.
      * Suitable for implementations of second version protocol onwards.
      * The communication is with a Bluetooth module that Robot see as a serial module. The class uses Serial1 integrated class.
+     * This class is a Singleton, so to access to the unique instance of the object you have to use BluetoothAsSerial::getInstance() method.
      */
     class BluetoothAsSerial : public ICommunicator {
     public:
-        
-        /**
-         * Initialize the object
-         */
-        BluetoothAsSerial();
 
         /**
          * Checks if there's something to read.
          * 
          * @return  true: somenthing to read in buffer; false: otherwise
          */
-        virtual bool somethingToRead();
+        bool somethingToRead();
 
         /**
          * Waits until it can read a package. If timeout occurs, the fuction will return false and the package parameter will not initialized.
@@ -64,7 +60,7 @@ namespace robotieee {
          * @param[in]   timeout timeout in millis for the package reading
          * @return  true: package read correctly; false: otherwise
          */
-        virtual bool waitForPackage(IPackage* package, uint16_t timeout = DEFAULT_READ_TIMEOUT);
+        bool waitForPackage(IPackage* package, uint16_t timeout = DEFAULT_READ_TIMEOUT);
 
         /**
          * Sends a package.
@@ -72,7 +68,7 @@ namespace robotieee {
          * @param[in]   package package to send
          * @return  true: the package sent correctly; false: otherwise
          */
-        virtual bool sendPackage(const IPackage* package);
+        bool sendPackage(IPackage* package);
 
         /** 
          * Dispose the object
@@ -89,7 +85,7 @@ namespace robotieee {
          * @param[in]   message message to include into the acknowledge
          * @return  the acknowledge package
          */
-        static IPackage* initAcknowledge(const IPackage* package, const IMessage* message = NULL);
+        static IPackage* initAcknowledge(IPackage* package, IMessage* message = nullptr);
 
         /**
          * Prepares an acknowledge package with block found message.
@@ -99,7 +95,7 @@ namespace robotieee {
          * @param[in]   blockPos    block position
          * @return  the acknowledge package
          */
-        static IPackage* initFoundAck(const IPackage* package, point robotPos, point blockPos);
+        static IPackage* initFoundAck(IPackage* package, point robotPos, point blockPos);
         
         /**
          * Prepares an acknowledge package with more than one block found message.
@@ -110,7 +106,7 @@ namespace robotieee {
          * @param[in]   blocksPos   blocks position
          * @return  the acknowledge package
          */
-        static IPackage* initFoundAck(const IPackage* package, point robotPos, int blocksNum, point* blocksPos);
+        static IPackage* initFoundAck(IPackage* package, point robotPos, uint8_t blocksNum, point* blocksPos);
 
         /**
          * Prepares an acknowledge package with block not found.
@@ -119,8 +115,22 @@ namespace robotieee {
          * @param[in]   robotPos    robot position
          * @return  the acknowledge package
          */
-        static IPackage* initNotFoundAck(const IPackage* package, point robotPos);
+        static IPackage* initNotFoundAck(IPackage* package, point robotPos);
 
+        /**
+         * Read as many byte as the value of the parameter. 
+         * It's usefull in the test, where the app send a string at the start of connection.
+         * 
+         * @param[in]   number  number of byte to jump
+         */
+        static void jumpByte (uint8_t number);
+
+        /**
+         * Returns the single instance of BluetoothAsSerial class.
+         * 
+         * @return  the single instance
+         */
+        static BluetoothAsSerial* getInstance();
 
     private:
         /** Last package sent to host */
@@ -130,6 +140,10 @@ namespace robotieee {
         /** Boolean to know if one package has been received */
         bool receivedOnePackage;
         
+        /**
+         * Initialize the object
+         */
+        BluetoothAsSerial();
     };
 }
 

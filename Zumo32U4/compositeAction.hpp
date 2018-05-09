@@ -31,28 +31,28 @@ namespace robotieee {
          * 
          * @param[in]   pType   action's type
          */
-        virtual void setType(char pType);
+        void setType(char pType);
 
         /**
          * Get the type of the action.
          * 
          * @return action's type
          */
-        virtual char getType();
+        char getType();
 
         /**
          * Set the args of the action.
          * 
          * @param[in]   pArgs   action's args
          */
-        virtual void setArgs(char* pArgs);
+        void setArgs(char* pArgs);
 
         /**
          * Get the args of the action.
          * 
          * @return  action's args
          */
-        virtual char* getArgs();
+        char* getArgs();
 
         /**
          * Add a repetition on the action.
@@ -82,7 +82,7 @@ namespace robotieee {
          * 
          * @return  the message data in string form
          */
-        virtual string<MAX_MESSAGE_LENGTH>* toString();
+        string<MAX_MESSAGE_LENGTH>* toString();
 
         /**
          * dispose the action

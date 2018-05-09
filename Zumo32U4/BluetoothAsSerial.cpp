@@ -17,17 +17,21 @@ namespace robotieee {
     #define ACK_WAIT_ATTEMPT    10
 
 
+    /* PRIVATE ------------------------------------------------------------------------------------------------------------------- */
+
     BluetoothAsSerial::BluetoothAsSerial() {
         Serial1.begin(BAUD_RATE);
 
         receivedOnePackage = false;
     }
 
+    /* PUBLIC ------------------------------------------------------------------------------------------------------------------- */
+
     bool BluetoothAsSerial::somethingToRead() {
         return Serial1.available() > 0;
     }
 
-    bool BluetoothAsSerial::waitForPackage(IPackage* package, uint16_t timeout = DEFAULT_READ_TIMEOUT) {
+    bool BluetoothAsSerial::waitForPackage(IPackage* package, uint16_t timeout /* = DEFAULT_READ_TIMEOUT */) {
         char buffer[MAX_PACKAGE_LENGTH];
         long startTime = millis();
         bool packageOk = false;
@@ -75,13 +79,13 @@ namespace robotieee {
         return packageOk;
     }
 
-    bool BluetoothAsSerial::sendPackage(const IPackage* package) {
-        IPackage* ack =  NULL;
-        string<MAX_PACKAGE_LENGTH>* pkgStr = NULL;
+    bool BluetoothAsSerial::sendPackage(IPackage* package) {
+        IPackage* ack =  nullptr;
+        string<MAX_PACKAGE_LENGTH>* pkgStr = nullptr;
         bool sentCorrectly = false;
         uint8_t i = 0;
 
-        if (package == NULL)
+        if (package == nullptr)
             return false;
 
         ack = new CommunicationPackage();
@@ -103,6 +107,8 @@ namespace robotieee {
                 if (i < ACK_WAIT_ATTEMPT && ack->getType() == PACKAGE_TYPE_ACKNOWLEDGE && ack->getID() == package->getID()) {
                     sentCorrectly = true; //exit
                 }
+            } else {
+                sentCorrectly = true;
             }
         }
 
@@ -117,21 +123,21 @@ namespace robotieee {
         Serial1.end();
     }
 
-    //STATIC
+    /* STATIC ------------------------------------------------------------------------------------------------------------------- */
 
-    static IPackage* BluetoothAsSerial::initAcknowledge(const IPackage* package, const IMessage* message = NULL) {
-        IPackage* ack = NULL;
+    IPackage* BluetoothAsSerial::initAcknowledge(IPackage* package, IMessage* message /* = nullptr */) {
+        IPackage* ack = nullptr;
 
-        if (package == NULL)
-            return NULL;
+        if (package == nullptr)
+            return nullptr;
 
         ack = new CommunicationPackage(PROTOCOL_VERSION, package->getID(), 0, PACKAGE_TYPE_ACKNOWLEDGE);
 
-        if (message != NULL) {
+        if (message != nullptr) {
             string<MAX_MESSAGE_LENGTH>* msgStr = message->toString();
             ack->setPayloadLength(msgStr->getSize());
 
-            for(int i = 0; i < msgStr->getSize(); i++)
+            for(uint8_t i = 0; i < msgStr->getSize(); i++)
                 ack->appendToPayload(msgStr->getBuffer()[i]);
 
             delete(msgStr);
@@ -140,13 +146,13 @@ namespace robotieee {
         return ack;
     }
 
-    static IPackage* BluetoothAsSerial::initFoundAck(const IPackage* package, point robotPos, point blockPos) {
+    IPackage* BluetoothAsSerial::initFoundAck(IPackage* package, point robotPos, point blockPos) {
         point blocksPos[1] = { point(blockPos) };
 
         return initFoundAck(package, robotPos, 1, blocksPos);
     }
 
-    static IPackage* BluetoothAsSerial::initFoundAck(const IPackage* package, point robotPos, int blocksNum, point* blocksPos) {
+    IPackage* BluetoothAsSerial::initFoundAck(IPackage* package, point robotPos, uint8_t blocksNum, point* blocksPos) {
         compositeAction msg = compositeAction();
         string<ARGS_LENGHT> args = string<ARGS_LENGHT>{};
 
@@ -170,12 +176,12 @@ namespace robotieee {
             args.append((char)blocksPos[i].y);
         }
 
-        msg.setArgs(args.getBuffer());
+        msg.setArgs((char*)args.getBuffer());
 
         return initAcknowledge(package, &msg);
     }
     
-    static IPackage* BluetoothAsSerial::initNotFoundAck(const IPackage* package, point robotPos) {
+    IPackage* BluetoothAsSerial::initNotFoundAck(IPackage* package, point robotPos) {
         compositeAction msg = compositeAction();
         string<ARGS_LENGHT> args = string<ARGS_LENGHT>{};
 
@@ -189,8 +195,24 @@ namespace robotieee {
         args.append((char)robotPos.x);
         args.append((char)robotPos.y);
 
-        msg.setArgs(args.getBuffer());
+        msg.setArgs((char*)args.getBuffer());
 
         return initAcknowledge(package, &msg);
+    }
+
+    void BluetoothAsSerial::jumpByte (uint8_t number) {
+        for(uint8_t i = 0; i < number; i++) {
+            //wait for something to read
+            while(!getInstance()->somethingToRead());
+
+            //read only one byte a time
+            Serial1.read();
+        }
+    }
+
+    BluetoothAsSerial* BluetoothAsSerial::getInstance() {
+        static BluetoothAsSerial instance; /* The single instance */
+        
+        return &instance;
     }
 }

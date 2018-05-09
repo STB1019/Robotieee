@@ -26,7 +26,7 @@ Zumo32U4ProximitySensors proxSensors;
 #if EXEC_PROTOCOL_VERSION == 1
   actionComunicator bluetooth;
 #elif EXEC_PROTOCOL_VERSION >= 2
-  ICommunicator* bluetooth = new BluetoothAsSerial(); 
+  ICommunicator* bluetooth = BluetoothAsSerial::getInstance(); 
 #endif
 
 #ifdef DEBUG_LCD
@@ -157,8 +157,8 @@ void doActivityVersion1() {
 /*
 This function manage the movement action and return the package to sent as responce to the host.
 */
-IPackage* doMovement(const IPackage* package, const IMessage* action) {
-  IPackage* responce = NULL; 
+IPackage* doMovement(IPackage* package, IMessage* action) {
+  IPackage* responce = nullptr; 
   char* actionArgs = action->getArgs();
   enum object_movement direction = (actionArgs[0] - '0');
 
@@ -209,7 +209,7 @@ NB: use directly the protocol implementation class only to init the package for 
 void doActivity() {
   bool foundBlock = false;
   IPackage* packageRead = new CommunicationPackage();
-  IPackage* packageSent = NULL;
+  IPackage* packageSent = nullptr;
   IMessage* packageMessage = new compositeAction();
 
   //led red on: package waiting
@@ -262,9 +262,11 @@ void doActivity() {
 }
 
 void testConnectionClass() {
-  CommunicationPackage* pSent = new CommunicationPackage();
+  CommunicationPackage* pSent = nullptr;
   CommunicationPackage* pRead = new CommunicationPackage();
   string<MAX_PAYLOAD_LENGTH> payload = string<MAX_PAYLOAD_LENGTH>{"Per me e' la cipolla"};
+
+  BluetoothAsSerial::jumpByte(42); //length of 'Bluetooth device connected at 00:00:00.000' string sent by btTerminal on connection
 
   while(true) {
     //led red on: package waiting

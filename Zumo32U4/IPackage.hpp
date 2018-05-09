@@ -36,7 +36,7 @@ namespace robotieee {
     class IPackage {
     public:
 
-        virtual IPackage() {}
+        IPackage() {}
         virtual ~IPackage() {}
 
         /**
@@ -129,7 +129,7 @@ namespace robotieee {
          * 
          * @param[in]   package package to clone
          */
-        virtual void clone(const IPackage* package) = 0;
+        virtual void clone(IPackage* package) = 0;
 
         /**
          * Verifies the package data setted. Return if the object represent a correct package.
@@ -145,7 +145,7 @@ namespace robotieee {
          * @param[in]   package package to check
          * @return  true: the package equal the current object; false: otherwise 
          */
-        virtual bool equals(const IPackage* package) = 0;
+        virtual bool equals(IPackage* package) = 0;
 
         /**
          * Returns the package data coded into a string.
@@ -170,7 +170,7 @@ namespace robotieee {
         /* PAYLOAD */
 
         /** payload content */
-        string<MAX_PAYLOAD_LENGTH> _payload = string<MAX_PAYLOAD_LENGTH>{};
+        string<MAX_PAYLOAD_LENGTH>* _payload = nullptr;
 
     };
 }

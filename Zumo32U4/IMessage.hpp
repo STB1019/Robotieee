@@ -9,7 +9,7 @@
  */
 
 #ifndef INTERFACE_MESSAGE_HPP_
-#define INTERFACE_MESSAGE_HPP_€
+#define INTERFACE_MESSAGE_HPP_
 
 #include "string.hpp"
 
@@ -28,7 +28,7 @@ namespace robotieee {
     class IMessage {
     public:
 
-        virtual IMessage() {}
+        IMessage() {}
         virtual ~IMessage() {}
 
         /**

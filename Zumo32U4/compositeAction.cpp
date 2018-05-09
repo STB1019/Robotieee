@@ -31,11 +31,11 @@ namespace robotieee {
         return _args;
     }
 
-    void compositeAction::addRepetition(uint8_t num = 1) {
+    void compositeAction::addRepetition(uint8_t num /* = 1 */) {
         _repetition += num;
     }
 
-    void compositeAction::setRepetition(uint8_t num = 1) {
+    void compositeAction::setRepetition(uint8_t num /* = 1 */) {
         _repetition = num;
     }
     

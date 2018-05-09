@@ -27,7 +27,7 @@ namespace robotieee {
     #define PACKAGE_TYPE_COMMUNICATION          'C'
     
     /* position of ID on private variable _flags bit from right */
-    #define FLAG_ID_POSITION                    8
+    #define FLAG_ID_POSITION                    1
     /* number of bit that the version needs in the first byte */
     #define VERSION_BIT_LENGTH                  4
 
@@ -40,7 +40,7 @@ namespace robotieee {
     /* Value returned by the parsing to extract type */
     #define STRING_PARSE_TYPE_ERROR             '\0'
     /* Value returned by the parsing to extract payload */
-    #define STRING_PARSE_PAYLOAD_ERROR          NULL
+    #define STRING_PARSE_PAYLOAD_ERROR          nullptr
 
     /**
      * Implements IPackage interface.
@@ -70,63 +70,63 @@ namespace robotieee {
          * 
          * @param[in]   version protocol version
          */
-        virtual void setVersion(uint8_t version); 
+        void setVersion(uint8_t version); 
 
         /**
          * Gets the protocol version of the package.
          * 
          * @return  protocol version
          */
-        virtual uint8_t getVersion();
+        uint8_t getVersion();
         
         /**
          * Sets the ID of the package.
          * 
          * @param[in]   id  package ID
          */
-        virtual void setID(uint8_t id);
+        void setID(uint8_t id);
 
         /**
          * Gets the ID of the package.
          * 
          * @return  package ID
          */
-        virtual uint8_t getID();
+        uint8_t getID();
         
         /**
          * Sets the payload length of the package.
          * 
          * @param[in]   payloadLength   payload length
          */
-        virtual void setPayloadLength(uint8_t payloadLength);
+        void setPayloadLength(uint8_t payloadLength);
 
         /**
          * Gets the payload length of the package.
          * 
          * @return  payload length
          */
-        virtual uint8_t getPayloadLength();
+        uint8_t getPayloadLength();
 
         /**
          * Sets the type of the package
          * 
          * @param[in]   type    package type
          */
-        virtual void setType(char type);
+        void setType(char type);
 
         /**
          * Gets the type of the package.
          * 
          * @return  package type
          */
-        virtual char getType();
+        char getType();
         
         /**
          * Sets the payload of the package.
          * 
          * @param[in]  payload reference to the data
          */
-        virtual void setPayload(string<MAX_PAYLOAD_LENGTH>* payload);
+        void setPayload(string<MAX_PAYLOAD_LENGTH>* payload);
 
         /**
          * Append a single character to the payload of the package.
@@ -134,28 +134,28 @@ namespace robotieee {
          * @param[in]  data character to append to the payload
          * @return  the result of the operation
          */
-        virtual bool appendToPayload(char data);
+        bool appendToPayload(char data);
 
         /**
          * Gets the reference to the payload of the package.
          * 
          * @return  package payload reference
          */
-        virtual string<MAX_PAYLOAD_LENGTH>* getPayload();
+        string<MAX_PAYLOAD_LENGTH>* getPayload();
         
         /**
          * Gets the payload of the package masked as an compositeAction object.
          * 
          * @param[out]  payload reference to the compositeAction object to fill up
          */
-        virtual void getPayloadAsMessage(IMessage* payload);
+        void getPayloadAsMessage(IMessage* payload);
 
         /**
          * Clones the package passed into the actual object.
          * 
          * @param[in]   package package to clone
          */
-        virtual void clone(const IPackage* package);
+        void clone(IPackage* package);
         
         /**
          * Verifies the package data setted. Return if the object represent a correct package.
@@ -163,7 +163,7 @@ namespace robotieee {
          * @param[in]   protocolVersion the protocol version that the package has to implement. If no need this check, give the value IPackage::NO_VERIFY_VERSION_VALUE.
          * @return  true: the object data represent a package; false: otherwise.
          */
-        virtual bool verify(uint8_t protocolVersion = NO_VERIFY_VERSION_VALUE);
+        bool verify(uint8_t protocolVersion = NO_VERIFY_VERSION_VALUE);
 
         /**
          * Verifies if the package set as parameter equals the current object.
@@ -171,7 +171,7 @@ namespace robotieee {
          * @param[in]   package package to check
          * @return  true: the package equal the current object; false: otherwise 
          */
-        virtual bool equals(const IPackage* package);
+        bool equals(IPackage* package);
 
         /**
          * Returns the package data coded into a string.
@@ -179,7 +179,7 @@ namespace robotieee {
          * 
          * @return  the package data in string form
          */
-        virtual string<MAX_PACKAGE_LENGTH>* toString();
+        string<MAX_PACKAGE_LENGTH>* toString();
 
         /**
          * dispose the receiver
@@ -195,7 +195,7 @@ namespace robotieee {
          * @param[in]   str     string of data
          * @return  true: package correctly initialized; false: otherwize
          */
-        static bool initFromString (IPackage* package, const char* str);
+        static bool initFromString (IPackage* package, char* str);
 
         /**
          * Extract the version from a package in string form.
@@ -203,7 +203,7 @@ namespace robotieee {
          * @param[in]   str string of data
          * @return  protocol version; STRING_PARSE_VERSION_ERROR if it is not possible
          */
-        static uint8_t getVersionFromString(const char* str);
+        static uint8_t getVersionFromString(char* str);
 
         /**
          * Extract the ID from a package in string form.
@@ -211,7 +211,7 @@ namespace robotieee {
          * @param[in]   str string of data
          * @return  package ID; STRING_PARSE_ID_ERROR if it is not possible
          */
-        static uint8_t getIDFromString(const char* str);
+        static uint8_t getIDFromString(char* str);
 
         /**
          * Extract the payload length from a package in string form.
@@ -219,7 +219,7 @@ namespace robotieee {
          * @param[in]   str string of data
          * @return  payload length; STRING_PARSE_PAYLOADLENGHT_ERROR if it is not possible
          */
-        static uint8_t getPayloadLengthFromString(const char* str);
+        static uint8_t getPayloadLengthFromString(char* str);
 
         /**
          * Extract the type from a package in string form.
@@ -227,7 +227,7 @@ namespace robotieee {
          * @param[in]   str string of data
          * @return  package type; STRING_PARSE_TYPE_ERROR if it is not possible
          */
-        static char getTypeFromString(const char* str);
+        static char getTypeFromString(char* str);
 
         /**
          * Extract the payload from a package in string form.
@@ -236,7 +236,7 @@ namespace robotieee {
          * @param[in]   str string of data
          * @return  payload; STRING_PARSE_PAYLOAD_ERROR if it is not possible
          */
-        static string<MAX_PAYLOAD_LENGTH>* getPayloadFromString(const char* str);
+        static string<MAX_PAYLOAD_LENGTH>* getPayloadFromString(char* str);
 
     private:
 
